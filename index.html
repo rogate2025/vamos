@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAMOS Quiz 2025</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            color: #ffd700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
+            text-shadow: 0 0 10px #ffd700;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+
+        .rounds {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .round-image {
+            width: auto; /* Keeps original GIF width */
+            height: auto; /* Keeps original GIF height */
+            object-fit: contain; /* Maintains GIF aspect ratio */
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .round-image:hover {
+            transform: scale(1.1);
+        }
+
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <img src="logo.png" alt="VAMOS Logo" class="logo">
+        <h1>VAMOS Quiz 2025</h1>
+        <div class="rounds">
+            <img src="one-5216_256.gif" alt="Round 1" class="round-image" onclick="openRound('round1.html')">
+            <img src="two-5334_256.gif" alt="Round 2" class="round-image" onclick="openRound('round2.html')">
+            <img src="three-5335_256.gif" alt="Round 3" class="round-image" onclick="openRound('round3.html')">
+            <img src="four-5380_256.gif" alt="Round 4" class="round-image" onclick="openRound('round4.html')">
+            <img src="five-5385_256.gif" alt="Round 5" class="round-image" onclick="openRound('round5.html')">
+        </div>
+    </div>
+
+    <script>
+        function openRound(url) {
+            window.open(url, 'RoundWindow', 'width=800,height=600,scrollbars=yes');
+        }
+    </script>
+</body>
+</html>

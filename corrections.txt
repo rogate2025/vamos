@@ -1,0 +1,4 @@
+if 50-50 taken no pass for question
+need to stop time if ask a friend is chosen - after askind time need to continue
+when pass is clicked window is getting closed
+PASS BUTTON is not needed

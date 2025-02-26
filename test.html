@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin the Wheel Game</title>
+    <style>
+        body { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(to bottom, #0a1a3d, #000000);
+            color: #ffffff;
+        }
+        .game-container { 
+            text-align: center; 
+            padding: 20px; 
+            position: relative;
+            width: 500px;
+        }
+        .wheel-container { 
+            position: relative; 
+            width: 400px; 
+            height: 450px; 
+            margin: 20px auto; 
+        }
+        canvas { 
+            width: 100%; 
+            height: 400px; 
+        }
+        .pointer { 
+            position: absolute; 
+            top: 0; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 0; 
+            height: 0; 
+            border-left: 15px solid transparent; 
+            border-right: 15px solid transparent; 
+            border-top: 30px solid #ffd700; 
+            z-index: 10; 
+        }
+        button { 
+            padding: 12px 24px; 
+            font-size: 16px; 
+            background: #ffd700; 
+            color: #0a1a3d; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background 0.3s; 
+        }
+        button:hover { 
+            background: #e6c200; 
+        }
+        button:disabled { 
+            background: #666633; 
+            cursor: not-allowed; 
+        }
+        #result { 
+            font-size: 20px; 
+            font-weight: bold; 
+            color: #ffd700; 
+            max-width: 400px; 
+            word-wrap: break-word; 
+            text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700; 
+            animation: popUp 0.5s ease-out forwards;
+            opacity: 0;
+            position: absolute; 
+            bottom: 10px; 
+            left: 0;
+            width: 100%; 
+            text-align: center; 
+            z-index: 5;
+        }
+        h1 { 
+            color: #ffd700; 
+        }
+        .gift-box-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .gift-box {
+            width: 50px;
+            height: 50px;
+            background: #ffd700;
+            border: 2px solid #0a1a3d;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #0a1a3d;
+            transition: transform 0.2s;
+        }
+        .gift-box:hover {
+            transform: scale(1.1);
+        }
+        @keyframes popUp {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .fireworks {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10;
+            width: 0;
+            height: 0;
+        }
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            opacity: 1;
+            animation: burst 1s ease-out forwards;
+        }
+        @keyframes burst {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Spin the Wheel</h1>
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <canvas id="wheel" width="400" height="400"></canvas>
+            <div id="result">
+                <div class="fireworks" id="fireworks"></div>
+            </div>
+        </div>
+        <button id="spinBtn">Spin the Wheel</button>
+        <div class="gift-box-container">
+            <div class="gift-box" data-set="50">50</div>
+            <div class="gift-box" data-set="100">100</div>
+            <div class="gift-box" data-set="150">150</div>
+            <div class="gift-box" data-set="200">200</div>
+            <div class="gift-box" data-set="250">250</div>
+            <div class="gift-box" data-set="300">300</div>
+            <div class="gift-box" data-set="350">350</div>
+            <div class="gift-box" data-set="400">400</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('wheel');
+        const ctx = canvas.getContext('2d');
+        const spinBtn = document.getElementById('spinBtn');
+        const resultDiv = document.getElementById('result');
+        const fireworksDiv = document.getElementById('fireworks');
+        const giftBoxes = document.querySelectorAll('.gift-box');
+
+        const questionSets = {
+            "50": [
+                "What’s your favorite color?",
+                "What’s your favorite food?",
+                "Do you prefer cats or dogs?",
+                "What’s your favorite season?",
+                "What’s your dream vacation?",
+                "What’s your favorite movie?",
+                "Do you like to read books?",
+                "What’s your favorite sport?",
+                "What’s your favorite hobby?",
+                "What’s your favorite ice cream flavor?"
+            ],
+            "100": [
+                "What’s your biggest fear?",
+                "What’s your proudest achievement?",
+                "Who inspires you the most?",
+                "What’s your favorite song?",
+                "What’s your dream job?",
+                "What’s your favorite book?",
+                "What’s your hidden talent?",
+                "What’s your favorite holiday?",
+                "What’s your favorite animal?",
+                "What’s your earliest memory?"
+            ],
+            "150": [
+                "If you could time travel, where would you go?",
+                "What’s your favorite TV show?",
+                "What’s your favorite dessert?",
+                "What’s your favorite quote?",
+                "What’s your favorite game?",
+                "What superpower would you want?",
+                "What’s your favorite flower?",
+                "What’s your favorite smell?",
+                "What’s your favorite drink?",
+                "What’s your favorite place to relax?"
+            ],
+            "200": [
+                "What’s the best gift you’ve received?",
+                "What’s your favorite memory?",
+                "What’s your favorite joke?",
+                "What’s your favorite restaurant?",
+                "What’s your favorite app?",
+                "What’s your favorite weather?",
+                "What’s your favorite gadget?",
+                "What’s your favorite candy?",
+                "What’s your favorite day of the week?",
+                "What’s your favorite board game?"
+            ],
+            "250": [
+                "What’s the weirdest food you’ve tried?",
+                "What’s your favorite mythical creature?",
+                "What’s your favorite planet?",
+                "What’s your favorite dance move?",
+                "What’s your favorite emoji?",
+                "What’s your favorite language?",
+                "What’s your favorite constellation?",
+                "What’s your favorite fruit?",
+                "What’s your favorite vegetable?",
+                "What’s your favorite scent?"
+            ],
+            "300": [
+                "What’s your favorite historical figure?",
+                "What’s your favorite invention?",
+                "What’s your favorite museum?",
+                "What’s your favorite painting?",
+                "What’s your favorite poem?",
+                "What’s your favorite building?",
+                "What’s your favorite artifact?",
+                "What’s your favorite ancient civilization?",
+                "What’s your favorite scientist?",
+                "What’s your favorite discovery?"
+            ],
+            "350": [
+                "What’s your favorite outdoor activity?",
+                "What’s your favorite beach?",
+                "What’s your favorite hike?",
+                "What’s your favorite forest?",
+                "What’s your favorite mountain?",
+                "What’s your favorite lake?",
+                "What’s your favorite park?",
+                "What’s your favorite bird?",
+                "What’s your favorite fish?",
+                "What’s your favorite tree?"
+            ],
+            "400": [
+                "What’s your favorite sci-fi movie?",
+                "What’s your favorite space mission?",
+                "What’s your favorite alien?",
+                "What’s your favorite robot?",
+                "What’s your favorite spaceship?",
+                "What’s your favorite galaxy?",
+                "What’s your favorite star?",
+                "What’s your favorite sci-fi book?",
+                "What’s your favorite tech company?",
+                "What’s your favorite future invention?"
+            ]
+        };
+
+        const segments = [
+            { number: "50" },
+            { number: "100" },
+            { number: "150" },
+            { number: "200" },
+            { number: "250" },
+            { number: "300" },
+            { number: "350" },
+            { number: "400" }
+        ];
+
+        const usedQuestions = {
+            "50": [], "100": [], "150": [], "200": [], 
+            "250": [], "300": [], "350": [], "400": []
+        };
+
+        const colors = ['#3498db', '#e91e63', '#9b59b6', '#f1c40f', '#e67e22', '#2ecc71', '#1abc9c', '#34495e'];
+        const radius = canvas.width / 2;
+        const arc = 2 * Math.PI / segments.length;
+        const pointerAngle = 3 * Math.PI / 2;
+        let currentAngle = 0;
+        let isSpinning = false;
+
+        function normalizeAngle(angle) {
+            angle = angle % (2 * Math.PI);
+            if (angle < 0) angle += 2 * Math.PI;
+            return angle;
+        }
+
+        function drawWheel() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            segments.forEach((segment, i) => {
+                const angle = currentAngle + (i * arc);
+                ctx.beginPath();
+                ctx.fillStyle = colors[i];
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius, angle, angle + arc);
+                ctx.lineTo(radius, radius);
+                ctx.fill();
+                ctx.save();
+                ctx.translate(radius, radius);
+                ctx.rotate(angle + arc / 2);
+                ctx.fillStyle = '#ffd700';
+                ctx.font = 'bold 20px Arial';
+                ctx.textAlign = 'right';
+                ctx.fillText(segment.number, radius - 20, 10);
+                ctx.restore();
+            });
+        }
+
+        function getSegmentAtPointer(currentAngle) {
+            const relativeAngle = normalizeAngle(pointerAngle - currentAngle);
+            const segmentIndex = Math.floor(relativeAngle / arc) % segments.length;
+            return segments[segmentIndex];
+        }
+
+        function getRandomQuestion(setNumber) {
+            const availableQuestions = questionSets[setNumber].filter(q => !usedQuestions[setNumber].includes(q));
+            if (availableQuestions.length === 0) {
+                usedQuestions[setNumber] = [];
+                return questionSets[setNumber][0];
+            }
+            const question = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+            usedQuestions[setNumber].push(question);
+            return question;
+        }
+
+        function createFireworks() {
+            fireworksDiv.innerHTML = '';
+            const particleCount = 20;
+            const particleColors = ['#ffd700', '#ff4500', '#00ff00', '#00b7eb'];
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const angle = Math.random() * 2 * Math.PI;
+                const distance = Math.random() * 100 + 50;
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+                particle.style.background = particleColors[Math.floor(Math.random() * particleColors.length)];
+                particle.style.setProperty('--x', `${x}px`);
+                particle.style.setProperty('--y', `${y}px`);
+                fireworksDiv.appendChild(particle);
+            }
+        }
+
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+            spinBtn.disabled = true;
+            resultDiv.style.opacity = '0';
+            resultDiv.textContent = '';
+            fireworksDiv.innerHTML = '';
+
+            const spins = 5 + Math.floor(Math.random() * 5);
+            const randomSegmentIndex = Math.floor(Math.random() * segments.length);
+            const segmentCenter = randomSegmentIndex * arc + arc / 2;
+            const delta = normalizeAngle(pointerAngle - segmentCenter);
+            const targetAngle = delta + 2 * Math.PI * spins;
+
+            let startTime;
+            const duration = 5000;
+
+            function animate(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                currentAngle = easeProgress * targetAngle;
+                drawWheel();
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    currentAngle = targetAngle;
+                    drawWheel();
+                    const selected = getSegmentAtPointer(currentAngle);
+                    resultDiv.textContent = `You landed on Set ${selected.number}`;
+                    resultDiv.style.opacity = '1';
+                    createFireworks();
+                    isSpinning = false;
+                    spinBtn.disabled = false;
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        giftBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                const setNumber = box.dataset.set;
+                const question = getRandomQuestion(setNumber);
+                resultDiv.textContent = `Set ${setNumber}: ${question}`;
+                resultDiv.style.opacity = '1';
+                createFireworks();
+            });
+        });
+
+        drawWheel();
+        spinBtn.addEventListener('click', spinWheel);
+    </script>
+</body>
+</html>

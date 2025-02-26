@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Millionaire Buzzer Round - Quiz Master</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a0b2e, #0d1b2a);
+            color: #fff;
+            text-align: center;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        #startScreen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #startScreen h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ffd700;
+        }
+
+        #quizMasterButton {
+            padding: 15px 30px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #1c2526, #2e3b3e);
+            color: #ffd700;
+            border: 3px solid #ffd700;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px #ffd700;
+            margin-bottom: 20px;
+        }
+
+        #quizMasterButton:hover {
+            background: linear-gradient(45deg, #ffd700, #ffea00);
+            color: #000;
+            box-shadow: 0 0 25px #ffd700;
+        }
+
+        #questionContainer {
+            display: none;
+            background: radial-gradient(circle at center, #000066, #000033);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px #ffd700;
+            width: 100%;
+            max-width: none;
+            margin-bottom: 20px;
+            border: 3px solid #ffd700;
+            box-sizing: border-box;
+        }
+
+        #question {
+            font-size: 36px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00b7eb, 0 0 20px #00b7eb;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        #buzzerTimes {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .team-time {
+            margin: 5px;
+            color: #00b7eb;
+            text-shadow: 0 0 5px #00b7eb;
+        }
+
+        #answerButton {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: #00b7eb;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 0 10px #00b7eb;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            transition: all 0.3s;
+        }
+
+        #answerButton:hover {
+            background: #00d4ff;
+            box-shadow: 0 0 20px #00b7eb;
+        }
+
+        #answer {
+            display: none;
+            font-size: 24px;
+            color: #ffd700;
+            text-shadow: 0 0 5px #ffd700;
+            margin-top: 20px;
+        }
+
+        #buzzerContainer {
+            flex-wrap: nowrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 900px;
+            margin-top: 40px;
+        }
+
+        .buzzer {
+            padding: 15px 25px;
+            font-size: 20px;
+            width: 140px;
+            background: linear-gradient(45deg, #1c2526, #2e3b3e);
+            color: #ffd700;
+            border: 3px solid #ffd700;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            box-shadow: 0 0 15px #ffd700;
+        }
+
+        .buzzer:hover:not(.zoomed) {
+            background: linear-gradient(45deg, #ffd700, #ffea00);
+            color: #000;
+            box-shadow: 0 0 25px #ffd700;
+        }
+
+        .buzzer.zoomed {
+            transform: scale(2.5);
+            z-index: 10;
+            background: linear-gradient(45deg, #ffd700, #ffea00);
+            color: #000;
+            animation: pulse 1s infinite;
+            box-shadow: 0 0 30px #ffd700, 0 0 60px #00b7eb;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform-origin: center;
+            translate: -50% -50%;
+            cursor: pointer;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(2.5); }
+            50% { transform: scale(2.7); }
+            100% { transform: scale(2.5); }
+        }
+
+        #nextButton {
+            display: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            background: #ffd700;
+            color: #000;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 0 10px #ffd700;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        #nextButton:hover {
+            background: #ffea00;
+            box-shadow: 0 0 20px #ffd700;
+        }
+
+        @media (max-width: 768px) {
+            .buzzer {
+                font-size: 20px;
+                width: 120px;
+            }
+            .buzzer.zoomed {
+                transform: scale(2);
+            }
+            #question {
+                font-size: 24px;
+            }
+            #answer {
+                font-size: 18px;
+            }
+            #quizMasterButton {
+                font-size: 18px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="startScreen">
+        <h1>Millionaire Buzzer Round</h1>
+        <button id="quizMasterButton">Quiz Master</button>
+        <div id="buzzerContainer">
+            <button class="buzzer" id="buzzerA">A</button>
+            <button class="buzzer" id="buzzerB">B</button>
+            <button class="buzzer" id="buzzerC">C</button>
+            <button class="buzzer" id="buzzerD">D</button>
+            <button class="buzzer" id="buzzerE">E</button>
+            <button class="buzzer" id="buzzerF">F</button>
+        </div>
+    </div>
+    <div id="questionContainer" style="display: none;">
+        <div id="question"></div>
+        <div id="buzzerTimes"></div>
+        <button id="answerButton">Show Answer</button>
+        <div id="answer"></div>
+    </div>
+    <button id="nextButton" style="display: none;">Next Question</button>
+
+    <script>
+        const questions = [
+            { question: "What is the capital of Brazil?", answer: "Brasília" },
+            { question: "Which planet is known as the Red Planet?", answer: "Mars" },
+            { question: "What gas do plants primarily use for photosynthesis?", answer: "Carbon Dioxide" },
+            { question: "Who wrote the play 'Romeo and Juliet'?", answer: "William Shakespeare" },
+            { question: "What is the largest ocean on Earth?", answer: "Pacific Ocean" },
+            { question: "Which element has the chemical symbol 'Fe'?", answer: "Iron" },
+            { question: "In which year did the Titanic sink?", answer: "1912" },
+            { question: "What is the longest river in the world?", answer: "Nile River" },
+            { question: "Which country is home to the kangaroo?", answer: "Australia" },
+            { question: "What is the hardest natural substance known?", answer: "Diamond" }
+        ];
+
+        const startScreen = document.getElementById('startScreen');
+        const quizMasterButton = document.getElementById('quizMasterButton');
+        const questionContainer = document.getElementById('questionContainer');
+        const questionText = document.getElementById('question');
+        const answerButton = document.getElementById('answerButton');
+        const answerText = document.getElementById('answer');
+        const buzzerContainer = document.getElementById('buzzerContainer');
+        const buzzerTimes = document.getElementById('buzzerTimes');
+        const nextButton = document.getElementById('nextButton');
+        const buzzers = {
+            A: document.getElementById('buzzerA'),
+            B: document.getElementById('buzzerB'),
+            C: document.getElementById('buzzerC'),
+            D: document.getElementById('buzzerD'),
+            E: document.getElementById('buzzerE'),
+            F: document.getElementById('buzzerF')
+        };
+        let startTime;
+        let buzzTimes = {};
+        let currentQuestionIndex = 0;
+        let zoomedTeam = null;
+        const correctPasskey = "3492";
+
+        // Quiz Master button functionality
+        quizMasterButton.addEventListener('click', () => {
+            const passkey = prompt("Enter the Quiz Master passkey:");
+            if (passkey === correctPasskey) {
+                startScreen.style.display = 'none';
+                loadNewQuestion();
+            } else {
+                alert("Incorrect passkey. Please try again.");
+            }
+        });
+
+        // Function to load a new question
+        function loadNewQuestion() {
+            // Reset game state
+            buzzTimes = {};
+            buzzerTimes.innerHTML = '';
+            for (let team in buzzers) {
+                buzzers[team].classList.remove('zoomed');
+            }
+            answerText.style.display = 'none';
+            answerButton.style.display = 'block';
+            zoomedTeam = null;
+
+            // Load current question
+            questionText.textContent = questions[currentQuestionIndex].question;
+            answerText.textContent = questions[currentQuestionIndex].answer;
+
+            // Show elements
+            questionContainer.style.display = 'block';
+            buzzerContainer.style.display = 'flex';
+            nextButton.style.display = 'block';
+
+            // Start timer
+            startTime = Date.now();
+
+            // Move to next question index
+            currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+        }
+
+        // When Next Button is clicked
+        nextButton.addEventListener('click', () => {
+            loadNewQuestion();
+        });
+
+        // When Answer Button is clicked
+        answerButton.addEventListener('click', () => {
+            answerText.style.display = 'block';
+            answerButton.style.display = 'none';
+        });
+
+        // Add click event to each buzzer
+        for (let team in buzzers) {
+            buzzers[team].addEventListener('click', function () {
+                if (!this.classList.contains('zoomed')) {
+                    this.classList.add('zoomed');
+                    zoomedTeam = team;
+                } else {
+                    const buzzTime = ((Date.now() - startTime) / 1000).toFixed(1);
+                    buzzTimes[team] = buzzTime;
+                    updateBuzzerTimes();
+                    this.classList.remove('zoomed');
+                    zoomedTeam = null;
+                }
+            });
+        }
+
+        // Update the display of buzzer times within question container
+        function updateBuzzerTimes() {
+            buzzerTimes.innerHTML = '';
+            for (let team in buzzTimes) {
+                const timeDiv = document.createElement('div');
+                timeDiv.className = 'team-time';
+                timeDiv.textContent = `Team ${team} buzzed at ${buzzTimes[team]}s`;
+                buzzerTimes.appendChild(timeDiv);
+            }
+        }
+    </script>
+</body>
+</html>

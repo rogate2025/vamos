@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game 🌟</title>
+    <style>
+        body {
+            background-color: #001f3f;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 90%;
+            padding: 20px;
+        }
+        h1, h2, h3, #timer {
+            text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700, 0 0 30px #ff4500;
+        }
+        .category-buttons .category-item {
+            display: inline-block;
+            margin: 15px;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+        }
+        .category-buttons .gift-box {
+            font-size: 120px; /* Larger size for the emoji */
+            width: 150px;
+            height: 150px;
+            line-height: 150px; /* Center the emoji vertically */
+            border-radius: 20px;
+            border: 4px solid #ffd700; /* Thicker gold border */
+            background: linear-gradient(135deg, #ff4500, #ffd700); /* Gradient background */
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 69, 0, 0.6);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .category-buttons .gift-box:hover {
+            transform: scale(1.15); /* Slightly larger hover effect */
+            box-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 69, 0, 0.8);
+        }
+        .category-buttons .number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px; /* Larger number */
+            color: #ffffff; /* White for contrast */
+            text-shadow: 0 0 5px #000, 0 0 10px #ffd700; /* Enhanced shadow */
+            font-weight: bold;
+        }
+        .question-container {
+            display: none;
+            padding: 40px;
+            background: linear-gradient(135deg, #002f5f, #004080);
+            border-radius: 15px;
+            margin: 20px auto;
+            width: 80vw;
+            max-width: 800px;
+            min-height: 300px;
+            box-sizing: border-box;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 69, 0, 0.5);
+            border: 3px solid #ffd700;
+            position: relative;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        .quiz-button {
+            padding: 15px 30px;
+            margin: 5px;
+            background: linear-gradient(to right, #ffd700, #ffcc00);
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            display: inline-block;
+            text-shadow: 0 0 5px #000, 0 0 10px #fff;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .quiz-button:hover {
+            background: linear-gradient(to right, #ffcc00, #ffd700);
+            box-shadow: 0 0 15px #ffd700;
+            transform: translateY(-2px);
+        }
+        #stop-quiz {
+            background: linear-gradient(to right, #ff4500, #ff6347);
+        }
+        #stop-quiz:hover {
+            background: linear-gradient(to right, #ff6347, #ff4500);
+        }
+        #home-button {
+            background: linear-gradient(to right, #00ced1, #20b2aa);
+        }
+        #home-button:hover {
+            background: linear-gradient(to right, #20b2aa, #00ced1);
+        }
+        #timer {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz Game 🌟</h1>
+        <div id="timer">Time Left: 60s ⏳</div>
+        <div class="category-buttons" id="categories"></div>
+        <div class="question-container" id="quiz">
+            <h2 id="question-text"></h2>
+            <h3 id="answer-text" style="display: none; color: lightgreen;"></h3>
+            <div class="button-container">
+                <button class="quiz-button" id="show-answer">Show Answer 🎉</button>
+                <button class="quiz-button" id="pass-question">Pass ➡️</button>
+                <button class="quiz-button" id="home-button">Home 🏠</button>
+                <button class="quiz-button" id="stop-quiz">Stop Quiz 🛑</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const categories = {
+            "1": [
+                { question: "What is the chemical symbol for water? 💧", answer: "H2O" },
+                { question: "What planet is closest to the sun? ☀️", answer: "Mercury" }
+            ],
+            "2": [
+                { question: "Who was the first president of the United States? 🇺🇸", answer: "George Washington" },
+                { question: "In which year did World War II end? ⏰", answer: "1945" }
+            ],
+            "3": [
+                { question: "What is the capital of France? 🗼", answer: "Paris" },
+                { question: "Which continent is the Sahara Desert located in? 🏜️", answer: "Africa" }
+            ],
+            "4": [
+                { question: "What is 5 + 7? ➕", answer: "12" },
+                { question: "What is the square root of 16? 🔢", answer: "4" }
+            ],
+            "5": [
+                { question: "How many players are on a soccer team? ⚽", answer: "11" },
+                { question: "What sport is played at Wimbledon? 🎾", answer: "Tennis" }
+            ],
+            "6": [
+                { question: "Who directed 'Titanic'? 🎥", answer: "James Cameron" },
+                { question: "Which movie features a character named Jack Sparrow? 🏴‍☠️", answer: "Pirates of the Caribbean" }
+            ],
+            "7": [
+                { question: "Who is known as the King of Pop? 👑", answer: "Michael Jackson" },
+                { question: "Which band sang 'Bohemian Rhapsody'? 🎶", answer: "Queen" }
+            ],
+            "8": [
+                { question: "Who founded Microsoft? 💻", answer: "Bill Gates" },
+                { question: "What does 'CPU' stand for? 🖥️", answer: "Central Processing Unit" }
+            ],
+            "9": [
+                { question: "Who wrote 'Romeo and Juliet'? 📖", answer: "William Shakespeare" },
+                { question: "What is the main character’s name in '1984'? 📚", answer: "Winston Smith" }
+            ],
+            "10": [
+                { question: "What is the fastest land animal? 🐆", answer: "Cheetah" },
+                { question: "What is the largest mammal? 🐳", answer: "Blue Whale" }
+            ],
+            "11": [
+                { question: "What gas do plants use for photosynthesis? 🌱", answer: "Carbon Dioxide" },
+                { question: "What is the largest organ in the human body? 🧠", answer: "Skin" }
+            ],
+            "12": [
+                { question: "What is the currency of Japan? 💴", answer: "Yen" },
+                { question: "Which country hosted the 2016 Summer Olympics? 🏅", answer: "Brazil" }
+            ]
+        };
+        
+        const categoryContainer = document.getElementById("categories");
+        const quizContainer = document.getElementById("quiz");
+        const questionText = document.getElementById("question-text");
+        const answerText = document.getElementById("answer-text");
+        const showAnswerButton = document.getElementById("show-answer");
+        const passButton = document.getElementById("pass-question");
+        const stopQuizButton = document.getElementById("stop-quiz");
+        const homeButton = document.getElementById("home-button");
+        const timerDisplay = document.getElementById("timer");
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let timeLeft = 60;
+        let timer;
+
+        function loadCategories() {
+            let number = 1;
+            for (let category in categories) {
+                let div = document.createElement("div");
+                div.className = "category-item";
+                div.id = `category-${category}`;
+                
+                let giftBox = document.createElement("div");
+                giftBox.className = "gift-box";
+                giftBox.innerText = "🎁"; // Gift box emoji
+                giftBox.onclick = () => startQuiz(category, div);
+                
+                let numSpan = document.createElement("span");
+                numSpan.className = "number";
+                numSpan.innerText = number;
+                
+                div.appendChild(giftBox);
+                div.appendChild(numSpan);
+                categoryContainer.appendChild(div);
+                number++;
+            }
+        }
+
+        function startQuiz(category, element) {
+            currentQuestions = categories[category];
+            currentQuestionIndex = 0;
+            element.style.display = "none"; // Hide the selected gift box and number
+            categoryContainer.style.display = "none";
+            quizContainer.style.display = "block";
+            loadQuestion();
+            startTimer();
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= currentQuestions.length) {
+                currentQuestionIndex = 0; // Loop back to the first question
+            }
+            
+            let question = currentQuestions[currentQuestionIndex];
+            questionText.innerText = question.question;
+            answerText.innerText = question.answer;
+            answerText.style.display = "none";
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.innerText = `Time Left: ${timeLeft}s ⏳`;
+                if (timeLeft <= 0) {
+                    stopQuiz("Time's up! ⏰");
+                }
+            }, 1000);
+        }
+
+        function stopQuiz(message) {
+            clearInterval(timer);
+            alert(message);
+            location.reload(); // Reset the entire game
+        }
+
+        function goHome() {
+            clearInterval(timer);
+            quizContainer.style.display = "none";
+            categoryContainer.style.display = "block";
+            timeLeft = 60;
+            timerDisplay.innerText = `Time Left: ${timeLeft}s ⏳`;
+        }
+
+        showAnswerButton.onclick = () => {
+            answerText.style.display = "block";
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 2000);
+        };
+
+        passButton.onclick = () => {
+            currentQuestionIndex++;
+            loadQuestion();
+        };
+
+        stopQuizButton.onclick = () => {
+            stopQuiz("Quiz stopped! 🛑");
+        };
+
+        homeButton.onclick = () => {
+            goHome();
+        };
+
+        loadCategories();
+    </script>
+</body>
+</html>
