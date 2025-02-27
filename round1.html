@@ -80,8 +80,8 @@
             border-radius: 10px;
             color: #000;
             font-weight: bold;
-            font-size: 4vw; /* Larger numbers for better visibility */
-            padding: 25px 50px; /* Bigger buttons */
+            font-size: 4vw;
+            padding: 25px 50px;
             cursor: pointer;
             margin: 10px;
             min-width: 120px;
@@ -258,8 +258,8 @@
             .timer { font-size: 3vw; }
             .manikutti { width: 80px; height: 80px; }
             #number-buttons button {
-                font-size: 6vw; /* Larger numbers on mobile */
-                padding: 20px 40px; /* Adjust padding for mobile */
+                font-size: 6vw;
+                padding: 20px 40px;
             }
             #back-to-category {
                 font-size: 3vw;
@@ -269,7 +269,6 @@
     </style>
 </head>
 <body>
-    <!-- Audio Elements -->
     <audio id="backgroundMusic" src="background_music.mp3" loop></audio>
     <audio id="correctSound" src="correct_answer.mp3"></audio>
     <audio id="wrongSound" src="wrong_answer.mp3"></audio>
@@ -293,24 +292,19 @@
 
     <div class="category-screen" id="category-screen" style="display: none;">
         <h2>Category <span id="category-name"></span></h2>
-        <div id="number-buttons">
-            <!-- Number buttons will be dynamically generated -->
-        </div>
+        <div id="number-buttons"></div>
         <button id="back-to-category" onclick="goBackToCategorySelection()">Back to Categories</button>
     </div>
 
     <div class="container" id="game-container" style="display: none;">
-        <div class="nav-buttons">
-            <!-- No buttons here -->
-        </div>
+        <div class="nav-buttons"></div>
         <div class="question-container">
             <p class="question" id="question">Loading question...</p>
         </div>
         <div class="options" id="options"></div>
         <div class="lifelines">
             <button onclick="useFiftyFifty()">50:50</button>
-            <button onclick="askAFriend()">Ask a Friend</button>
-            <button id="passButton" onclick="passQuestion()">Pass</button>
+            <button id="askFriendButton" onclick="toggleAskAFriend()">Ask a Friend</button>
         </div>
         <div class="timer" id="timer">60s</div>
         <img src="manikutti.gif" alt="Manikutti" class="manikutti" onclick="start60sTimer()">
@@ -318,7 +312,6 @@
     </div>
 
     <script>
-        // Define the categories array (each category has 12 questions)
         const categories = [
             [
                 { question: "Who won the 2023 Nobel Prize in Literature?", options: ["A: Salman Rushdie", "B: Annie Ernaux", "C: Jon Fosse", "D: Margaret Atwood"], answer: "C: Jon Fosse" },
@@ -392,7 +385,6 @@
             ]
         ];
 
-        // Track answered questions for each category
         let answeredQuestions = {
             0: new Set(),
             1: new Set(),
@@ -409,10 +401,10 @@
             timer: 60,
             timerInterval: null,
             optionsRevealed: [false, false, false, false],
-            firstConfirmation: false
+            firstConfirmation: false,
+            isTimerPaused: false
         };
 
-        // Audio Control Functions
         function playSound(id) {
             const sound = document.getElementById(id);
             sound.currentTime = 0;
@@ -425,7 +417,6 @@
             sound.currentTime = 0;
         }
 
-        // Select Category
         function selectCategory(categoryIndex) {
             gameState.currentCategory = categoryIndex;
             document.getElementById("opening").style.display = "none";
@@ -434,7 +425,6 @@
             loadNumberButtons();
         }
 
-        // Load Number Buttons for the selected category
         function loadNumberButtons() {
             const numberButtonsDiv = document.getElementById("number-buttons");
             numberButtonsDiv.innerHTML = "";
@@ -453,7 +443,6 @@
             }
         }
 
-        // Select Question
         function selectQuestion(questionIndex) {
             gameState.currentQuestionIndex = questionIndex;
             document.getElementById("category-screen").style.display = "none";
@@ -461,7 +450,6 @@
             loadQuestion();
         }
 
-        // Load Question
         function loadQuestion() {
             const q = categories[gameState.currentCategory][gameState.currentQuestionIndex];
             document.getElementById("question").textContent = q.question;
@@ -478,16 +466,14 @@
             gameState.optionsRevealed = [false, false, false, false];
             gameState.firstConfirmation = false;
             gameState.timer = 60;
+            gameState.isTimerPaused = false;
             document.getElementById("timer").textContent = `${gameState.timer}s`;
             clearInterval(gameState.timerInterval);
             stopSound("timerTick");
-            const passButton = document.getElementById("passButton");
-            passButton.textContent = "Pass";
-            passButton.onclick = passQuestion;
             document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = false);
+            document.getElementById("askFriendButton").textContent = "Ask a Friend";
         }
 
-        // Reveal Option
         function revealOption(btn, index, fullText) {
             if (!gameState.optionsRevealed[index]) {
                 btn.textContent = fullText;
@@ -495,16 +481,39 @@
                 if (gameState.optionsRevealed.every(revealed => revealed)) {
                     start30sTimer();
                 }
-            } else {
+            } else if (!gameState.isTimerPaused) {
                 selectAnswer(btn, fullText);
             }
         }
 
-        // 60-Second Timer
         function start60sTimer() {
-            if (gameState.timer === 60) {
+            if (!gameState.timerInterval) {
                 playSound("timerTick");
                 gameState.timerInterval = setInterval(() => {
+                    if (!gameState.isTimerPaused) {
+                        gameState.timer--;
+                        document.getElementById("timer").textContent = `${gameState.timer}s`;
+                        if (gameState.timer <= 0) {
+                            clearInterval(gameState.timerInterval);
+                            stopSound("timerTick");
+                            playSound("timeUpSound");
+                            document.querySelectorAll(".options button").forEach(btn => btn.disabled = true);
+                            document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = true);
+                            setTimeout(completeQuestion, 2000);
+                        }
+                    }
+                }, 1000);
+            }
+        }
+
+        function start30sTimer() {
+            clearInterval(gameState.timerInterval);
+            stopSound("timerTick");
+            gameState.timer = 30;
+            document.getElementById("timer").textContent = `${gameState.timer}s`;
+            playSound("timerTick");
+            gameState.timerInterval = setInterval(() => {
+                if (!gameState.isTimerPaused) {
                     gameState.timer--;
                     document.getElementById("timer").textContent = `${gameState.timer}s`;
                     if (gameState.timer <= 0) {
@@ -513,45 +522,12 @@
                         playSound("timeUpSound");
                         document.querySelectorAll(".options button").forEach(btn => btn.disabled = true);
                         document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = true);
-                        const passButton = document.getElementById("passButton");
-                        passButton.textContent = "Next Question";
-                        passButton.onclick = completeQuestion;
-                        passButton.disabled = false;
+                        setTimeout(completeQuestion, 2000);
                     }
-                }, 1000);
-            }
-        }
-
-        // 30-Second Timer
-        function start30sTimer() {
-            clearInterval(gameState.timerInterval);
-            stopSound("timerTick");
-            gameState.timer = 30;
-            document.getElementById("timer").textContent = `${gameState.timer}s`;
-            playSound("timerTick");
-            gameState.timerInterval = setInterval(() => {
-                gameState.timer--;
-                document.getElementById("timer").textContent = `${gameState.timer}s`;
-                if (gameState.timer <= 0) {
-                    clearInterval(gameState.timerInterval);
-                    stopSound("timerTick");
-                    playSound("timeUpSound");
-                    document.querySelectorAll(".options button").forEach(btn => btn.disabled = true);
-                    document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = true);
-                    const passButton = document.getElementById("passButton");
-                    if (!gameState.firstConfirmation) {
-                        passButton.textContent = "Switch to Team B";
-                        passButton.onclick = switchToTeamB;
-                    } else {
-                        passButton.textContent = "Next Question";
-                        passButton.onclick = completeQuestion;
-                    }
-                    passButton.disabled = false;
                 }
             }, 1000);
         }
 
-        // 10-Second Timer for Team B
         function start10sTimer() {
             clearInterval(gameState.timerInterval);
             stopSound("timerTick");
@@ -559,23 +535,40 @@
             document.getElementById("timer").textContent = `${gameState.timer}s`;
             playSound("timerTick");
             gameState.timerInterval = setInterval(() => {
-                gameState.timer--;
-                document.getElementById("timer").textContent = `${gameState.timer}s`;
-                if (gameState.timer <= 0) {
-                    clearInterval(gameState.timerInterval);
-                    stopSound("timerTick");
-                    playSound("timeUpSound");
-                    document.querySelectorAll(".options button").forEach(btn => btn.disabled = true);
-                    document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = true);
-                    const passButton = document.getElementById("passButton");
-                    passButton.textContent = "Next Question";
-                    passButton.onclick = completeQuestion;
-                    passButton.disabled = false;
+                if (!gameState.isTimerPaused) {
+                    gameState.timer--;
+                    document.getElementById("timer").textContent = `${gameState.timer}s`;
+                    if (gameState.timer <= 0) {
+                        clearInterval(gameState.timerInterval);
+                        stopSound("timerTick");
+                        playSound("timeUpSound");
+                        document.querySelectorAll(".options button").forEach(btn => btn.disabled = true);
+                        document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = true);
+                        setTimeout(completeQuestion, 2000);
+                    }
                 }
             }, 1000);
         }
 
-        // Select Answer
+        function resumeTimer() {
+            clearInterval(gameState.timerInterval); // Clear any existing interval
+            playSound("timerTick");
+            gameState.timerInterval = setInterval(() => {
+                if (!gameState.isTimerPaused) {
+                    gameState.timer--;
+                    document.getElementById("timer").textContent = `${gameState.timer}s`;
+                    if (gameState.timer <= 0) {
+                        clearInterval(gameState.timerInterval);
+                        stopSound("timerTick");
+                        playSound("timeUpSound");
+                        document.querySelectorAll(".options button").forEach(btn => btn.disabled = true);
+                        document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = true);
+                        setTimeout(completeQuestion, 2000);
+                    }
+                }
+            }, 1000);
+        }
+
         function selectAnswer(btn, selected) {
             if (!gameState.isFinalAnswer && gameState.optionsRevealed.every(revealed => revealed)) {
                 btn.style.background = "linear-gradient(to bottom, #ffa500, #ff4500)";
@@ -591,29 +584,24 @@
             }
         }
 
-        // Check Answer
         function checkAnswer(btn, selected) {
             clearInterval(gameState.timerInterval);
             stopSound("timerTick");
             const correct = categories[gameState.currentCategory][gameState.currentQuestionIndex].answer;
 
             if (!gameState.firstConfirmation) {
-                // Team A's turn
                 gameState.firstConfirmation = true;
                 if (selected === correct) {
-                    // Team A got it right
                     playSound("correctSound");
                     btn.style.background = "linear-gradient(to bottom, #00ff00, #008000)";
                     setTimeout(completeQuestion, 2000);
                 } else {
-                    // Team A got it wrong, give Team B a chance
-                    btn.style.background = "linear-gradient(to bottom, #ffa500, #ff4500)"; // Keep orange for now
+                    btn.style.background = "linear-gradient(to bottom, #ffa500, #ff4500)";
                     setTimeout(() => {
                         switchToTeamB();
                     }, 1000);
                 }
             } else {
-                // Team B's turn (only happens if Team A was wrong)
                 if (selected === correct) {
                     playSound("correctSound");
                     btn.style.background = "linear-gradient(to bottom, #00ff00, #008000)";
@@ -630,14 +618,12 @@
             gameState.isFinalAnswer = false;
         }
 
-        // Switch to Team B
         function switchToTeamB() {
             gameState.teamTurn = "B";
             alert("Team A got it wrong. Team B, you have 10 seconds!");
             start10sTimer();
         }
 
-        // Complete Question (after timer or answer)
         function completeQuestion() {
             answeredQuestions[gameState.currentCategory].add(gameState.currentQuestionIndex);
             document.getElementById("game-container").style.display = "none";
@@ -645,20 +631,11 @@
             loadNumberButtons();
         }
 
-        // Pass Question
-        function passQuestion() {
-            clearInterval(gameState.timerInterval);
-            stopSound("timerTick");
-            completeQuestion();
-        }
-
-        // Go back to category selection
         function goBackToCategorySelection() {
             document.getElementById("category-screen").style.display = "none";
             document.getElementById("opening").style.display = "flex";
         }
 
-        // Lifelines
         function useFiftyFifty() {
             playSound("lifelineSound");
             const q = categories[gameState.currentCategory][gameState.currentQuestionIndex];
@@ -677,16 +654,26 @@
             });
         }
 
-        function askAFriend() {
-            playSound("lifelineSound");
-            document.getElementById("phone-a-friend-message").style.display = "block";
-            document.getElementById("phone-a-friend-message").textContent = "Now you can Ask your Friend";
-            setTimeout(() => {
+        function toggleAskAFriend() {
+            const askFriendButton = document.getElementById("askFriendButton");
+            if (!gameState.isTimerPaused) {
+                // Pause the timer
+                playSound("lifelineSound");
+                gameState.isTimerPaused = true;
+                clearInterval(gameState.timerInterval);
+                stopSound("timerTick");
+                document.getElementById("phone-a-friend-message").style.display = "block";
+                document.getElementById("phone-a-friend-message").textContent = "Now you can Ask your Friend (Click 'Ask a Friend' again to resume)";
+                askFriendButton.textContent = "Resume Timer";
+            } else {
+                // Resume the timer from where it paused
+                gameState.isTimerPaused = false;
                 document.getElementById("phone-a-friend-message").style.display = "none";
-            }, 5000);
+                askFriendButton.textContent = "Ask a Friend";
+                resumeTimer();
+            }
         }
 
-        // Start intro music on page load
         window.onload = () => {
             playSound("introSound");
         };

@@ -3,125 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Round 3 - Identify the Person</title>
+    <title>Quiz Round 3 - Who Am I?</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
             text-align: center;
             margin: 0;
-            padding-top: 50px;
-            background: linear-gradient(135deg, #071d49 0%, #1e3a8a 100%);
+            padding: 0;
+            background: linear-gradient(135deg, #1a1a3d 0%, #3b5998 100%);
             color: #ffffff;
             min-height: 100vh;
             overflow-y: auto;
+            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+            background-blend-mode: overlay;
         }
         h1 {
-            font-size: 36px;
-            text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
-            margin-bottom: 30px;
+            font-size: 48px;
+            margin: 40px 0;
+            color: #ffeb3b;
+            text-shadow: 0 0 15px #ffd700, 0 0 30px #ffeb3b;
+            animation: glow 2s infinite alternate;
         }
         #clues-container {
-            font-size: 24px;
-            margin: 20px auto;
-            padding: 20px;
-            width: 70%;
-            background: linear-gradient(45deg, #0d2a6b, #1e3a8a);
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7), inset 0 0 10px rgba(255, 215, 0, 0.3);
-            min-height: 100px;
-            text-align: left;
-            border: 2px solid #ffd700;
+            font-size: 22px;
+            margin: 30px auto;
+            padding: 25px;
+            width: 80%;
+            max-width: 700px;
+            background: rgba(30, 58, 138, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.2);
+            border: 3px solid #ffd700;
+            position: relative;
+            overflow: hidden;
+        }
+        #clues-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1), transparent);
+            animation: pulse 6s infinite;
         }
         #clues-container div {
             color: #ffeb3b;
-            margin: 10px 0;
-            padding: 10px;
-            background: rgba(255, 215, 0, 0.1);
-            border-radius: 5px;
-            text-shadow: 0 0 5px rgba(255, 235, 59, 0.8);
-            animation: fadeIn 0.5s ease-in;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 235, 59, 0.15);
+            border-radius: 10px;
+            text-shadow: 0 0 8px rgba(255, 235, 59, 0.8);
+            animation: fadeIn 0.6s ease-in;
+            position: relative;
+            z-index: 1;
         }
-        #clue-btn {
-            padding: 15px 40px;
+        .button {
+            padding: 15px 50px;
             font-size: 20px;
-            background: linear-gradient(90deg, #ffd700, #ffeb3b);
-            color: #071d49;
+            font-weight: bold;
+            background: linear-gradient(90deg, #ff6f61, #ffeb3b);
+            color: #1a1a3d;
             border: none;
-            border-radius: 8px;
+            border-radius: 50px;
             cursor: pointer;
-            margin-top: 30px;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
-            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 20px;
+            box-shadow: 0 8px 20px rgba(255, 107, 97, 0.6);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        #clue-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(255, 215, 0, 1);
+        .button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(255, 107, 97, 0.8);
+            background: linear-gradient(90deg, #ffeb3b, #ff6f61);
         }
-        #clue-btn:disabled {
-            background: #666633;
-            box-shadow: none;
-            cursor: not-allowed;
-            transform: none;
+        .button:active {
+            transform: translateY(2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 97, 0.4);
         }
-        #final-reveal {
+        #popup {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        #popup-content {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.95), rgba(255, 215, 0, 0.2));
+            padding: 30px;
+            border-radius: 25px;
+            border: 4px solid #ff6f61;
+            text-align: center;
+            animation: reveal 0.8s ease-out;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            max-width: 500px;
+            width: 90%;
+        }
+        #person-name {
             font-size: 32px;
-            margin: 30px auto;
-            text-shadow: 0 0 10px #ffd700;
-            animation: reveal 1s ease-in;
+            color: #ffeb3b;
+            text-shadow: 0 0 10px #ff6f61;
+            margin-bottom: 20px;
         }
         #person-image {
-            max-width: 350px;
+            max-width: 300px;
             margin: 20px auto;
-            border: 5px solid #ffd700;
+            border: 5px solid #ffeb3b;
             border-radius: 15px;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.9);
-            display: block;
+            box-shadow: 0 10px 25px rgba(255, 235, 59, 0.7);
+            transition: transform 0.3s ease;
+        }
+        #person-image:hover {
+            transform: scale(1.05);
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         @keyframes reveal {
-            from { opacity: 0; transform: scale(0.9); }
+            from { opacity: 0; transform: scale(0.8); }
             to { opacity: 1; transform: scale(1); }
         }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #ffd700, 0 0 20px #ffeb3b; }
+            to { text-shadow: 0 0 20px #ffd700, 0 0 30px #ffeb3b; }
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Round 3: Identify the Person</h1>
+    <h1>Round 3: Who Am I?</h1>
     <div id="clues-container"></div>
-    <div id="final-reveal"></div>
     
-    <button id="clue-btn" onclick="showNextClue()">Clue</button>
+    <button id="action-btn" class="button" onclick="handleAction()">Clue</button>
+
+    <div id="popup">
+        <div id="popup-content">
+            <strong id="person-name"></strong> 🎉<br>
+            <img id="person-image" src="" alt="">
+            <button class="button" onclick="closePopup()">Close</button>
+        </div>
+    </div>
 
     <script>
-        const clues = [
-            "Clue 1: I was born in a small Italian village in the 15th century. 🇮🇹🏘️",
-            "Clue 2: I’m known for painting a lady with a mysterious smile. 🎨😊",
-            "Clue 3: I sketched designs for machines that could fly, centuries before they existed. ✈️📜",
-            "Clue 4: My notebooks are filled with mirror writing and detailed anatomical drawings. 📓🖌️",
-            "Clue 5: My name is tied to a code in a famous modern novel. 📖🔍"
+        const persons = [
+            {
+                clues: [
+                    "Clue 1: I was born in a small Italian village in the 15th century. 🇮🇹🏘️",
+                    "Clue 2: I’m known for painting a lady with a mysterious smile. 🎨😊",
+                    "Clue 3: I sketched designs for machines that could fly, centuries before they existed. ✈️📜",
+                    "Clue 4: My notebooks are filled with mirror writing and detailed anatomical drawings. 📓🖌️",
+                    "Clue 5: My name is tied to a code in a famous modern novel. 📖🔍"
+                ],
+                name: "Leonardo da Vinci",
+                image: "https://www.leonardodavinci.net/assets/img/leonardo-da-vinci.jpg"
+            },
+            {
+                clues: [
+                    "Clue 1: I was born in England in 1564. 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+                    "Clue 2: My plays are still performed worldwide today. 🎭",
+                    "Clue 3: I wrote about star-crossed lovers in Verona. 💔",
+                    "Clue 4: My theater was called The Globe. 🌍",
+                    "Clue 5: To be or not to be is one of my famous lines. ❓"
+                ],
+                name: "William Shakespeare",
+                image: "https://upload.wikimedia.org/wikipedia/commons/a/a2/Shakespeare.jpg"
+            },
+            {
+                clues: [
+                    "Clue 1: I was born in Austria in 1756. 🇦🇹",
+                    "Clue 2: I was a child prodigy, composing music by age five. 🎹",
+                    "Clue 3: My operas include The Magic Flute and Don Giovanni. 🎼",
+                    "Clue 4: I died young at 35, leaving an unfinished Requiem. ⛪",
+                    "Clue 5: My first name is Wolfgang. 🎵"
+                ],
+                name: "Wolfgang Amadeus Mozart",
+                image: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Wolfgang-amadeus-mozart_1.jpg"
+            },
+            {
+                clues: [
+                    "Clue 1: I was born in the United States in 1835. 🇺🇸",
+                    "Clue 2: I wrote about adventures on the Mississippi River. 🚢",
+                    "Clue 3: My real name was Samuel Clemens. ✍️",
+                    "Clue 4: I’m famous for a boy named Tom and his friend Huck. 📚",
+                    "Clue 5: I used a pen name inspired by riverboat terminology. ⚓"
+                ],
+                name: "Mark Twain",
+                image: "https://upload.wikimedia.org/wikipedia/commons/0/0f/Mark_Twain%2C_by_AF_Bradley.jpg"
+            }
         ];
-        const personName = "Leonardo da Vinci";
+
+        let currentPersonIndex = 0;
         let currentClueIndex = -1;
+        let showingAnswer = false;
+
+        function loadPerson(index) {
+            currentClueIndex = -1;
+            showingAnswer = false;
+            document.getElementById("clues-container").innerHTML = "";
+            const actionButton = document.getElementById("action-btn");
+            actionButton.innerText = "Clue";
+        }
+
+        function handleAction() {
+            const actionButton = document.getElementById("action-btn");
+            const currentPerson = persons[currentPersonIndex];
+
+            if (showingAnswer) {
+                nextQuestion();
+            } else if (currentClueIndex < currentPerson.clues.length - 1) {
+                showNextClue();
+            } else {
+                showPopup();
+                actionButton.innerText = "Next Question";
+                showingAnswer = true;
+            }
+        }
 
         function showNextClue() {
             currentClueIndex++;
             const cluesContainer = document.getElementById("clues-container");
-            const button = document.getElementById("clue-btn");
-            const finalReveal = document.getElementById("final-reveal");
+            const actionButton = document.getElementById("action-btn");
+            const currentPerson = persons[currentPersonIndex];
 
-            if (currentClueIndex < clues.length) {
-                cluesContainer.innerHTML += `<div>${clues[currentClueIndex]}</div>`; // Stack clues with numbers and emojis
-                button.innerText = "Next Clue"; // Change button text after first click
-            } else if (currentClueIndex === clues.length) {
-                finalReveal.style.display = "block"; // Show final reveal
-                finalReveal.innerHTML = `<strong>${personName}</strong> 🎉<br><img id="person-image" src="https://www.leonardodavinci.net/assets/img/leonardo-da-vinci.jpg" alt="Leonardo da Vinci">`;
-                button.innerText = "Quiz Complete!";
-                button.disabled = true;
+            cluesContainer.innerHTML += `<div>${currentPerson.clues[currentClueIndex]}</div>`;
+            if (currentClueIndex === currentPerson.clues.length - 1) {
+                actionButton.innerText = "Show Answer";
+            } else {
+                actionButton.innerText = "Next Clue";
             }
         }
+
+        function showPopup() {
+            const popup = document.getElementById("popup");
+            const personNameElement = document.getElementById("person-name");
+            const personImageElement = document.getElementById("person-image");
+            const currentPerson = persons[currentPersonIndex];
+            
+            personNameElement.textContent = currentPerson.name;
+            personImageElement.src = currentPerson.image;
+            personImageElement.alt = currentPerson.name;
+            popup.style.display = "flex";
+        }
+
+        function closePopup() {
+            const popup = document.getElementById("popup");
+            popup.style.display = "none";
+        }
+
+        function nextQuestion() {
+            closePopup();
+            currentPersonIndex = (currentPersonIndex + 1) % persons.length;
+            if (currentPersonIndex === 0) {
+                alert("You've completed all questions! Starting over.");
+            }
+            loadPerson(currentPersonIndex);
+        }
+
+        loadPerson(currentPersonIndex);
     </script>
 </body>
 </html>
