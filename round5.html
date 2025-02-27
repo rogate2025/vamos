@@ -12,68 +12,83 @@
             justify-content: center; 
             min-height: 100vh; 
             margin: 0; 
-            font-family: Arial, sans-serif; 
-            background: linear-gradient(to bottom, #0a1a3d, #000000);
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #0a1a3d 0%, #1e3c72 50%, #000000 100%);
             color: #ffffff;
+            overflow: hidden;
         }
         .game-container { 
             text-align: center; 
-            padding: 20px; 
+            padding: 30px; 
             position: relative;
-            width: 500px;
+            width: 550px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
         }
         .wheel-container { 
             position: relative; 
-            width: 400px; 
-            height: 450px; 
-            margin: 20px auto; 
+            width: 450px; 
+            height: 500px; 
+            margin: 30px auto; 
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffd700 10%, transparent 60%);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
         }
         canvas { 
             width: 100%; 
-            height: 400px; 
+            height: 450px; 
+            border-radius: 50%;
+            animation: glowWheel 2s infinite alternate;
         }
         .pointer { 
             position: absolute; 
-            top: 0; 
+            top: -10px; 
             left: 50%; 
             transform: translateX(-50%); 
             width: 0; 
             height: 0; 
-            border-left: 15px solid transparent; 
-            border-right: 15px solid transparent; 
-            border-top: 30px solid #ffd700; 
+            border-left: 20px solid transparent; 
+            border-right: 20px solid transparent; 
+            border-top: 40px solid #ffd700; 
             z-index: 10; 
+            filter: drop-shadow(0 0 10px #ffd700);
         }
         button { 
-            padding: 12px 24px; 
-            font-size: 16px; 
-            background: #ffd700; 
+            padding: 15px 30px; 
+            font-size: 18px; 
+            font-weight: bold;
+            background: linear-gradient(45deg, #ffd700, #ffaa00);
             color: #0a1a3d; 
             border: none; 
-            border-radius: 5px; 
+            border-radius: 50px; 
             cursor: pointer; 
-            transition: background 0.3s, transform 0.2s; 
-            margin: 10px;
+            transition: all 0.3s ease; 
+            margin: 15px;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
         }
         button:hover { 
-            background: #e6c200; 
-            transform: scale(1.05);
+            background: linear-gradient(45deg, #ffaa00, #ffd700);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.7);
         }
         button:disabled { 
             background: #666633; 
             cursor: not-allowed; 
+            box-shadow: none;
+            transform: none;
         }
         #result { 
-            font-size: 20px; 
+            font-size: 24px; 
             font-weight: bold; 
             color: #ffd700; 
-            max-width: 400px; 
+            max-width: 450px; 
             word-wrap: break-word; 
-            text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700; 
-            animation: popUp 0.5s ease-out forwards;
+            text-shadow: 0 0 15px #ffd700, 0 0 30px #ffaa00; 
+            animation: popUp 0.5s ease-out forwards, glowText 1.5s infinite alternate;
             opacity: 0;
             position: absolute; 
-            bottom: 10px; 
+            bottom: 15px; 
             left: 0;
             width: 100%; 
             text-align: center; 
@@ -81,37 +96,26 @@
         }
         h1 { 
             color: #ffd700; 
-            text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
+            font-size: 48px;
+            text-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00;
+            animation: glowText 2s infinite alternate;
+            margin-bottom: 20px;
         }
         .gift-box-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            width: 100%;
-        }
-        .gift-box {
-            width: 50px;
-            height: 50px;
-            background: #ffd700;
-            border: 2px solid #0a1a3d;
-            border-radius: 5px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: bold;
-            color: #0a1a3d;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .gift-box:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
+            display: none; /* Hide gift boxes as interaction is now on the wheel */
         }
         @keyframes popUp {
             0% { transform: scale(0.5); opacity: 0; }
             80% { transform: scale(1.1); opacity: 1; }
             100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes glowWheel {
+            0% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5); }
+            100% { box-shadow: 0 0 60px rgba(255, 215, 0, 0.8); }
+        }
+        @keyframes glowText {
+            0% { text-shadow: 0 0 15px #ffd700, 0 0 30px #ffaa00; }
+            100% { text-shadow: 0 0 25px #ffd700, 0 0 50px #ffaa00; }
         }
         .fireworks {
             position: absolute;
@@ -125,11 +129,12 @@
         }
         .particle {
             position: absolute;
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             opacity: 1;
-            animation: burst 1s ease-out forwards;
+            animation: burst 1.2s ease-out forwards;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
         }
         @keyframes burst {
             0% { transform: translate(0, 0) scale(1); opacity: 1; }
@@ -138,55 +143,84 @@
         #questionModal {
             display: none;
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            background: #0a1a3d;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(10, 26, 61, 0.4);
+            backdrop-filter: blur(15px);
             z-index: 20;
-            transition: transform 0.3s ease-in-out;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease-in-out;
         }
         #questionModal.active {
-            display: block;
-            transform: translate(-50%, -50%) scale(1);
+            display: flex;
         }
         #questionContent {
-            font-size: 18px;
+            font-size: 42px;
+            font-weight: 600;
             color: #ffd700;
             text-align: center;
+            margin-bottom: 50px;
+            padding: 0 30px;
+            max-width: 90%;
+            text-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00;
+            animation: glowText 1.5s infinite alternate;
         }
         #closeModal {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 25px;
+            right: 25px;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 36px;
             color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+            transition: all 0.3s ease;
+        }
+        #closeModal:hover {
+            transform: scale(1.2) rotate(90deg);
+            color: #ffaa00;
+            text-shadow: 0 0 15px #ffaa00;
+        }
+        #answerBtn {
+            font-size: 28px;
+            font-weight: bold;
+            padding: 20px 50px;
+            background: linear-gradient(45deg, #ffd700, #ffaa00);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+        #answerBtn:hover {
+            background: linear-gradient(45deg, #ffaa00, #ffd700);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.8);
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="game-container">
         <h1>Spin the Wheel</h1>
         <div class="wheel-container">
             <div class="pointer"></div>
-            <canvas id="wheel" width="400" height="400"></canvas>
+            <canvas id="wheel" width="450" height="450"></canvas>
             <div id="result">
                 <div class="fireworks" id="fireworks"></div>
             </div>
         </div>
-        <button id="spinBtn">Spin the Wheel</button>
+        <button id="spinBtn">Spin Now!</button>
+        <!-- Gift boxes remain in HTML but are hidden via CSS -->
         <div class="gift-box-container">
-            <div class="gift-box" data-set="50">50</div>
-            <div class="gift-box" data-set="100">100</div>
-            <div class="gift-box" data-set="150">150</div>
-            <div class="gift-box" data-set="200">200</div>
-            <div class="gift-box" data-set="250">250</div>
-            <div class="gift-box" data-set="300">300</div>
-            <div class="gift-box" data-set="350">350</div>
-            <div class="gift-box" data-set="400">400</div>
+            <div class="gift-box" data-set="50">?</div>
+            <div class="gift-box" data-set="100">?</div>
+            <div class="gift-box" data-set="150">?</div>
+            <div class="gift-box" data-set="200">?</div>
+            <div class="gift-box" data-set="250">?</div>
+            <div class="gift-box" data-set="300">?</div>
+            <div class="gift-box" data-set="350">?</div>
+            <div class="gift-box" data-set="400">?</div>
         </div>
     </div>
 
@@ -196,19 +230,17 @@
         <div id="questionContent"></div>
         <button id="answerBtn">Show Answer</button>
     </div>
-
     <script>
         const canvas = document.getElementById('wheel');
         const ctx = canvas.getContext('2d');
         const spinBtn = document.getElementById('spinBtn');
         const resultDiv = document.getElementById('result');
         const fireworksDiv = document.getElementById('fireworks');
-        const giftBoxes = document.querySelectorAll('.gift-box');
         const questionModal = document.getElementById('questionModal');
         const questionContent = document.getElementById('questionContent');
         const closeModal = document.getElementById('closeModal');
         const answerBtn = document.getElementById('answerBtn');
-
+        
         const questionSets = {
             "50": [
                 { question: "What is the capital of France?", answer: "Paris" },
@@ -284,20 +316,23 @@
             "250": [], "300": [], "350": [], "400": []
         };
 
-        const colors = ['#3498db', '#e91e63', '#9b59b6', '#f1c40f', '#e67e22', '#2ecc71', '#1abc9c', '#34495e'];
+        const colors = ['#ff6f61', '#6b5b95', '#88b04b', '#f7cac9', '#92a8d1', '#f9cb9c', '#b565a7', '#009b77'];
         const radius = canvas.width / 2;
         const arc = 2 * Math.PI / segments.length;
-        const pointerAngle = 3 * Math.PI / 2;
+        const pointerAngle = 3 * Math.PI / 2; // Pointer at top (270 degrees)
         let currentAngle = 0;
         let isSpinning = false;
         let currentQuestion = null;
+        let lastLandedNumber = null;
 
+        // Normalize an angle to be between 0 and 2π
         function normalizeAngle(angle) {
             angle = angle % (2 * Math.PI);
             if (angle < 0) angle += 2 * Math.PI;
             return angle;
         }
 
+        // Draw the wheel with segments
         function drawWheel() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             segments.forEach((segment, i) => {
@@ -311,20 +346,46 @@
                 ctx.save();
                 ctx.translate(radius, radius);
                 ctx.rotate(angle + arc / 2);
-                ctx.fillStyle = '#ffd700';
-                ctx.font = 'bold 20px Arial';
+                ctx.fillStyle = '#0a1a3d';
+                ctx.font = 'bold 24px Poppins';
                 ctx.textAlign = 'right';
-                ctx.fillText(segment.number, radius - 20, 10);
+                ctx.fillText(segment.number, radius - 30, 10);
                 ctx.restore();
             });
         }
 
-        function getSegmentAtPointer(currentAngle) {
-            const relativeAngle = normalizeAngle(pointerAngle - currentAngle);
+        // Get the segment at a specific angle
+        function getSegmentAtAngle(angle) {
+            const relativeAngle = normalizeAngle(angle - currentAngle);
             const segmentIndex = Math.floor(relativeAngle / arc) % segments.length;
             return segments[segmentIndex];
         }
 
+        // Handle clicks on the wheel
+        function handleWheelClick(event) {
+            if (isSpinning || !lastLandedNumber) {
+                return; // Ignore clicks during spinning or before first spin
+            }
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const dx = x - radius;
+            const dy = y - radius;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist > radius) {
+                return; // Click outside the wheel
+            }
+            const clickAngle = Math.atan2(dy, dx);
+            const clickedSegment = getSegmentAtAngle(clickAngle);
+            if (clickedSegment.number === lastLandedNumber) {
+                currentQuestion = getRandomQuestion(lastLandedNumber);
+                showQuestionModal(currentQuestion.question);
+            } else {
+                alert(`Please click on the landed sector: ${lastLandedNumber}`);
+            }
+        }
+
+        // Get a random unused question from the set
         function getRandomQuestion(setNumber) {
             const availableQuestions = questionSets[setNumber].filter(q => !usedQuestions[setNumber].includes(q));
             if (availableQuestions.length === 0) {
@@ -336,16 +397,16 @@
             return question;
         }
 
+        // Create fireworks effect
         function createFireworks() {
             fireworksDiv.innerHTML = '';
-            const particleCount = 20;
-            const particleColors = ['#ffd700', '#ff4500', '#00ff00', '#00b7eb'];
-
+            const particleCount = 30;
+            const particleColors = ['#ffd700', '#ffaa00', '#ff6f61', '#6b5b95', '#88b04b'];
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 const angle = Math.random() * 2 * Math.PI;
-                const distance = Math.random() * 100 + 50;
+                const distance = Math.random() * 120 + 60;
                 const x = Math.cos(angle) * distance;
                 const y = Math.sin(angle) * distance;
                 particle.style.background = particleColors[Math.floor(Math.random() * particleColors.length)];
@@ -355,6 +416,7 @@
             }
         }
 
+        // Spin the wheel
         function spinWheel() {
             if (isSpinning) return;
             isSpinning = true;
@@ -383,7 +445,8 @@
                 } else {
                     currentAngle = targetAngle;
                     drawWheel();
-                    const selected = getSegmentAtPointer(currentAngle);
+                    const selected = getSegmentAtAngle(pointerAngle);
+                    lastLandedNumber = selected.number;
                     resultDiv.textContent = `You landed on: ${selected.number}`;
                     resultDiv.style.opacity = '1';
                     createFireworks();
@@ -394,26 +457,20 @@
             requestAnimationFrame(animate);
         }
 
+        // Show the question modal
         function showQuestionModal(question) {
             questionContent.textContent = `Question: ${question}`;
             questionModal.classList.add('active');
             answerBtn.style.display = 'block';
         }
 
+        // Hide the question modal
         function hideQuestionModal() {
             questionModal.classList.remove('active');
             answerBtn.style.display = 'none';
         }
 
-        giftBoxes.forEach(box => {
-            box.addEventListener('click', () => {
-                const setNumber = box.dataset.set;
-                currentQuestion = getRandomQuestion(setNumber);
-                showQuestionModal(currentQuestion.question);
-                createFireworks();
-            });
-        });
-
+        // Event listeners
         closeModal.addEventListener('click', hideQuestionModal);
 
         answerBtn.addEventListener('click', () => {
@@ -423,6 +480,9 @@
             }
         });
 
+        canvas.addEventListener('click', handleWheelClick);
+
+        // Initialize the wheel
         drawWheel();
         spinBtn.addEventListener('click', spinWheel);
     </script>
