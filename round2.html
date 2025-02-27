@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Millionaire Buzzer Round</title>
+    <title>Millionaire Buzzer Round - Quiz Master</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -16,22 +16,41 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            transition: all 0.5s ease;
+            overflow: hidden;
         }
-        #questionButton {
+
+        #startScreen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #startScreen h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ffd700;
+        }
+
+        #quizMasterButton {
             padding: 15px 30px;
             font-size: 20px;
-            background: #ffd700;
-            color: #000;
-            border: none;
+            background: linear-gradient(45deg, #1c2526, #2e3b3e);
+            color: #ffd700;
+            border: 3px solid #ffd700;
             border-radius: 25px;
             cursor: pointer;
-            box-shadow: 0 0 10px #ffd700;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px #ffd700;
+            margin-bottom: 20px;
         }
-        #questionButton:hover {
-            background: #ffea00;
-            box-shadow: 0 0 20px #ffd700;
+
+        #quizMasterButton:hover {
+            background: linear-gradient(45deg, #ffd700, #ffea00);
+            color: #000;
+            box-shadow: 0 0 25px #ffd700;
         }
+
         #questionContainer {
             display: none;
             background: radial-gradient(circle at center, #000066, #000033);
@@ -44,14 +63,27 @@
             border: 3px solid #ffd700;
             box-sizing: border-box;
         }
+
         #question {
             font-size: 36px;
             font-weight: bold;
             text-shadow: 0 0 10px #00b7eb, 0 0 20px #00b7eb;
             line-height: 1.2;
+            margin-bottom: 20px;
         }
+
+        #buzzerTimes {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .team-time {
+            margin: 5px;
+            color: #00b7eb;
+            text-shadow: 0 0 5px #00b7eb;
+        }
+
         #answerButton {
-            display: none;
             padding: 15px 30px;
             font-size: 18px;
             background: #00b7eb;
@@ -66,10 +98,12 @@
             display: block;
             transition: all 0.3s;
         }
+
         #answerButton:hover {
             background: #00d4ff;
             box-shadow: 0 0 20px #00b7eb;
         }
+
         #answer {
             display: none;
             font-size: 24px;
@@ -77,47 +111,55 @@
             text-shadow: 0 0 5px #ffd700;
             margin-top: 20px;
         }
+
         #buzzerContainer {
-            display: none;
             flex-wrap: nowrap;
             justify-content: center;
             gap: 20px;
             max-width: 900px;
             margin-top: 40px;
         }
+
         .buzzer {
             padding: 15px 25px;
             font-size: 20px;
             width: 140px;
-            background: #1c2526;
+            background: linear-gradient(45deg, #1c2526, #2e3b3e);
             color: #ffd700;
-            border: 2px solid #ffd700;
+            border: 3px solid #ffd700;
             border-radius: 25px;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 0 10px #ffd700;
+            transition: all 0.5s ease;
+            box-shadow: 0 0 15px #ffd700;
         }
-        .buzzer:hover:not(:disabled) {
-            background: #ffd700;
+
+        .buzzer:hover:not(.zoomed) {
+            background: linear-gradient(45deg, #ffd700, #ffea00);
             color: #000;
-            box-shadow: 0 0 20px #ffd700;
+            box-shadow: 0 0 25px #ffd700;
         }
-        .buzzer:disabled {
-            background: #555;
-            color: #888;
-            border-color: #888;
-            box-shadow: none;
-            cursor: not-allowed;
+
+        .buzzer.zoomed {
+            transform: scale(2.5);
+            z-index: 10;
+            background: linear-gradient(45deg, #ffd700, #ffea00);
+            color: #000;
+            animation: pulse 1s infinite;
+            box-shadow: 0 0 30px #ffd700, 0 0 60px #00b7eb;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform-origin: center;
+            translate: -50% -50%;
+            cursor: pointer;
         }
-        #buzzerTimes {
-            margin-top: 20px;
-            font-size: 16px;
+
+        @keyframes pulse {
+            0% { transform: scale(2.5); }
+            50% { transform: scale(2.7); }
+            100% { transform: scale(2.5); }
         }
-        .team-time {
-            margin: 5px;
-            color: #00b7eb;
-            text-shadow: 0 0 5px #00b7eb;
-        }
+
         #nextButton {
             display: none;
             padding: 15px 30px;
@@ -131,29 +173,53 @@
             margin-top: 20px;
             transition: all 0.3s;
         }
+
         #nextButton:hover {
             background: #ffea00;
             box-shadow: 0 0 20px #ffd700;
         }
+
+        @media (max-width: 768px) {
+            .buzzer {
+                font-size: 20px;
+                width: 120px;
+            }
+            .buzzer.zoomed {
+                transform: scale(2);
+            }
+            #question {
+                font-size: 24px;
+            }
+            #answer {
+                font-size: 18px;
+            }
+            #quizMasterButton {
+                font-size: 18px;
+                padding: 10px 20px;
+            }
+        }
     </style>
 </head>
 <body>
-    <button id="questionButton">Show Question</button>
-    <div id="questionContainer">
+    <div id="startScreen">
+        <h1>Millionaire Buzzer Round</h1>
+        <button id="quizMasterButton">Quiz Master</button>
+        <div id="buzzerContainer">
+            <button class="buzzer" id="buzzerA">A</button>
+            <button class="buzzer" id="buzzerB">B</button>
+            <button class="buzzer" id="buzzerC">C</button>
+            <button class="buzzer" id="buzzerD">D</button>
+            <button class="buzzer" id="buzzerE">E</button>
+            <button class="buzzer" id="buzzerF">F</button>
+        </div>
+    </div>
+    <div id="questionContainer" style="display: none;">
         <div id="question"></div>
+        <div id="buzzerTimes"></div>
         <button id="answerButton">Show Answer</button>
         <div id="answer"></div>
     </div>
-    <div id="buzzerContainer">
-        <button class="buzzer" id="buzzerA">A</button>
-        <button class="buzzer" id="buzzerB">B</button>
-        <button class="buzzer" id="buzzerC">C</button>
-        <button class="buzzer" id="buzzerD">D</button>
-        <button class="buzzer" id="buzzerE">E</button>
-        <button class="buzzer" id="buzzerF">F</button>
-    </div>
-    <div id="buzzerTimes"></div>
-    <button id="nextButton">Next Question</button>
+    <button id="nextButton" style="display: none;">Next Question</button>
 
     <script>
         const questions = [
@@ -169,7 +235,8 @@
             { question: "What is the hardest natural substance known?", answer: "Diamond" }
         ];
 
-        const questionButton = document.getElementById('questionButton');
+        const startScreen = document.getElementById('startScreen');
+        const quizMasterButton = document.getElementById('quizMasterButton');
         const questionContainer = document.getElementById('questionContainer');
         const questionText = document.getElementById('question');
         const answerButton = document.getElementById('answerButton');
@@ -188,6 +255,19 @@
         let startTime;
         let buzzTimes = {};
         let currentQuestionIndex = 0;
+        let zoomedTeam = null;
+        const correctPasskey = "3492";
+
+        // Quiz Master button functionality
+        quizMasterButton.addEventListener('click', () => {
+            const passkey = prompt("Enter the Quiz Master passkey:");
+            if (passkey === correctPasskey) {
+                startScreen.style.display = 'none';
+                loadNewQuestion();
+            } else {
+                alert("Incorrect passkey. Please try again.");
+            }
+        });
 
         // Function to load a new question
         function loadNewQuestion() {
@@ -195,10 +275,11 @@
             buzzTimes = {};
             buzzerTimes.innerHTML = '';
             for (let team in buzzers) {
-                buzzers[team].disabled = false;
+                buzzers[team].classList.remove('zoomed');
             }
             answerText.style.display = 'none';
             answerButton.style.display = 'block';
+            zoomedTeam = null;
 
             // Load current question
             questionText.textContent = questions[currentQuestionIndex].question;
@@ -216,12 +297,6 @@
             currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
         }
 
-        // When Question Button is clicked (starts the game)
-        questionButton.addEventListener('click', () => {
-            questionButton.style.display = 'none';
-            loadNewQuestion();
-        });
-
         // When Next Button is clicked
         nextButton.addEventListener('click', () => {
             loadNewQuestion();
@@ -235,17 +310,21 @@
 
         // Add click event to each buzzer
         for (let team in buzzers) {
-            buzzers[team].addEventListener('click', () => {
-                if (buzzTimes[team]) return;
-
-                const buzzTime = ((Date.now() - startTime) / 1000).toFixed(1);
-                buzzTimes[team] = buzzTime;
-                buzzers[team].disabled = true;
-                updateBuzzerTimes();
+            buzzers[team].addEventListener('click', function () {
+                if (!this.classList.contains('zoomed')) {
+                    this.classList.add('zoomed');
+                    zoomedTeam = team;
+                } else {
+                    const buzzTime = ((Date.now() - startTime) / 1000).toFixed(1);
+                    buzzTimes[team] = buzzTime;
+                    updateBuzzerTimes();
+                    this.classList.remove('zoomed');
+                    zoomedTeam = null;
+                }
             });
         }
 
-        // Update the display of buzzer times
+        // Update the display of buzzer times within question container
         function updateBuzzerTimes() {
             buzzerTimes.innerHTML = '';
             for (let team in buzzTimes) {
