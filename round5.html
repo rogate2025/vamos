@@ -33,7 +33,7 @@
             margin: 30px auto; 
             border-radius: 50%;
             background: radial-gradient(circle, #ffd700 10%, transparent 60%);
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
+            /* Removed box-shadow to limit glow to the wheel (canvas) */
         }
         canvas { 
             width: 100%; 
@@ -102,7 +102,7 @@
             margin-bottom: 20px;
         }
         .gift-box-container {
-            display: none; /* Hide gift boxes as interaction is now on the wheel */
+            display: none; /* Hidden as interaction is now on the wheel */
         }
         @keyframes popUp {
             0% { transform: scale(0.5); opacity: 0; }
@@ -211,7 +211,7 @@
             </div>
         </div>
         <button id="spinBtn">Spin Now!</button>
-        <!-- Gift boxes remain in HTML but are hidden via CSS -->
+        <!-- Gift boxes remain in HTML but are hidden -->
         <div class="gift-box-container">
             <div class="gift-box" data-set="50">?</div>
             <div class="gift-box" data-set="100">?</div>
@@ -230,6 +230,7 @@
         <div id="questionContent"></div>
         <button id="answerBtn">Show Answer</button>
     </div>
+
     <script>
         const canvas = document.getElementById('wheel');
         const ctx = canvas.getContext('2d');
@@ -240,7 +241,7 @@
         const questionContent = document.getElementById('questionContent');
         const closeModal = document.getElementById('closeModal');
         const answerBtn = document.getElementById('answerBtn');
-        
+
         const questionSets = {
             "50": [
                 { question: "What is the capital of France?", answer: "Paris" },
@@ -319,20 +320,18 @@
         const colors = ['#ff6f61', '#6b5b95', '#88b04b', '#f7cac9', '#92a8d1', '#f9cb9c', '#b565a7', '#009b77'];
         const radius = canvas.width / 2;
         const arc = 2 * Math.PI / segments.length;
-        const pointerAngle = 3 * Math.PI / 2; // Pointer at top (270 degrees)
+        const pointerAngle = 3 * Math.PI / 2;
         let currentAngle = 0;
         let isSpinning = false;
         let currentQuestion = null;
         let lastLandedNumber = null;
 
-        // Normalize an angle to be between 0 and 2π
         function normalizeAngle(angle) {
             angle = angle % (2 * Math.PI);
             if (angle < 0) angle += 2 * Math.PI;
             return angle;
         }
 
-        // Draw the wheel with segments
         function drawWheel() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             segments.forEach((segment, i) => {
@@ -354,17 +353,15 @@
             });
         }
 
-        // Get the segment at a specific angle
         function getSegmentAtAngle(angle) {
             const relativeAngle = normalizeAngle(angle - currentAngle);
             const segmentIndex = Math.floor(relativeAngle / arc) % segments.length;
             return segments[segmentIndex];
         }
 
-        // Handle clicks on the wheel
         function handleWheelClick(event) {
             if (isSpinning || !lastLandedNumber) {
-                return; // Ignore clicks during spinning or before first spin
+                return; /* Ignore clicks during spinning or before first spin */
             }
             const rect = canvas.getBoundingClientRect();
             const x = event.clientX - rect.left;
@@ -373,7 +370,7 @@
             const dy = y - radius;
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist > radius) {
-                return; // Click outside the wheel
+                return; /* Click outside the wheel */
             }
             const clickAngle = Math.atan2(dy, dx);
             const clickedSegment = getSegmentAtAngle(clickAngle);
@@ -385,7 +382,6 @@
             }
         }
 
-        // Get a random unused question from the set
         function getRandomQuestion(setNumber) {
             const availableQuestions = questionSets[setNumber].filter(q => !usedQuestions[setNumber].includes(q));
             if (availableQuestions.length === 0) {
@@ -397,7 +393,6 @@
             return question;
         }
 
-        // Create fireworks effect
         function createFireworks() {
             fireworksDiv.innerHTML = '';
             const particleCount = 30;
@@ -416,7 +411,6 @@
             }
         }
 
-        // Spin the wheel
         function spinWheel() {
             if (isSpinning) return;
             isSpinning = true;
@@ -457,20 +451,17 @@
             requestAnimationFrame(animate);
         }
 
-        // Show the question modal
         function showQuestionModal(question) {
             questionContent.textContent = `Question: ${question}`;
             questionModal.classList.add('active');
             answerBtn.style.display = 'block';
         }
 
-        // Hide the question modal
         function hideQuestionModal() {
             questionModal.classList.remove('active');
             answerBtn.style.display = 'none';
         }
 
-        // Event listeners
         closeModal.addEventListener('click', hideQuestionModal);
 
         answerBtn.addEventListener('click', () => {
@@ -482,7 +473,6 @@
 
         canvas.addEventListener('click', handleWheelClick);
 
-        // Initialize the wheel
         drawWheel();
         spinBtn.addEventListener('click', spinWheel);
     </script>
