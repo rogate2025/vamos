@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="manifest" href="data:application/manifest+json,{
+        'name': 'AdHoc Chat - Phone',
+        'short_name': 'Chat Phone',
+        'start_url': '/',
+        'display': 'standalone',
+        'background_color': '#ffffff',
+        'theme_color': '#ffffff',
+        'icons': [{
+            'src': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACOSURBVHhe7dAxDgAwDMCw/ftftoYSaA8R5pABrW3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3b9gD/AJ2eT1cWENQAAAABJRU5ErkJggg==',
+            'sizes': '100x100',
+            'type': 'image/png'
+        }]
+    }">
+    <title>AdHoc Chat - Phone</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+        }
+        #connectionSection {
+            margin-bottom: 10px;
+        }
+        #messageSection {
+            display: none;
+        }
+        textarea {
+            width: 100%;
+            height: 50px;
+            resize: none;
+        }
+        #inputForm {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        #nameInput {
+            width: 100px;
+        }
+        #messageInput {
+            flex: 1;
+        }
+        button {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="connectionSection">
+        <h3>Connect to Laptop</h3>
+        <textarea id="connectionCode" placeholder="Enter Connection Code from Laptop"></textarea>
+        <button id="connectButton">Connect</button>
+        <textarea id="responseCode" placeholder="Response Code" readonly></textarea>
+    </div>
+    <div id="messageSection">
+        <h3>Send Message</h3>
+        <form id="inputForm">
+            <input id="nameInput" placeholder="Your name" required>
+            <input id="messageInput" placeholder="Type a message" required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script>
+        // Service Worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            const swContent = `
+                self.addEventListener('install', (event) => {
+                    event.waitUntil(self.skipWaiting());
+                });
+                self.addEventListener('activate', (event) => {
+                    event.waitUntil(self.clients.claim());
+                });
+                self.addEventListener('fetch', (event) => {
+                    event.respondWith(new Response(document.documentElement.outerHTML, {
+                        headers: { 'Content-Type': 'text/html' }
+                    }));
+                });
+            `;
+            const swBlob = new Blob([swContent], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(swBlob);
+            navigator.serviceWorker.register(swUrl)
+                .catch(err => console.log('Service Worker registration failed:', err));
+        }
+
+        const connectionCodeTextarea = document.getElementById('connectionCode');
+        const connectButton = document.getElementById('connectButton');
+        const responseCodeTextarea = document.getElementById('responseCode');
+        const messageSection = document.getElementById('messageSection');
+        const form = document.getElementById('inputForm');
+        const nameInput = document.getElementById('nameInput');
+        const messageInput = document.getElementById('messageInput');
+        let channel;
+
+        // Connect to the laptop using the connection code
+        connectButton.onclick = async () => {
+            const code = JSON.parse(connectionCodeTextarea.value);
+            const peer = new RTCPeerConnection();
+            peer.ondatachannel = (event) => {
+                channel = event.channel;
+                channel.onopen = () => {
+                    messageSection.style.display = 'block';
+                };
+            };
+            await peer.setRemoteDescription(code.offer);
+            for (const candidate of code.candidates) {
+                await peer.addIceCandidate(candidate);
+            }
+            const answer = await peer.createAnswer();
+            await peer.setLocalDescription(answer);
+            const candidates = [];
+            peer.onicecandidate = (event) => {
+                if (event.candidate) {
+                    candidates.push(event.candidate);
+                } else {
+                    const response = { answer: peer.localDescription, candidates };
+                    responseCodeTextarea.value = JSON.stringify(response);
+                }
+            };
+        };
+
+        // Send a message to the laptop
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            if (channel && channel.readyState === 'open') {
+                const message = {
+                    name: nameInput.value,
+                    message: messageInput.value,
+                    timestamp: Date.now()
+                };
+                channel.send(JSON.stringify(message));
+                messageInput.value = '';
+            }
+        };
+    </script>
+</body>
+</html>
