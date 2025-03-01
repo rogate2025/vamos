@@ -18,6 +18,7 @@
         }]
     }">
     <title>AdHoc Chat - Phone</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css">
     <style>
         * {
             box-sizing: border-box;
@@ -54,6 +55,9 @@
             margin-left: auto;
             margin-right: auto;
         }
+        #connectionSection.hidden {
+            display: none;
+        }
         #messageSection {
             display: none;
         }
@@ -77,6 +81,9 @@
             height: clamp(80px, 20vw, 120px);
             resize: none;
         }
+        #messageInput {
+            height: clamp(120px, 30vw, 180px);
+        }
         #responseCode {
             background: #14294b;
             color: #ccc;
@@ -86,6 +93,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            position: relative;
         }
         button {
             padding: clamp(10px, 3vw, 18px);
@@ -109,115 +117,90 @@
             transform: scale(1);
             box-shadow: 0 0 6px rgba(255, 215, 0, 0.7);
         }
+        .keyboard-icon {
+            position: absolute;
+            right: 10px;
+            top: calc(clamp(120px, 30vw, 180px) + 70px);
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            fill: #ffd700;
+            transition: transform 0.2s ease;
+        }
+        .keyboard-icon:hover {
+            transform: scale(1.1);
+        }
+        .simple-keyboard {
+            display: none;
+            background: #1e3a5f;
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 15px;
+            width: 100%;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .simple-keyboard.hg-theme-default .hg-button {
+            background: #0a1d37;
+            color: #ffd700;
+            border: 1px solid #ffd700;
+        }
+        .simple-keyboard.hg-theme-default .hg-button:hover {
+            background: #14294b;
+        }
 
-        /* Responsive Design with More Breakpoints */
         @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            h3 {
-                font-size: 1.2em;
-            }
-            #connectionSection, #messageSection {
-                padding: 15px;
-            }
-            textarea, input {
-                padding: 10px;
-                font-size: 0.9em;
-            }
-            textarea {
-                height: 80px;
-            }
-            button {
-                padding: 10px;
-                font-size: 0.9em;
-            }
+            body { padding: 10px; }
+            h3 { font-size: 1.2em; }
+            #connectionSection, #messageSection { padding: 15px; }
+            textarea, input { padding: 10px; font-size: 0.9em; }
+            textarea { height: 80px; }
+            #messageInput { height: 120px; }
+            button { padding: 10px; font-size: 0.9em; }
+            .keyboard-icon { top: calc(120px + 70px); }
         }
 
         @media (min-width: 481px) and (max-width: 768px) {
-            body {
-                padding: 15px;
-            }
-            h3 {
-                font-size: 1.5em;
-            }
-            #connectionSection, #messageSection {
-                padding: 20px;
-                max-width: 90vw;
-            }
-            textarea, input {
-                padding: 12px;
-                font-size: 1em;
-            }
-            textarea {
-                height: 100px;
-            }
-            button {
-                padding: 12px;
-                font-size: 1.1em;
-            }
+            body { padding: 15px; }
+            h3 { font-size: 1.5em; }
+            #connectionSection, #messageSection { padding: 20px; max-width: 90vw; }
+            textarea, input { padding: 12px; font-size: 1em; }
+            textarea { height: 100px; }
+            #messageInput { height: 140px; }
+            button { padding: 12px; font-size: 1.1em; }
+            .keyboard-icon { top: calc(140px + 70px); }
         }
 
         @media (min-width: 769px) and (max-width: 1024px) {
-            body {
-                padding: 20px;
-            }
-            #connectionSection, #messageSection {
-                padding: 25px;
-                max-width: 85vw;
-            }
-            h3 {
-                font-size: 1.6em;
-            }
-            textarea, input {
-                padding: 15px;
-                font-size: 1.1em;
-            }
-            textarea {
-                height: 110px;
-            }
-            button {
-                padding: 15px;
-                font-size: 1.2em;
-            }
+            body { padding: 20px; }
+            #connectionSection, #messageSection { padding: 25px; max-width: 85vw; }
+            h3 { font-size: 1.6em; }
+            textarea, input { padding: 15px; font-size: 1.1em; }
+            textarea { height: 110px; }
+            #messageInput { height: 160px; }
+            button { padding: 15px; font-size: 1.2em; }
+            .keyboard-icon { top: calc(160px + 70px); }
         }
 
         @media (min-width: 1025px) {
-            body {
-                padding: 25px;
-            }
-            #connectionSection, #messageSection {
-                padding: 30px;
-                max-width: 80vw;
-            }
-            h3 {
-                font-size: 1.8em;
-            }
-            textarea, input {
-                padding: 18px;
-                font-size: 1.2em;
-            }
-            textarea {
-                height: 120px;
-            }
-            button {
-                padding: 18px;
-                font-size: 1.3em;
-            }
+            body { padding: 25px; }
+            #connectionSection, #messageSection { padding: 30px; max-width: 80vw; }
+            h3 { font-size: 1.8em; }
+            textarea, input { padding: 18px; font-size: 1.2em; }
+            textarea { height: 120px; }
+            #messageInput { height: 180px; }
+            button { padding: 18px; font-size: 1.3em; }
+            .keyboard-icon { top: calc(180px + 70px); }
         }
 
-        /* Landscape Orientation */
         @media (orientation: landscape) and (max-height: 500px) {
-            body {
-                padding: 10px;
-            }
-            #connectionSection, #messageSection {
-                padding: 15px;
-                max-width: 95vw;
-            }
-            textarea {
-                height: 60px;
-            }
+            body { padding: 10px; }
+            #connectionSection, #messageSection { padding: 15px; max-width: 95vw; }
+            textarea { height: 60px; }
+            #messageInput { height: 100px; }
+            .keyboard-icon { top: calc(100px + 70px); }
         }
     </style>
 </head>
@@ -227,18 +210,26 @@
         <textarea id="connectionCode" placeholder="Enter Connection Code"></textarea>
         <button id="connectButton">Connect</button>
         <textarea id="responseCode" placeholder="Response Code" readonly></textarea>
+        <label style="display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: 0.9em;">
+            <input type="checkbox" id="hideAfterConnect" checked>
+            Hide connection section after connecting
+        </label>
     </div>
     <div id="messageSection">
         <h3>Send Message</h3>
         <form id="inputForm">
             <input id="nameInput" placeholder="Your Name" required>
-            <input id="messageInput" placeholder="Type a message" required>
+            <input id="messageInput" placeholder="Type your answer here" required>
+            <svg class="keyboard-icon" viewBox="0 0 24 24">
+                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 16c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v3zm0-3H6V6h12v2z"/>
+            </svg>
             <button type="submit">Send</button>
         </form>
+        <div class="simple-keyboard"></div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.js"></script>
     <script>
-        // Service Worker for PWA functionality
         if ('serviceWorker' in navigator) {
             const swContent = `
                 self.addEventListener('install', (event) => {
@@ -259,6 +250,7 @@
                 .catch(err => console.log('Service Worker registration failed:', err));
         }
 
+        const connectionSection = document.getElementById('connectionSection');
         const connectionCodeTextarea = document.getElementById('connectionCode');
         const connectButton = document.getElementById('connectButton');
         const responseCodeTextarea = document.getElementById('responseCode');
@@ -266,7 +258,37 @@
         const form = document.getElementById('inputForm');
         const nameInput = document.getElementById('nameInput');
         const messageInput = document.getElementById('messageInput');
+        const hideAfterConnectCheckbox = document.getElementById('hideAfterConnect');
+        const keyboardIcon = document.querySelector('.keyboard-icon');
         let channel;
+
+        const Keyboard = window.SimpleKeyboard.default;
+        const myKeyboard = new Keyboard({
+            onChange: input => messageInput.value = input,
+            layout: {
+                default: [
+                    "q w e r t y u i o p",
+                    "a s d f g h j k l",
+                    "{shift} z x c v b n m {backspace}",
+                    "{space} {enter}"
+                ],
+                shift: [
+                    "Q W E R T Y U I O P",
+                    "A S D F G H J K L",
+                    "{shift} Z X C V B N M {backspace}",
+                    "{space} {enter}"
+                ]
+            }
+        });
+
+        messageInput.addEventListener("input", event => {
+            myKeyboard.setInput(event.target.value);
+        });
+
+        keyboardIcon.addEventListener('click', () => {
+            const keyboard = document.querySelector('.simple-keyboard');
+            keyboard.style.display = keyboard.style.display === 'block' ? 'none' : 'block';
+        });
 
         connectButton.onclick = async () => {
             const code = JSON.parse(connectionCodeTextarea.value);
@@ -275,6 +297,9 @@
                 channel = event.channel;
                 channel.onopen = () => {
                     messageSection.style.display = 'block';
+                    if (hideAfterConnectCheckbox.checked) {
+                        connectionSection.classList.add('hidden');
+                    }
                 };
             };
             await peer.setRemoteDescription(code.offer);
@@ -304,6 +329,7 @@
                 };
                 channel.send(JSON.stringify(message));
                 messageInput.value = '';
+                myKeyboard.setInput('');
             }
         };
     </script>

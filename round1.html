@@ -250,7 +250,6 @@
             display: none;
         }
 
-        /* Custom Confirmation Box Styling */
         #custom-confirm {
             position: fixed;
             top: 50%;
@@ -289,6 +288,54 @@
             transform: scale(1.05);
         }
 
+        #manikutti-dialogue {
+            position: absolute;
+            bottom: 140px; /* Positioned above Manikutti */
+            right: 140px; /* Offset to the left of Manikutti */
+            background: linear-gradient(45deg, #ffd700, #ffa500);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ffd700;
+            z-index: 1000;
+            display: none;
+            max-width: 300px;
+            text-align: left;
+        }
+
+        #manikutti-dialogue::after {
+            content: '';
+            position: absolute;
+            bottom: -20px; /* Tail pointing downwards */
+            right: 20px; /* Tail aligned towards Manikutti */
+            border: 10px solid transparent;
+            border-top: 10px solid #ffa500; /* Tail color matches gradient */
+        }
+
+        #manikutti-dialogue p {
+            font-size: 1.8vw;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 10px;
+            font-style: italic;
+            text-shadow: 0 0 3px #fff;
+        }
+
+        #manikutti-dialogue button {
+            padding: 8px 16px;
+            font-size: 1.5vw;
+            background: #000066;
+            color: #fff;
+            border: 2px solid #ffd700;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #manikutti-dialogue button:hover {
+            background: #000099;
+            transform: scale(1.05);
+        }
+
         @media (max-width: 768px) {
             .question { font-size: 5vw; }
             .options button { font-size: 3vw; }
@@ -301,6 +348,9 @@
             #phone-a-friend-message { font-size: 3vw; }
             #custom-confirm p { font-size: 4vw; }
             #custom-confirm button { font-size: 2.5vw; padding: 8px 16px; }
+            #manikutti-dialogue { bottom: 110px; right: 100px; }
+            #manikutti-dialogue p { font-size: 3vw; }
+            #manikutti-dialogue button { font-size: 2.5vw; padding: 6px 12px; }
         }
     </style>
 </head>
@@ -343,7 +393,7 @@
             <button id="askFriendButton" onclick="toggleAskAFriend()">Ask a Friend</button>
         </div>
         <div class="timer" id="timer">60s</div>
-        <img src="manikutti.gif" alt="Manikutti" class="manikutti" onclick="start60sTimer()">
+        <img src="manikkutti.jpg" alt="Manikutti" class="manikutti" id="manikutti-img" onclick="showManikuttiDialogue()">
         <p id="phone-a-friend-message"></p>
     </div>
 
@@ -352,6 +402,12 @@
         <p>Is that your final answer?</p>
         <button id="confirm-yes">Yes</button>
         <button id="confirm-no">No</button>
+    </div>
+
+    <!-- Manikutti Dialogue Box -->
+    <div id="manikutti-dialogue">
+        <p>Yo! I'm Manikutti, your zippy pal! Shall I bolt like a caffeinated squirrel?</p>
+        <button id="manikutti-yes">Yes</button>
     </div>
 
     <script>
@@ -517,6 +573,7 @@
             stopSound("timerTick");
             document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = false);
             document.getElementById("askFriendButton").textContent = "Ask a Friend";
+            document.getElementById("manikutti-img").src = "manikkutti.jpg"; // Reset to starting image
         }
 
         function revealOption(btn, index, fullText) {
@@ -744,6 +801,16 @@
                 askFriendButton.textContent = "Ask a Friend";
                 resumeTimer();
             }
+        }
+
+        function showManikuttiDialogue() {
+            const dialogueBox = document.getElementById("manikutti-dialogue");
+            dialogueBox.style.display = "block";
+            document.getElementById("manikutti-yes").onclick = () => {
+                dialogueBox.style.display = "none";
+                document.getElementById("manikutti-img").src = "run.gif";
+                start60sTimer();
+            };
         }
 
         window.onload = () => {
