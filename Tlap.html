@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#000033">
     <link rel="manifest" href="data:application/manifest+json,{
-        'name': 'AdHoc Chat - Laptop',
-        'short_name': 'Chat Laptop',
+        'name': 'Millionaire Chat - Laptop',
+        'short_name': 'Millionaire Chat',
         'start_url': '/',
         'display': 'standalone',
-        'background_color': '#ffffff',
-        'theme_color': '#ffffff',
+        'background_color': '#000033',
+        'theme_color': '#000033',
         'icons': [{
-            'src': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACOSURBVHhe7dAxDgAwDMCw/ftftoYSaA8R5pABrW3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3b9gD/AJ2eT1cWENQAAAABJRU5ErkJggg==',
+            'src': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACOSURBVHhe7dAxDgAwDMCw/ftftoYSaA8R5pABrW3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3b9gD/AJ2eT1cWENQAAAABJRU5ErkJggg==',
             'sizes': '100x100',
             'type': 'image/png'
         }]
     }">
-    <title>AdHoc Chat - Laptop</title>
+    <title>Millionaire Chat - Laptop</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Georgia', serif;
+            background-color: #000033;
+            color: #FFD700;
             margin: 0;
             padding: 10px;
             display: flex;
@@ -31,41 +33,73 @@
         #chatWindow {
             flex: 1;
             overflow-y: auto;
-            border: 1px solid #ccc;
+            border: 2px solid #FFD700;
             padding: 10px;
             margin-bottom: 10px;
+            background-color: #000033;
+            box-shadow: 0 0 10px #FFD700;
         }
         .message {
             margin: 5px 0;
             padding: 5px;
-            background: #f0f0f0;
-            border-radius: 3px;
+            background: #333366;
+            border-radius: 5px;
+            color: #FFD700;
         }
         .timestamp {
-            color: #666;
+            color: #CCCCCC;
             font-size: 0.8em;
         }
         #connections {
             margin-bottom: 10px;
         }
         .connection {
-            border: 1px solid #ddd;
+            border: 1px solid #FFD700;
             padding: 10px;
             margin-bottom: 10px;
+            background-color: #000033;
+        }
+        button {
+            background-color: #FFD700;
+            color: #000033;
+            border: none;
+            padding: 5px 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 0 5px #FFD700;
+        }
+        button:hover {
+            background-color: #FFEC8B;
         }
         textarea {
             width: 100%;
             height: 50px;
             resize: none;
+            background-color: #333366;
+            color: #FFD700;
+            border: 1px solid #FFD700;
+            padding: 5px;
         }
-        button {
-            margin: 5px 0;
+        h3 {
+            color: #FFD700;
+            margin-top: 0;
+        }
+        .toggleHeading {
+            cursor: pointer;
+        }
+        .status {
+            color: #FFD700;
+        }
+        .controls {
+            display: block;
         }
     </style>
 </head>
 <body>
     <div id="chatWindow"></div>
-    <button id="addConnection">Add Phone Connection</button>
+    <button id="addConnection">📞</button>
+    <button id="clearMessages">Clear Messages</button>
     <div id="connections"></div>
 
     <script>
@@ -93,6 +127,7 @@
         const chatWindow = document.getElementById('chatWindow');
         const connectionsDiv = document.getElementById('connections');
         const addConnectionButton = document.getElementById('addConnection');
+        const clearMessagesButton = document.getElementById('clearMessages');
         let connectionCounter = 0;
         const peers = [];
 
@@ -111,15 +146,32 @@
             const connectionDiv = document.createElement('div');
             connectionDiv.className = 'connection';
             connectionDiv.innerHTML = `
-                <h3>Phone Connection ${connectionCounter}</h3>
-                <button class="generateCode">Generate Connection Code</button>
-                <textarea class="code" placeholder="Connection Code" readonly></textarea>
-                <textarea class="response" placeholder="Enter Phone's Response"></textarea>
-                <button class="setResponse">Set Response</button>
-                <p class="status">Status: Idle</p>
+                <h3 class="toggleHeading"><span class="icon">▼</span> Phone ${connectionCounter}</h3>
+                <div class="controls">
+                    <button class="generateCode">Generate Connection Code</button>
+                    <textarea class="code" placeholder="Connection Code" readonly></textarea>
+                    <textarea class="response" placeholder="Enter Phone's Response"></textarea>
+                    <button class="setResponse">Set Response</button>
+                    <p class="status">Phone Status: Idle</p>
+                </div>
             `;
             connectionsDiv.appendChild(connectionDiv);
 
+            // Toggle visibility of controls
+            const toggleHeading = connectionDiv.querySelector('.toggleHeading');
+            const iconSpan = toggleHeading.querySelector('.icon');
+            const controlsDiv = connectionDiv.querySelector('.controls');
+            toggleHeading.onclick = () => {
+                if (controlsDiv.style.display === 'none') {
+                    controlsDiv.style.display = 'block';
+                    iconSpan.textContent = '▼';
+                } else {
+                    controlsDiv.style.display = 'none';
+                    iconSpan.textContent = '▶';
+                }
+            };
+
+            // Event listeners for generating code and setting response
             const generateButton = connectionDiv.querySelector('.generateCode');
             const codeTextarea = connectionDiv.querySelector('.code');
             const responseTextarea = connectionDiv.querySelector('.response');
@@ -149,7 +201,7 @@
                 } else {
                     const code = JSON.stringify({ offer: peer.localDescription, candidates });
                     codeTextarea.value = code;
-                    statusP.textContent = 'Status: Waiting for response';
+                    statusP.textContent = 'Phone Status: Waiting for response';
                 }
             };
         }
@@ -164,10 +216,16 @@
             for (const candidate of response.candidates) {
                 await peer.addIceCandidate(candidate);
             }
-            statusP.textContent = 'Status: Connected';
+            statusP.textContent = 'Phone Status: Connected';
+        }
+
+        // Clear all messages from the chat window
+        function clearMessages() {
+            chatWindow.innerHTML = '';
         }
 
         addConnectionButton.onclick = addConnectionSection;
+        clearMessagesButton.onclick = clearMessages;
     </script>
 </body>
 </html>

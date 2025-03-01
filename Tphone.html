@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a1d37">
     <link rel="manifest" href="data:application/manifest+json,{
         'name': 'AdHoc Chat - Phone',
         'short_name': 'Chat Phone',
         'start_url': '/',
         'display': 'standalone',
-        'background_color': '#ffffff',
-        'theme_color': '#ffffff',
+        'background_color': '#0a1d37',
+        'theme_color': '#0a1d37',
         'icons': [{
             'src': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACOSURBVHhe7dAxDgAwDMCw/ftftoYSaA8R5pABrW3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3b9gD/AJ2eT1cWENQAAAABJRU5ErkJggg==',
             'sizes': '100x100',
@@ -20,48 +20,154 @@
     <title>AdHoc Chat - Phone</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial Black', Arial, sans-serif;
             margin: 0;
-            padding: 10px;
+            padding: 15px;
+            background: linear-gradient(180deg, #0a1d37 0%, #1e3a5f 100%);
+            color: #ffd700;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
         }
-        #connectionSection {
-            margin-bottom: 10px;
+        h3 {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.5em;
+            margin: 15px 0;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            text-transform: uppercase;
+            text-align: center;
+        }
+        #connectionSection, #messageSection {
+            background: #0a1d37;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            border: 2px solid #ffd700;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
         #messageSection {
             display: none;
         }
-        textarea {
+        textarea, input {
             width: 100%;
-            height: 50px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ffd700;
+            border-radius: 8px;
+            font-size: 1.1em;
+            box-sizing: border-box;
+            background: #1e3a5f;
+            color: #fff;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        textarea:focus, input:focus {
+            border-color: #ffeb3b;
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.7);
+            outline: none;
+        }
+        textarea {
+            height: 100px;
             resize: none;
+        }
+        #responseCode {
+            background: #14294b;
+            color: #ccc;
+            font-size: 1em;
         }
         #inputForm {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
+            flex-direction: column;
+            gap: 15px;
         }
-        #nameInput {
-            width: 100px;
-        }
-        #messageInput {
-            flex: 1;
+        #nameInput, #messageInput {
+            width: 100%;
         }
         button {
-            margin: 5px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffeb3b 100%);
+            color: #0a1d37;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        button:hover {
+            background: linear-gradient(135deg, #ffeb3b 0%, #ffd700 100%);
+            transform: scale(1.05);
+            box-shadow: 0 0 18px rgba(255, 215, 0, 1);
+        }
+        button:active {
+            transform: scale(1);
+            box-shadow: 0 0 6px rgba(255, 215, 0, 0.7);
+        }
+        @media (min-aspect-ratio: 16/9) {
+            body {
+                padding: 20px;
+            }
+            #connectionSection, #messageSection {
+                padding: 30px;
+                max-width: 80vw;
+            }
+            h3 {
+                font-size: 1.8em;
+            }
+            textarea, input {
+                padding: 18px;
+                font-size: 1.2em;
+            }
+            textarea {
+                height: 120px;
+            }
+            button {
+                padding: 18px;
+                font-size: 1.3em;
+            }
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            #connectionSection, #messageSection {
+                padding: 20px;
+            }
+            h3 {
+                font-size: 1.2em;
+            }
+            textarea, input {
+                padding: 12px;
+                font-size: 1em;
+            }
+            textarea {
+                height: 80px;
+            }
+            button {
+                padding: 12px;
+                font-size: 1em;
+            }
         }
     </style>
 </head>
 <body>
     <div id="connectionSection">
         <h3>Connect to Laptop</h3>
-        <textarea id="connectionCode" placeholder="Enter Connection Code from Laptop"></textarea>
+        <textarea id="connectionCode" placeholder="Enter Connection Code"></textarea>
         <button id="connectButton">Connect</button>
         <textarea id="responseCode" placeholder="Response Code" readonly></textarea>
     </div>
     <div id="messageSection">
         <h3>Send Message</h3>
         <form id="inputForm">
-            <input id="nameInput" placeholder="Your name" required>
+            <input id="nameInput" placeholder="Your Name" required>
             <input id="messageInput" placeholder="Type a message" required>
             <button type="submit">Send</button>
         </form>
@@ -98,7 +204,6 @@
         const messageInput = document.getElementById('messageInput');
         let channel;
 
-        // Connect to the laptop using the connection code
         connectButton.onclick = async () => {
             const code = JSON.parse(connectionCodeTextarea.value);
             const peer = new RTCPeerConnection();
@@ -125,7 +230,6 @@
             };
         };
 
-        // Send a message to the laptop
         form.onsubmit = (e) => {
             e.preventDefault();
             if (channel && channel.readyState === 'open') {
