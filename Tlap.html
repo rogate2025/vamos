@@ -12,7 +12,7 @@
         'background_color': '#000033',
         'theme_color': '#000033',
         'icons': [{
-            'src': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACOSURBVHhe7dAxDgAwDMCw/ftftoYSaA8R5pABrW3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3b9gD/AJ2eT1cWENQAAAABJRU5ErkJggg==',
+            'src': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACOSURBVHhe7dAxDgAwDMCw/ftftoYSaA8R5pABrW3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3b9gD/AJ2eT1cWENQAAAABJRU5ErkJggg==',
             'sizes': '100x100',
             'type': 'image/png'
         }]
@@ -59,6 +59,9 @@
             margin-bottom: 10px;
             background-color: #000033;
         }
+        .connection.minimized {
+            padding: 2px;
+        }
         button {
             background-color: #FFD700;
             color: #000033;
@@ -84,9 +87,6 @@
         h3 {
             color: #FFD700;
             margin-top: 0;
-        }
-        .toggleHeading {
-            cursor: pointer;
         }
         .status {
             color: #FFD700;
@@ -144,10 +144,11 @@
         function addConnectionSection() {
             connectionCounter++;
             const connectionDiv = document.createElement('div');
-            connectionDiv.className = 'connection';
+            connectionDiv.className = 'connection minimized';
             connectionDiv.innerHTML = `
-                <h3 class="toggleHeading"><span class="icon">▼</span> Phone ${connectionCounter}</h3>
-                <div class="controls">
+                <button class="toggleButton">▶ P${connectionCounter}</button>
+                <div class="controls" style="display: none;">
+                    <h3>Phone ${connectionCounter}</h3>
                     <button class="generateCode">Generate Connection Code</button>
                     <textarea class="code" placeholder="Connection Code" readonly></textarea>
                     <textarea class="response" placeholder="Enter Phone's Response"></textarea>
@@ -157,21 +158,21 @@
             `;
             connectionsDiv.appendChild(connectionDiv);
 
-            // Toggle visibility of controls
-            const toggleHeading = connectionDiv.querySelector('.toggleHeading');
-            const iconSpan = toggleHeading.querySelector('.icon');
+            const toggleButton = connectionDiv.querySelector('.toggleButton');
             const controlsDiv = connectionDiv.querySelector('.controls');
-            toggleHeading.onclick = () => {
+
+            toggleButton.onclick = () => {
                 if (controlsDiv.style.display === 'none') {
                     controlsDiv.style.display = 'block';
-                    iconSpan.textContent = '▼';
+                    toggleButton.textContent = `▼ Phone ${connectionCounter}`;
+                    connectionDiv.classList.remove('minimized');
                 } else {
                     controlsDiv.style.display = 'none';
-                    iconSpan.textContent = '▶';
+                    toggleButton.textContent = `▶ P${connectionCounter}`;
+                    connectionDiv.classList.add('minimized');
                 }
             };
 
-            // Event listeners for generating code and setting response
             const generateButton = connectionDiv.querySelector('.generateCode');
             const codeTextarea = connectionDiv.querySelector('.code');
             const responseTextarea = connectionDiv.querySelector('.response');
