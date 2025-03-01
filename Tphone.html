@@ -19,6 +19,9 @@
     }">
     <title>AdHoc Chat - Phone</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Arial Black', Arial, sans-serif;
             margin: 0;
@@ -33,7 +36,7 @@
         h3 {
             color: #ffd700;
             font-weight: bold;
-            font-size: 1.5em;
+            font-size: clamp(1.2em, 4vw, 1.8em);
             margin: 15px 0;
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
             text-transform: uppercase;
@@ -41,13 +44,13 @@
         }
         #connectionSection, #messageSection {
             background: #0a1d37;
-            padding: 25px;
+            padding: clamp(15px, 5vw, 30px);
             border-radius: 12px;
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
             border: 2px solid #ffd700;
             margin-bottom: 20px;
             width: 100%;
-            max-width: 900px;
+            max-width: 1200px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -56,12 +59,11 @@
         }
         textarea, input {
             width: 100%;
-            padding: 15px;
+            padding: clamp(10px, 2vw, 18px);
             margin-bottom: 15px;
             border: 1px solid #ffd700;
             border-radius: 8px;
-            font-size: 1.1em;
-            box-sizing: border-box;
+            font-size: clamp(0.9em, 2.5vw, 1.2em);
             background: #1e3a5f;
             color: #fff;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -72,30 +74,27 @@
             outline: none;
         }
         textarea {
-            height: 100px;
+            height: clamp(80px, 20vw, 120px);
             resize: none;
         }
         #responseCode {
             background: #14294b;
             color: #ccc;
-            font-size: 1em;
+            font-size: clamp(0.9em, 2.5vw, 1em);
         }
         #inputForm {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
-        #nameInput, #messageInput {
-            width: 100%;
-        }
         button {
-            padding: 15px;
+            padding: clamp(10px, 3vw, 18px);
             background: linear-gradient(135deg, #ffd700 0%, #ffeb3b 100%);
             color: #0a1d37;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1.2em;
+            font-size: clamp(0.9em, 2.5vw, 1.3em);
             font-weight: bold;
             text-transform: uppercase;
             box-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
@@ -110,9 +109,82 @@
             transform: scale(1);
             box-shadow: 0 0 6px rgba(255, 215, 0, 0.7);
         }
-        @media (min-aspect-ratio: 16/9) {
+
+        /* Responsive Design with More Breakpoints */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            h3 {
+                font-size: 1.2em;
+            }
+            #connectionSection, #messageSection {
+                padding: 15px;
+            }
+            textarea, input {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+            textarea {
+                height: 80px;
+            }
+            button {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            h3 {
+                font-size: 1.5em;
+            }
+            #connectionSection, #messageSection {
+                padding: 20px;
+                max-width: 90vw;
+            }
+            textarea, input {
+                padding: 12px;
+                font-size: 1em;
+            }
+            textarea {
+                height: 100px;
+            }
+            button {
+                padding: 12px;
+                font-size: 1.1em;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
             body {
                 padding: 20px;
+            }
+            #connectionSection, #messageSection {
+                padding: 25px;
+                max-width: 85vw;
+            }
+            h3 {
+                font-size: 1.6em;
+            }
+            textarea, input {
+                padding: 15px;
+                font-size: 1.1em;
+            }
+            textarea {
+                height: 110px;
+            }
+            button {
+                padding: 15px;
+                font-size: 1.2em;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            body {
+                padding: 25px;
             }
             #connectionSection, #messageSection {
                 padding: 30px;
@@ -133,26 +205,18 @@
                 font-size: 1.3em;
             }
         }
-        @media (max-width: 600px) {
+
+        /* Landscape Orientation */
+        @media (orientation: landscape) and (max-height: 500px) {
             body {
                 padding: 10px;
             }
             #connectionSection, #messageSection {
-                padding: 20px;
-            }
-            h3 {
-                font-size: 1.2em;
-            }
-            textarea, input {
-                padding: 12px;
-                font-size: 1em;
+                padding: 15px;
+                max-width: 95vw;
             }
             textarea {
-                height: 80px;
-            }
-            button {
-                padding: 12px;
-                font-size: 1em;
+                height: 60px;
             }
         }
     </style>

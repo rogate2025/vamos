@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Round 2</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding-top: 50px;
+            background: linear-gradient(135deg, #071d49 0%, #1e3a8a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+        h1 {
+            font-size: 36px;
+            text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
+            margin-bottom: 30px;
+            animation: glow 2s infinite alternate;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 50px;
+        }
+        button {
+            padding: 20px 40px;
+            font-size: 24px;
+            background: linear-gradient(90deg, #ffd700, #ffeb3b);
+            color: #071d49;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+            text-shadow: 0 0 5px rgba(255, 235, 59, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 1);
+            background: linear-gradient(90deg, #ffeb3b, #ffd700);
+        }
+        button span {
+            font-size: 30px; /* Larger emoji size */
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700; }
+            to { text-shadow: 0 0 15px #ffd700, 0 0 30px #ffd700; }
+        }
+        /* Add a subtle background effect */
+        .background-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, rgba(7,29,73,0) 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-effect"></div>
+    <h1>Round 2</h1>
+    <div class="button-container">
+        <button onclick="window.location.href='Tlap.html'">
+            <span>💻</span> Laptop
+        </button>
+        <button onclick="window.location.href='Tphone.html'">
+            <span>📱</span> Phone
+        </button>
+    </div>
+</body>
+</html>

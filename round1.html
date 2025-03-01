@@ -250,6 +250,45 @@
             display: none;
         }
 
+        /* Custom Confirmation Box Styling */
+        #custom-confirm {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #ffd700, #ff4500);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #ffd700, 0 0 25px #ff4500;
+            z-index: 1000;
+            display: none;
+        }
+
+        #custom-confirm p {
+            font-size: 2.5vw;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        #custom-confirm button {
+            padding: 10px 20px;
+            font-size: 1.5vw;
+            margin: 0 10px;
+            background: #000066;
+            color: #fff;
+            border: 2px solid #ffd700;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #custom-confirm button:hover {
+            background: #000099;
+            transform: scale(1.05);
+        }
+
         @media (max-width: 768px) {
             .question { font-size: 5vw; }
             .options button { font-size: 3vw; }
@@ -257,14 +296,11 @@
             .nav-buttons button { font-size: 2.5vw; }
             .timer { font-size: 3vw; }
             .manikutti { width: 80px; height: 80px; }
-            #number-buttons button {
-                font-size: 6vw;
-                padding: 20px 40px;
-            }
-            #back-to-category {
-                font-size: 3vw;
-                padding: 10px 20px;
-            }
+            #number-buttons button { font-size: 6vw; padding: 20px 40px; }
+            #back-to-category { font-size: 3vw; padding: 10px 20px; }
+            #phone-a-friend-message { font-size: 3vw; }
+            #custom-confirm p { font-size: 4vw; }
+            #custom-confirm button { font-size: 2.5vw; padding: 8px 16px; }
         }
     </style>
 </head>
@@ -282,11 +318,11 @@
     <div class="opening" id="opening">
         <h1>Select a Category</h1>
         <div id="category-buttons">
-            <button onclick="selectCategory(0)">Category 1</button>
-            <button onclick="selectCategory(1)">Category 2</button>
-            <button onclick="selectCategory(2)">Category 3</button>
-            <button onclick="selectCategory(3)">Category 4</button>
-            <button onclick="selectCategory(4)">Category 5</button>
+            <button onclick="selectCategory(0)">General Knowledge</button>
+            <button onclick="selectCategory(1)">Bible</button>
+            <button onclick="selectCategory(2)">He Never Said No</button>
+            <button onclick="selectCategory(3)">SPES NON CONFUNDIT</button>
+            <button onclick="selectCategory(4)">Sports</button>
         </div>
     </div>
 
@@ -311,23 +347,30 @@
         <p id="phone-a-friend-message"></p>
     </div>
 
+    <!-- Custom Confirmation Box -->
+    <div id="custom-confirm">
+        <p>Is that your final answer?</p>
+        <button id="confirm-yes">Yes</button>
+        <button id="confirm-no">No</button>
+    </div>
+
     <script>
         const categories = [
-            [
-                { question: "Who won the 2023 Nobel Prize in Literature?", options: ["A: Salman Rushdie", "B: Annie Ernaux", "C: Jon Fosse", "D: Margaret Atwood"], answer: "C: Jon Fosse" },
-                { question: "Which film won the Best Feature Film award at the 2024 Kerala State Film Awards?", options: ["A: Nanpakal Nerathu Mayakkam", "B: 2018", "C: Ariyippu", "D: Kaathal – The Core"], answer: "B: 2018" },
-                { question: "Who won the 2023 Nobel Peace Prize?", options: ["A: Volodymyr Zelenskyy", "B: Narges Mohammadi", "C: Greta Thunberg", "D: António Guterres"], answer: "B: Narges Mohammadi" },
-                { question: "Which novel won the 2023 Booker Prize?", options: ["A: The Bee Sting", "B: Time Shelter", "C: Demon Copperhead", "D: Trust"], answer: "B: Time Shelter" },
-                { question: "Which movie won Best Picture at the 2024 Academy Awards (Oscars)?", options: ["A: Oppenheimer", "B: Barbie", "C: Killers of the Flower Moon", "D: Poor Things"], answer: "A: Oppenheimer" },
-                { question: "Who won the 2024 Golden Globe for Best Actor in a Motion Picture (Drama)?", options: ["A: Leonardo DiCaprio", "B: Paul Giamatti", "C: Cillian Murphy", "D: Bradley Cooper"], answer: "C: Cillian Murphy" },
-                { question: "Who won the 2023 Nobel Prize in Literature?", options: ["A: Salman Rushdie", "B: Annie Ernaux", "C: Jon Fosse", "D: Margaret Atwood"], answer: "C: Jon Fosse" },
-                { question: "Which film won the Best Feature Film award at the 2024 Kerala State Film Awards?", options: ["A: Nanpakal Nerathu Mayakkam", "B: 2018", "C: Ariyippu", "D: Kaathal – The Core"], answer: "B: 2018" },
-                { question: "Who won the 2023 Nobel Peace Prize?", options: ["A: Volodymyr Zelenskyy", "B: Narges Mohammadi", "C: Greta Thunberg", "D: António Guterres"], answer: "B: Narges Mohammadi" },
-                { question: "Which novel won the 2023 Booker Prize?", options: ["A: The Bee Sting", "B: Time Shelter", "C: Demon Copperhead", "D: Trust"], answer: "B: Time Shelter" },
-                { question: "Which movie won Best Picture at the 2024 Academy Awards (Oscars)?", options: ["A: Oppenheimer", "B: Barbie", "C: Killers of the Flower Moon", "D: Poor Things"], answer: "A: Oppenheimer" },
-                { question: "Who won the 2024 Golden Globe for Best Actor in a Motion Picture (Drama)?", options: ["A: Leonardo DiCaprio", "B: Paul Giamatti", "C: Cillian Murphy", "D: Bradley Cooper"], answer: "C: Cillian Murphy" }
+            [ // General Knowledge
+                { question: "Which trio won the 2024 Nobel Prize in Chemistry for their work on proteins?", options: ["A: David Baker, Demis Hassabis, John Jumper", "B: Jennifer Doudna, Emmanuelle Charpentier, Virginijus Šikšnys", "C: Frances Arnold, George Smith, Greg Winter", "D: Katalin Karikó, Drew Weissman, Robert Malone"], answer: "A: David Baker, Demis Hassabis, John Jumper" },
+                { question: "Which scientist led the 2024 breakthrough in quantum computing using topological qubits?", options: ["A: John Preskill", "B: Mikhail Lukin", "C: Leo Kouwenhoven", "D: David Deutsch"], answer: "C: Leo Kouwenhoven" },
+                { question: "What record did Shohei Ohtani set in the 2024 MLB season?", options: ["A: Most home runs in a single season", "B: First 50-50 season (HRs and stolen bases)", "C: Highest batting average since 2000", "D: Most pitching wins by a position player"], answer: "B: First 50-50 season (HRs and stolen bases)" },
+                { question: "Which treaty was signed in 2025 to regulate AI development globally?", options: ["A: Geneva AI Accord", "B: Paris Digital Pact", "C: Kyoto Tech Protocol", "D: Vienna AI Framework"], answer: "D: Vienna AI Framework" },
+                { question: "What space mission discovered water ice on Mars in 2024?", options: ["A: NASA’s Perseverance", "B: ESA’s ExoMars", "C: China’s Tianwen-2", "D: SpaceX’s Starship"], answer: "B: ESA’s ExoMars" },
+                { question: "Which organization won the 2024 Nobel Prize in Economics for institutional studies?", options: ["A: Acemoglu, Johnson, Robinson", "B: Banerjee, Duflo, Kremer", "C: Nordhaus, Romer", "D: Piketty, Saez, Zucman"], answer: "A: Acemoglu, Johnson, Robinson" },
+                { question: "Who won the 2024 Sahitya Akademi Award for Hindi literature?", options: ["A: Krishna Sobti (posthumous)", "B: Sanjiv", "C: Geetanjali Shree", "D: Uday Prakash"], answer: "B: Sanjiv" },
+                { question: "Which Indian state topped the 2024 National Panchayat Awards for rural governance?", options: ["A: Gujarat", "B: Kerala", "C: Odisha", "D: Himachal Pradesh"], answer: "B: Kerala" },
+                { question: "What cultural event in 2024 celebrated 75 years of the Indian Constitution?", options: ["A: Samvidhan Mahotsav", "B: Bharat Parv", "C: Azadi Ka Amrit Mahotsav", "D: Sanskriti Sangam"], answer: "A: Samvidhan Mahotsav" },
+                { question: "Which Kerala personality was honored with the 2024 JC Daniel Award?", options: ["A: Shaji N Karun", "B: Adoor Gopalakrishnan", "C: MT Vasudevan Nair", "D: Hariharan"], answer: "A: Shaji N Karun" },
+                { question: "Which Kerala festival in 2024 was declared a UNESCO Intangible Heritage?", options: ["A: Thrissur Pooram", "B: Theyyam", "C: Onam", "D: Vishu"], answer: "B: Theyyam" },
+                { question: "Which Kerala scientist contributed to a 2024 global climate study?", options: ["A: Tessy Thomas", "B: VS Ramachandran", "C: KK Ramakrishnan", "D: Sabu Thomas"], answer: "D: Sabu Thomas" }
             ],
-            [
+            [ // Bible
                 { question: "Which Indian film was India's official entry for Best International Feature Film at the 2024 Oscars?", options: ["A: 2018", "B: Jawan", "C: The Kerala Story", "D: RRR"], answer: "A: 2018" },
                 { question: "Who won the 2024 Grammy Award for Album of the Year?", options: ["A: Taylor Swift", "B: SZA", "C: Olivia Rodrigo", "D: Miley Cyrus"], answer: "A: Taylor Swift" },
                 { question: "Who won the Bharat Ratna award in 2024?", options: ["A: Sachin Tendulkar", "B: Karpoori Thakur", "C: A.P.J. Abdul Kalam", "D: Amitabh Bachchan"], answer: "B: Karpoori Thakur" },
@@ -341,7 +384,7 @@
                 { question: "Who won the Palme d'Or at the 2023 Cannes Film Festival?", options: ["A: Justine Triet (Anatomy of a Fall)", "B: Jonathan Glazer (The Zone of Interest)", "C: Christopher Nolan (Oppenheimer)", "D: Wim Wenders (Perfect Days)"], answer: "A: Justine Triet (Anatomy of a Fall)" },
                 { question: "Which movie won Best Film at the 2024 BAFTA Awards?", options: ["A: Barbie", "B: Poor Things", "C: The Holdovers", "D: Oppenheimer"], answer: "D: Oppenheimer" }
             ],
-            [
+            [ // He Never Said No
                 { question: "Who won the 2023 Nobel Prize in Physics for work on electrons in matter?", options: ["A: Pierre Agostini, Ferenc Krausz, Anne L’Huillier", "B: John Clauser, Alain Aspect, Anton Zeilinger", "C: Syukuro Manabe, Klaus Hasselmann, Giorgio Parisi", "D: David Wineland, Serge Haroche"], answer: "A: Pierre Agostini, Ferenc Krausz, Anne L’Huillier" },
                 { question: "What is the prestigious award for outstanding contributions in the field of mathematics?", options: ["A: Abel Prize", "B: Fields Medal", "C: Turing Award", "D: Poincaré Prize"], answer: "B: Fields Medal" },
                 { question: "Who won the 2023 Man Booker International Prize?", options: ["A: Khaled Khalifa", "B: Georgi Gospodinov", "C: Olga Tokarczuk", "D: Jokha Alharthi"], answer: "B: Georgi Gospodinov" },
@@ -355,7 +398,7 @@
                 { question: "Which book won the Pulitzer Prize for Fiction in 2023?", options: ["A: Trust (Hernan Diaz)", "B: The Rabbit Hutch (Tess Gunty)", "C: Demon Copperhead (Barbara Kingsolver)", "D: Time Shelter (Georgi Gospodinov)"], answer: "A: Trust (Hernan Diaz)" },
                 { question: "Who won the 2023 Nobel Prize in Chemistry?", options: ["A: Moungi Bawendi, Louis Brus, Alexei Ekimov", "B: Carolyn Bertozzi, Morten Meldal, K. Barry Sharpless", "C: Emmanuelle Charpentier, Jennifer Doudna", "D: Akira Yoshino, John B. Goodenough"], answer: "A: Moungi Bawendi, Louis Brus, Alexei Ekimov" }
             ],
-            [
+            [ // SPES NON CONFUNDIT
                 { question: "Which Indian writer won the Sahitya Akademi Award in 2023?", options: ["A: Geetanjali Shree", "B: Damodar Mauzo", "C: Vinod Kumar Shukla", "D: Perumal Murugan"], answer: "C: Vinod Kumar Shukla" },
                 { question: "Which Malayalam film won the Best Film award at the National Film Awards 2023?", options: ["A: Rorschach", "B: Home", "C: Nna Thaan Case Kodu", "D: 2018"], answer: "D: 2018" },
                 { question: "Who won the 2023 Nobel Prize in Medicine for work related to mRNA vaccines?", options: ["A: Katalin Karikó and Drew Weissman", "B: Svante Pääbo", "C: David Julius and Ardem Patapoutian", "D: Harvey J. Alter and Charles M. Rice"], answer: "A: Katalin Karikó and Drew Weissman" },
@@ -369,7 +412,7 @@
                 { question: "Which Malayalam actress won the Best Actress award at the 2024 Kerala State Film Awards?", options: ["A: Aparna Balamurali", "B: Parvathy Thiruvothu", "C: Kani Kusruti", "D: Divya Prabha"], answer: "D: Divya Prabha" },
                 { question: "What prestigious award is given for outstanding journalism?", options: ["A: Booker Prize", "B: Pulitzer Prize", "C: Ramon Magsaysay Award", "D: Fields Medal"], answer: "B: Pulitzer Prize" }
             ],
-            [
+            [ // Sports
                 { question: "Which movie won the Best Film award at the Filmfare Awards 2024?", options: ["A: Animal", "B: Jawan", "C: Pathaan", "D: 12th Fail"], answer: "D: 12th Fail" },
                 { question: "Which author won the 2024 Windham-Campbell Prize for Fiction?", options: ["A: Chimamanda Ngozi Adichie", "B: Marlon James", "C: Colson Whitehead", "D: Paul Harding"], answer: "D: Paul Harding" },
                 { question: "Which Indian film won the Best Documentary Short at the 2023 Oscars?", options: ["A: All That Breathes", "B: The Elephant Whisperers", "C: Writing with Fire", "D: Bhuj: The Day India Shook"], answer: "B: The Elephant Whisperers" },
@@ -402,7 +445,8 @@
             timerInterval: null,
             optionsRevealed: [false, false, false, false],
             firstConfirmation: false,
-            isTimerPaused: false
+            isTimerPaused: false,
+            fiftyFiftyUsed: false
         };
 
         function playSound(id) {
@@ -467,6 +511,7 @@
             gameState.firstConfirmation = false;
             gameState.timer = 60;
             gameState.isTimerPaused = false;
+            gameState.fiftyFiftyUsed = false;
             document.getElementById("timer").textContent = `${gameState.timer}s`;
             clearInterval(gameState.timerInterval);
             stopSound("timerTick");
@@ -475,7 +520,11 @@
         }
 
         function revealOption(btn, index, fullText) {
-            if (!gameState.optionsRevealed[index]) {
+            if (gameState.fiftyFiftyUsed) {
+                if (!btn.disabled) {
+                    selectAnswer(btn, fullText);
+                }
+            } else if (!gameState.optionsRevealed[index]) {
                 btn.textContent = fullText;
                 gameState.optionsRevealed[index] = true;
                 if (gameState.optionsRevealed.every(revealed => revealed)) {
@@ -551,7 +600,7 @@
         }
 
         function resumeTimer() {
-            clearInterval(gameState.timerInterval); // Clear any existing interval
+            clearInterval(gameState.timerInterval);
             playSound("timerTick");
             gameState.timerInterval = setInterval(() => {
                 if (!gameState.isTimerPaused) {
@@ -570,16 +619,26 @@
         }
 
         function selectAnswer(btn, selected) {
-            if (!gameState.isFinalAnswer && gameState.optionsRevealed.every(revealed => revealed)) {
+            if (!gameState.isFinalAnswer) {
                 btn.style.background = "linear-gradient(to bottom, #ffa500, #ff4500)";
                 setTimeout(() => {
-                    if (confirm(`Team ${gameState.teamTurn}: Is that your final answer?`)) {
-                        playSound("finalAnswerSound");
-                        gameState.isFinalAnswer = true;
-                        checkAnswer(btn, selected);
-                    } else {
-                        btn.style.background = "linear-gradient(to bottom, #000066, #000033)";
-                    }
+                    const confirmBox = document.getElementById("custom-confirm");
+                    confirmBox.style.display = "block";
+
+                    return new Promise((resolve) => {
+                        document.getElementById("confirm-yes").onclick = () => {
+                            confirmBox.style.display = "none";
+                            playSound("finalAnswerSound");
+                            gameState.isFinalAnswer = true;
+                            checkAnswer(btn, selected);
+                            resolve(true);
+                        };
+                        document.getElementById("confirm-no").onclick = () => {
+                            confirmBox.style.display = "none";
+                            btn.style.background = "linear-gradient(to bottom, #000066, #000033)";
+                            resolve(false);
+                        };
+                    });
                 }, 500);
             }
         }
@@ -597,9 +656,19 @@
                     setTimeout(completeQuestion, 2000);
                 } else {
                     btn.style.background = "linear-gradient(to bottom, #ffa500, #ff4500)";
-                    setTimeout(() => {
-                        switchToTeamB();
-                    }, 1000);
+                    if (gameState.fiftyFiftyUsed) {
+                        playSound("wrongSound");
+                        document.querySelectorAll(".options button").forEach(b => {
+                            if (b.dataset.fullText === correct) {
+                                b.style.background = "linear-gradient(to bottom, #00ff00, #008000)";
+                            }
+                        });
+                        setTimeout(completeQuestion, 2000);
+                    } else {
+                        setTimeout(() => {
+                            switchToNextTeam();
+                        }, 1000);
+                    }
                 }
             } else {
                 if (selected === correct) {
@@ -618,9 +687,9 @@
             gameState.isFinalAnswer = false;
         }
 
-        function switchToTeamB() {
-            gameState.teamTurn = "B";
-            alert("Team A got it wrong. Team B, you have 10 seconds!");
+        function switchToNextTeam() {
+            gameState.teamTurn = "Next Team";
+            alert("Team A got it wrong. Next Team, you have 10 seconds!");
             start10sTimer();
         }
 
@@ -638,6 +707,7 @@
 
         function useFiftyFifty() {
             playSound("lifelineSound");
+            gameState.fiftyFiftyUsed = true;
             const q = categories[gameState.currentCategory][gameState.currentQuestionIndex];
             let wrongOptions = q.options.filter(o => o !== q.answer);
             let toRemove = [];
@@ -650,14 +720,17 @@
                     btn.textContent = "Eliminated";
                     btn.disabled = true;
                     btn.style.background = "grey";
+                } else {
+                    btn.textContent = btn.dataset.fullText;
+                    gameState.optionsRevealed[q.options.indexOf(btn.dataset.fullText)] = true;
                 }
             });
+            start30sTimer();
         }
 
         function toggleAskAFriend() {
             const askFriendButton = document.getElementById("askFriendButton");
             if (!gameState.isTimerPaused) {
-                // Pause the timer
                 playSound("lifelineSound");
                 gameState.isTimerPaused = true;
                 clearInterval(gameState.timerInterval);
@@ -666,7 +739,6 @@
                 document.getElementById("phone-a-friend-message").textContent = "Now you can Ask your Friend (Click 'Ask a Friend' again to resume)";
                 askFriendButton.textContent = "Resume Timer";
             } else {
-                // Resume the timer from where it paused
                 gameState.isTimerPaused = false;
                 document.getElementById("phone-a-friend-message").style.display = "none";
                 askFriendButton.textContent = "Ask a Friend";

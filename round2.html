@@ -3,80 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Round 2</title>
+    <title>Millionaire Buzzer Round</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a0b2e, #0d1b2a);
+            color: #fff;
             text-align: center;
+            height: 100vh;
             margin: 0;
-            padding-top: 50px;
-            background: linear-gradient(135deg, #071d49 0%, #1e3a8a 100%);
-            color: #ffffff;
-            min-height: 100vh;
-            overflow-y: auto;
-        }
-        h1 {
-            font-size: 36px;
-            text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
-            margin-bottom: 30px;
-            animation: glow 2s infinite alternate;
-        }
-        .button-container {
             display: flex;
+            flex-direction: column;
             justify-content: center;
-            gap: 40px;
-            margin-top: 50px;
+            align-items: center;
+            overflow: hidden;
         }
-        button {
+        #questionButton {
             padding: 20px 40px;
             font-size: 24px;
-            background: linear-gradient(90deg, #ffd700, #ffeb3b);
-            color: #071d49;
+            background: linear-gradient(45deg, #ffd700, #ffea00);
+            color: #000;
             border: none;
-            border-radius: 15px;
+            border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
-            transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
-            text-shadow: 0 0 5px rgba(255, 235, 59, 0.8);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            box-shadow: 0 0 15px #ffd700, 0 0 30px rgba(255, 215, 0, 0.5);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
         }
-        button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 25px rgba(255, 215, 0, 1);
-            background: linear-gradient(90deg, #ffeb3b, #ffd700);
+        #questionButton:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #ffd700, 0 0 50px rgba(255, 215, 0, 0.7);
         }
-        button span {
-            font-size: 30px; /* Larger emoji size */
+        #questionContainer {
+            display: none;
+            background: radial-gradient(circle at center, #000066, #000033);
+            padding: 50px;
+            border-radius: 25px;
+            box-shadow: 0 0 40px #ffd700, inset 0 0 20px rgba(255, 215, 0, 0.2);
+            width: 90%;
+            max-width: 800px;
+            margin-bottom: 30px;
+            border: 4px solid #ffd700;
+            box-sizing: border-box;
+            animation: fadeIn 0.5s ease-in-out;
         }
-        @keyframes glow {
-            from { text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700; }
-            to { text-shadow: 0 0 15px #ffd700, 0 0 30px #ffd700; }
+        #question {
+            font-size: 40px;
+            font-weight: bold;
+            text-shadow: 0 0 15px #00b7eb, 0 0 25px #00b7eb;
+            line-height: 1.3;
+            margin-bottom: 20px;
         }
-        /* Add a subtle background effect */
-        .background-effect {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, rgba(7,29,73,0) 70%);
-            pointer-events: none;
-            z-index: -1;
+        #timer {
+            font-size: 28px;
+            color: #ff4040;
+            text-shadow: 0 0 10px #ff4040;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        #stopButton {
+            padding: 15px 35px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #ff4040, #ff6666);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 15px #ff4040;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        #stopButton:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #ff4040;
+        }
+        #stopButton.reveal {
+            background: linear-gradient(45deg, #00b7eb, #00d4ff);
+            box-shadow: 0 0 15px #00b7eb;
+        }
+        #stopButton.reveal:hover {
+            box-shadow: 0 0 25px #00b7eb;
+        }
+        #answer {
+            display: none;
+            font-size: 28px;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+            margin-top: 25px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        #nextButton {
+            display: none;
+            padding: 15px 35px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #ffd700, #ffea00);
+            color: #000;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 15px #ffd700;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        #nextButton:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #ffd700;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        #timer.pulse {
+            animation: pulse 1s infinite;
         }
     </style>
 </head>
 <body>
-    <div class="background-effect"></div>
-    <h1>Round 2</h1>
-    <div class="button-container">
-        <button onclick="window.location.href='Tlap.html'">
-            <span>💻</span> Laptop
-        </button>
-        <button onclick="window.location.href='Tphone.html'">
-            <span>📱</span> Phone
-        </button>
+    <button id="questionButton">Start Game</button>
+    <div id="questionContainer">
+        <div id="question"></div>
+        <div id="timer">Time Left: 30s</div>
+        <button id="stopButton">Stop</button>
+        <div id="answer"></div>
     </div>
+    <button id="nextButton">Next Question</button>
+
+    <script>
+        const questions = [
+            { question: "What is the capital of Brazil?", answer: "Brasília" },
+            { question: "Which planet is known as the Red Planet?", answer: "Mars" },
+            { question: "What gas do plants primarily use for photosynthesis?", answer: "Carbon Dioxide" },
+            { question: "Who wrote the play 'Romeo and Juliet'?", answer: "William Shakespeare" },
+            { question: "What is the largest ocean on Earth?", answer: "Pacific Ocean" },
+            { question: "Which element has the chemical symbol 'Fe'?", answer: "Iron" },
+            { question: "In which year did the Titanic sink?", answer: "1912" },
+            { question: "What is the longest river in the world?", answer: "Nile River" },
+            { question: "Which country is home to the kangaroo?", answer: "Australia" },
+            { question: "What is the hardest natural substance known?", answer: "Diamond" }
+        ];
+
+        const questionButton = document.getElementById('questionButton');
+        const questionContainer = document.getElementById('questionContainer');
+        const questionText = document.getElementById('question');
+        const timerText = document.getElementById('timer');
+        const stopButton = document.getElementById('stopButton');
+        const answerText = document.getElementById('answer');
+        const nextButton = document.getElementById('nextButton');
+        let currentQuestionIndex = 0;
+        let timer;
+        let timeLeft;
+        let isStopped = false;
+
+        // Function to load a new question
+        function loadNewQuestion() {
+            // Reset state
+            clearInterval(timer);
+            answerText.style.display = 'none';
+            stopButton.textContent = 'Stop';
+            stopButton.classList.remove('reveal');
+            timeLeft = 30;
+            timerText.textContent = `Time Left: ${timeLeft}s`;
+            timerText.classList.remove('pulse');
+            isStopped = false;
+
+            // Load current question
+            questionText.textContent = questions[currentQuestionIndex].question;
+            answerText.textContent = questions[currentQuestionIndex].answer;
+
+            // Show elements
+            questionContainer.style.display = 'block';
+            nextButton.style.display = 'block';
+
+            // Start timer
+            timer = setInterval(() => {
+                if (!isStopped) {
+                    timeLeft--;
+                    timerText.textContent = `Time Left: ${timeLeft}s`;
+                    if (timeLeft <= 10) {
+                        timerText.classList.add('pulse');
+                    }
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        stopButton.textContent = 'Reveal Answer';
+                        stopButton.classList.add('reveal');
+                        timerText.textContent = "Time's Up!";
+                        timerText.classList.remove('pulse');
+                        isStopped = true;
+                    }
+                }
+            }, 1000);
+
+            // Move to next question index
+            currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+        }
+
+        // When Question Button is clicked (starts the game)
+        questionButton.addEventListener('click', () => {
+            questionButton.style.display = 'none';
+            loadNewQuestion();
+        });
+
+        // When Next Button is clicked
+        nextButton.addEventListener('click', () => {
+            loadNewQuestion();
+        });
+
+        // When Stop Button is clicked
+        stopButton.addEventListener('click', () => {
+            if (!isStopped) {
+                // Stop the timer
+                clearInterval(timer);
+                isStopped = true;
+                stopButton.textContent = 'Reveal Answer';
+                stopButton.classList.add('reveal');
+                timerText.textContent = `Time Stopped at: ${timeLeft}s`;
+                timerText.classList.remove('pulse');
+            } else {
+                // Reveal the answer
+                answerText.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
