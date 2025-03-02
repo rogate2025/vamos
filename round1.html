@@ -290,8 +290,8 @@
 
         #manikutti-dialogue {
             position: absolute;
-            bottom: 140px; /* Positioned above Manikutti */
-            right: 140px; /* Offset to the left of Manikutti */
+            bottom: 140px;
+            right: 140px;
             background: linear-gradient(45deg, #ffd700, #ffa500);
             padding: 15px;
             border-radius: 10px;
@@ -305,10 +305,10 @@
         #manikutti-dialogue::after {
             content: '';
             position: absolute;
-            bottom: -20px; /* Tail pointing downwards */
-            right: 20px; /* Tail aligned towards Manikutti */
+            bottom: -20px;
+            right: 20px;
             border: 10px solid transparent;
-            border-top: 10px solid #ffa500; /* Tail color matches gradient */
+            border-top: 10px solid #ffa500;
         }
 
         #manikutti-dialogue p {
@@ -336,6 +336,20 @@
             transform: scale(1.05);
         }
 
+        #team-switch-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ff4500;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 2vw;
+            z-index: 1000;
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .question { font-size: 5vw; }
             .options button { font-size: 3vw; }
@@ -351,11 +365,12 @@
             #manikutti-dialogue { bottom: 110px; right: 100px; }
             #manikutti-dialogue p { font-size: 3vw; }
             #manikutti-dialogue button { font-size: 2.5vw; padding: 6px 12px; }
+            #team-switch-message { font-size: 3vw; }
         }
     </style>
 </head>
 <body>
-    <audio id="backgroundMusic" src="background_music.mp3" loop></audio>
+    <audio id="backgroundMusic" src="bgm.mp3" loop></audio>
     <audio id="correctSound" src="correct_answer.mp3"></audio>
     <audio id="wrongSound" src="wrong_answer.mp3"></audio>
     <audio id="finalAnswerSound" src="final_answer.mp3"></audio>
@@ -393,7 +408,7 @@
             <button id="askFriendButton" onclick="toggleAskAFriend()">Ask a Friend</button>
         </div>
         <div class="timer" id="timer">60s</div>
-        <img src="manikkutti.jpg" alt="Manikutti" class="manikutti" id="manikutti-img" onclick="showManikuttiDialogue()">
+        <img src="stay.jpg" alt="Manikutti" class="manikutti" id="manikutti-img">
         <p id="phone-a-friend-message"></p>
     </div>
 
@@ -409,6 +424,9 @@
         <p>Yo! I'm Manikutti, your zippy pal! Shall I bolt like a caffeinated squirrel?</p>
         <button id="manikutti-yes">Yes</button>
     </div>
+
+    <!-- Team Switch Message -->
+    <div id="team-switch-message">Team A got it wrong. Next Team, you have 10 seconds!</div>
 
     <script>
         const categories = [
@@ -573,7 +591,8 @@
             stopSound("timerTick");
             document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = false);
             document.getElementById("askFriendButton").textContent = "Ask a Friend";
-            document.getElementById("manikutti-img").src = "manikkutti.jpg"; // Reset to starting image
+            document.getElementById("manikutti-img").src = "stay.jpg"; // Reset to starting image
+            showManikuttiDialogue(); // Show dialogue box automatically
         }
 
         function revealOption(btn, index, fullText) {
@@ -746,8 +765,12 @@
 
         function switchToNextTeam() {
             gameState.teamTurn = "Next Team";
-            alert("Team A got it wrong. Next Team, you have 10 seconds!");
-            start10sTimer();
+            const teamSwitchMessage = document.getElementById("team-switch-message");
+            teamSwitchMessage.style.display = "block";
+            setTimeout(() => {
+                teamSwitchMessage.style.display = "none";
+                start10sTimer();
+            }, 2000); // Display for 2 seconds before starting the timer
         }
 
         function completeQuestion() {
@@ -814,7 +837,8 @@
         }
 
         window.onload = () => {
-            playSound("introSound");
+            playSound("backgroundMusic"); // Plays bgm.mp3 as background music
+            playSound("introSound");      // Plays intro music
         };
     </script>
 </body>
