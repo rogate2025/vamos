@@ -107,34 +107,78 @@
             transform: scale(1.1);
             transition: transform 0.3s;
         }
+        /** Guruji Popup Styles **/
         .guruji-popup {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 95%;
-            height: 95%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Transparent background */
             display: none;
             justify-content: center;
             align-items: center;
+            z-index: 2000;
         }
-        .guruji-popup iframe {
-            width: 98%;
-            height: 98%;
-            border: none;
+        .guruji-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); /* Glow effect */
         }
-        .guruji-popup button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #ff0000;
-            color: #fff;
+        .guruji-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 3px solid #ffd700;
+        }
+        .guruji-dialogue {
+            font-size: 1.2em;
+            color: #333;
+        }
+        #guruji-intro {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #ff4500;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.5s ease-in;
+        }
+        #guruji-question {
+            margin-bottom: 15px;
+            font-style: italic;
+            animation: fadeIn 1s ease-in;
+        }
+        #reveal-answer {
+            background: linear-gradient(45deg, #ffd700, #ffa500);
             border: none;
-            padding: 10px;
+            padding: 10px 20px;
             cursor: pointer;
+            font-size: 1em;
+            border-radius: 5px;
+            transition: transform 0.2s;
         }
+        #reveal-answer:hover {
+            transform: scale(1.05);
+        }
+        #guruji-answer {
+            font-weight: bold;
+            color: #008000;
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        /** Other Existing Styles **/
         #phone-a-friend-message {
             font-size: 1.5em;
             color: #ffd700;
@@ -258,8 +302,16 @@
         <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
         <p id="phone-a-friend-message"></p>
         <div class="guruji-popup" id="guruji-popup">
-            <iframe src="guruji.html"></iframe>
-            <button onclick="closeGurujiPopup()">Close</button>
+            <div class="guruji-content">
+                <img src="guruji.png" alt="Guruji" class="guruji-image">
+                <div class="guruji-dialogue">
+                    <p id="guruji-intro">Greetings, knowledge seekers! I am Guruji, your Quiz Master. Behold my challenge:</p>
+                    <p id="guruji-question"></p>
+                    <button id="reveal-answer">Reveal Answer</button>
+                    <p id="guruji-answer" style="display: none;"></p>
+                </div>
+                <button onclick="closeGurujiPopup()">Close</button>
+            </div>
         </div>
     </div>
 
@@ -348,6 +400,17 @@
                 { question: "Who won the first Super Bowl?", options: ["A: Green Bay Packers", "B: Kansas City Chiefs", "C: New York Jets", "D: Baltimore Colts"], answer: "A: Green Bay Packers" },
                 { question: "What is the most watched sporting event?", options: ["A: FIFA World Cup", "B: Olympics", "C: Super Bowl", "D: UEFA Champions League"], answer: "A: FIFA World Cup" }
             ]
+        ];
+
+        /** Guruji's Questions Array **/
+        const gurujiQuestions = [
+            { question: "What is the capital of Italy?", answer: "Rome" },
+            { question: "Who wrote 'Hamlet'?", answer: "William Shakespeare" },
+            { question: "What is the largest mammal on Earth?", answer: "Blue Whale" },
+            { question: "What is the chemical symbol for water?", answer: "H2O" },
+            { question: "Who painted the Sistine Chapel ceiling?", answer: "Michelangelo" },
+            { question: "Which planet is closest to the Sun?", answer: "Mercury" },
+            { question: "What is the tallest mountain in the world?", answer: "Mount Everest" }
         ];
 
         let answeredQuestions = { 0: new Set(), 1: new Set(), 2: new Set(), 3: new Set(), 4: new Set() };
@@ -580,8 +643,30 @@
             }
         }
 
+        /** Guruji Popup Functions **/
         function openGurujiPopup() {
-            document.getElementById("guruji-popup").style.display = "flex";
+            const popup = document.getElementById("guruji-popup");
+            popup.style.display = "flex";
+            const questionElem = document.getElementById("guruji-question");
+            const answerElem = document.getElementById("guruji-answer");
+            const revealBtn = document.getElementById("reveal-answer");
+
+            // Reset answer display
+            answerElem.style.display = "none";
+            revealBtn.style.display = "block";
+
+            // Select a random question
+            const randomIndex = Math.floor(Math.random() * gurujiQuestions.length);
+            const selectedQuestion = gurujiQuestions[randomIndex];
+
+            questionElem.textContent = selectedQuestion.question;
+            answerElem.textContent = selectedQuestion.answer;
+
+            // Add event listener to reveal answer
+            revealBtn.onclick = () => {
+                answerElem.style.display = "block";
+                revealBtn.style.display = "none";
+            };
         }
 
         function closeGurujiPopup() {
