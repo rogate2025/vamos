@@ -55,11 +55,44 @@
             background: rgba(0, 0, 0, 0.3);
             z-index: 0;
         }
+
+        #passkey-container {
+            text-align: center;
+            z-index: 1;
+        }
+
+        #passkey-container h2 {
+            color: #ffd700;
+        }
+
+        #passkey-input {
+            background: #333;
+            color: #ffd700;
+            border: 1px solid #ffd700;
+            padding: 10px;
+            width: 100px;
+            text-align: center;
+        }
+
+        #passkey-form button {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="background-overlay"></div>
-    <div class="container">
+    <div id="passkey-container">
+        <h2>Enter Passkey</h2>
+        <form id="passkey-form">
+            <input type="password" id="passkey-input" placeholder="****">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <div class="container" id="quiz-content" style="display: none;">
         <div class="rounds">
             <img src="one-5216_256.gif" alt="Round 1" class="round-image" onclick="openRound('round1.html')">
             <img src="two-5334_256.gif" alt="Round 2" class="round-image" onclick="openRound('round2.html')">
@@ -68,11 +101,25 @@
             <img src="five-5385_256.gif" alt="Round 5" class="round-image" onclick="openRound('round5.html')">
         </div>
     </div>
+    <audio id="intro-music" src="intro.mp3" loop></audio>
 
     <script>
         function openRound(url) {
             window.open(url, 'RoundWindow', 'width=800,height=600,scrollbars=yes');
         }
+
+        document.getElementById('passkey-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+            var passkey = document.getElementById('passkey-input').value;
+            if (passkey === '3492') {
+                document.getElementById('passkey-container').style.display = 'none';
+                document.getElementById('quiz-content').style.display = 'block';
+                var audio = document.getElementById('intro-music');
+                audio.play();
+            } else {
+                alert('Incorrect passkey, please try again.');
+            }
+        });
     </script>
 </body>
 </html>

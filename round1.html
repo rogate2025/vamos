@@ -5,14 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Who Wants to Be a Millionaire - Group Game</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Arial Black', Arial, sans-serif;
+            font-family: Arial, sans-serif;
             text-align: center;
             background-color: #000;
             color: #fff;
@@ -21,321 +15,180 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            margin: 0;
         }
-
-        .opening {
+        .intro-page, .opening, .category-screen, .container {
+            width: 100%;
+            height: 100%;
+        }
+        .intro-page {
+            background: linear-gradient(to bottom, #000033, #000);
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, #000033, #000);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            z-index: 1000;
         }
-
-        .opening h1 {
-            font-size: 3.5vw;
-            margin-bottom: 30px;
+        .intro-page h1, .opening h1 {
+            font-size: 3em;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px #000;
         }
-
-        #category-buttons button {
+        .intro-page button, #category-buttons button, #back-to-category {
             background: linear-gradient(45deg, #ffd700, #ffa500);
-            border: 3px solid #ffd700;
+            border: 2px solid #ffd700;
             border-radius: 10px;
             color: #000;
-            font-weight: bold;
-            font-size: 2vw;
-            padding: 15px 30px;
-            cursor: pointer;
-            margin: 10px;
-            text-transform: uppercase;
-            transition: transform 0.2s;
-        }
-
-        #category-buttons button:hover {
-            transform: scale(1.05);
-        }
-
-        .category-screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        #number-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        #number-buttons button {
-            background: linear-gradient(45deg, #ffd700, #ffa500);
-            border: 3px solid #ffd700;
-            border-radius: 10px;
-            color: #000;
-            font-weight: bold;
-            font-size: 4vw;
-            padding: 25px 50px;
-            cursor: pointer;
-            margin: 10px;
-            min-width: 120px;
-            transition: transform 0.2s;
-        }
-
-        #number-buttons button:hover {
-            transform: scale(1.05);
-        }
-
-        #back-to-category {
-            background: linear-gradient(45deg, #ffd700, #ffa500);
-            border: 3px solid #ffd700;
-            border-radius: 10px;
-            color: #000;
-            font-weight: bold;
-            font-size: 2vw;
-            padding: 15px 30px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: transform 0.2s;
-        }
-
-        #back-to-category:hover {
-            transform: scale(1.05);
-        }
-
-        .container {
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, #000066, #000);
-            box-shadow: 0 0 30px #ffd700;
-            display: none;
-            position: relative;
-            padding: 20px;
-            max-width: 1280px;
-            max-height: 720px;
-            overflow: hidden;
-        }
-
-        .nav-buttons {
-            position: absolute;
-            top: 10px;
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
-            padding: 0 20px;
-            z-index: 1;
-        }
-
-        .nav-buttons button {
-            background: linear-gradient(45deg, #ffd700, #ffa500);
-            border: 2px solid #fff;
-            border-radius: 5px;
-            color: #000;
-            font-weight: bold;
-            font-size: 1.5vw;
+            font-size: 1.5em;
             padding: 10px 20px;
             cursor: pointer;
-            transition: transform 0.2s;
+            margin: 10px;
+            text-shadow: 1px 1px 2px #fff;
         }
-
-        .nav-buttons button:hover {
-            transform: scale(1.05);
+        .opening, .category-screen {
+            display: none;
         }
-
-        .question-container {
-            height: 40%;
-            width: 80%;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
+        .container {
+            display: none;
+            background: radial-gradient(circle, #000066, #000);
+            padding: 20px;
         }
-
         .question {
-            font-size: 3.5vw;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px #ffd700;
+            font-size: 2em;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px #000;
         }
-
         .options {
-            width: 80%;
-            margin: 20px auto;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
+            margin: 20px auto;
+            width: 80%;
         }
-
         .options button {
             padding: 15px;
-            font-size: 2vw;
+            font-size: 1.5em;
             background: linear-gradient(to bottom, #000066, #000033);
             border: 2px solid #ffd700;
-            border-radius: 25px;
-            color: white;
+            border-radius: 10px;
+            color: #fff;
             cursor: pointer;
-            transition: all 0.3s;
+            text-shadow: 1px 1px 2px #000;
         }
-
-        .options button:hover {
-            background: linear-gradient(to bottom, #000099, #000066);
-        }
-
-        .lifelines {
-            width: 80%;
-            margin: 20px auto;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
         .lifelines button {
-            font-size: 1.8vw;
-            padding: 15px 25px;
             background: linear-gradient(to bottom, #ffd700, #ffa500);
             border: 2px solid #fff;
             border-radius: 50%;
-            color: #000;
-            cursor: pointer;
-            transition: all 0.3s;
+            padding: 15px;
+            font-size: 1.5em;
+            margin: 0 10px;
+            text-shadow: 1px 1px 2px #000;
         }
-
         .timer {
-            font-size: 2vw;
+            font-size: 2em;
             color: #ffd700;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px 20px;
-            border-radius: 5px;
-            margin-top: 10px;
-            display: inline-block;
-            animation: glow 1.5s ease-in-out infinite alternate;
+            text-shadow: 2px 2px 4px #000;
         }
-
-        @keyframes glow {
-            from {
-                box-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700;
-            }
-            to {
-                box-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700, 0 0 30px #ffd700;
-            }
-        }
-
         .manikutti {
             width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 3px solid #fff;
             position: absolute;
             bottom: 20px;
             right: 20px;
+            border-radius: 50%;
+        }
+        .guruji {
+            width: 120px;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 0 10px #ffd700;
-            transition: transform 0.2s;
         }
-
-        .manikutti:hover {
+        .manikutti:hover, .guruji:hover {
             transform: scale(1.1);
+            transition: transform 0.3s;
         }
-
+        .guruji-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 95%;
+            height: 95%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .guruji-popup iframe {
+            width: 98%;
+            height: 98%;
+            border: none;
+        }
+        .guruji-popup button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
         #phone-a-friend-message {
-            margin: 20px;
-            font-size: 2vw;
+            font-size: 1.5em;
             color: #ffd700;
+            text-shadow: 1px 1px 2px #000;
             display: none;
         }
-
         #custom-confirm {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: linear-gradient(45deg, #ffd700, #ff4500);
+            background: #ffd700;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 15px #ffd700, 0 0 25px #ff4500;
-            z-index: 1000;
             display: none;
         }
-
         #custom-confirm p {
-            font-size: 2.5vw;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 20px;
-            text-transform: uppercase;
+            font-size: 2em;
+            color: #000;
+            text-shadow: 1px 1px 2px #fff;
         }
-
         #custom-confirm button {
-            padding: 10px 20px;
-            font-size: 1.5vw;
-            margin: 0 10px;
-            background: #000066;
+            font-size: 1.5em;
+            margin: 10px;
+            background: linear-gradient(45deg, #000066, #000033);
             color: #fff;
-            border: 2px solid #ffd700;
-            border-radius: 5px;
+            border: 2px solid #000;
+            border-radius: 10px;
+            padding: 10px 20px;
             cursor: pointer;
-            transition: all 0.3s;
         }
-
-        #custom-confirm button:hover {
-            background: #000099;
-            transform: scale(1.05);
-        }
-
         #manikutti-dialogue {
             position: absolute;
             bottom: 140px;
             right: 140px;
-            background: linear-gradient(45deg, #ffd700, #ffa500);
+            background: #ffd700;
             padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 0 10px #ffd700;
-            z-index: 1000;
             display: none;
-            max-width: 300px;
-            text-align: left;
         }
-
-        #manikutti-dialogue::after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            right: 20px;
-            border: 10px solid transparent;
-            border-top: 10px solid #ffa500;
-        }
-
         #manikutti-dialogue p {
-            font-size: 1.8vw;
-            font-weight: bold;
+            font-size: 1.5em;
             color: #000;
-            margin-bottom: 10px;
-            font-style: italic;
-            text-shadow: 0 0 3px #fff;
+            text-shadow: 1px 1px 2px #fff;
         }
-
         #manikutti-dialogue button {
-            padding: 8px 16px;
-            font-size: 1.5vw;
-            background: #000066;
+            font-size: 1.2em;
+            background: linear-gradient(45deg, #000066, #000033);
             color: #fff;
-            border: 2px solid #ffd700;
-            border-radius: 5px;
+            border: 2px solid #000;
+            border-radius: 10px;
+            padding: 5px 10px;
             cursor: pointer;
-            transition: all 0.3s;
         }
-
-        #manikutti-dialogue button:hover {
-            background: #000099;
-            transform: scale(1.05);
-        }
-
         #team-switch-message {
             position: fixed;
             top: 50%;
@@ -345,27 +198,20 @@
             color: #fff;
             padding: 20px;
             border-radius: 10px;
-            font-size: 2vw;
-            z-index: 1000;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px #000;
             display: none;
         }
-
-        @media (max-width: 768px) {
-            .question { font-size: 5vw; }
-            .options button { font-size: 3vw; }
-            .lifelines button { font-size: 2.5vw; }
-            .nav-buttons button { font-size: 2.5vw; }
-            .timer { font-size: 3vw; }
-            .manikutti { width: 80px; height: 80px; }
-            #number-buttons button { font-size: 6vw; padding: 20px 40px; }
-            #back-to-category { font-size: 3vw; padding: 10px 20px; }
-            #phone-a-friend-message { font-size: 3vw; }
-            #custom-confirm p { font-size: 4vw; }
-            #custom-confirm button { font-size: 2.5vw; padding: 8px 16px; }
-            #manikutti-dialogue { bottom: 110px; right: 100px; }
-            #manikutti-dialogue p { font-size: 3vw; }
-            #manikutti-dialogue button { font-size: 2.5vw; padding: 6px 12px; }
-            #team-switch-message { font-size: 3vw; }
+        .number-button {
+            background: linear-gradient(45deg, #ffd700, #ffa500);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            color: #000;
+            font-size: 1.5em;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 10px;
+            text-shadow: 1px 1px 2px #fff;
         }
     </style>
 </head>
@@ -375,146 +221,141 @@
     <audio id="wrongSound" src="wrong_answer.mp3"></audio>
     <audio id="finalAnswerSound" src="final_answer.mp3"></audio>
     <audio id="lifelineSound" src="lifeline.mp3"></audio>
-    <audio id="introSound" src="intro_music.mp3"></audio>
-    <audio id="winSound" src="win_category.mp3"></audio>
     <audio id="timerTick" src="timer_tick.mp3" loop></audio>
     <audio id="timeUpSound" src="time_up.mp3"></audio>
 
+    <div id="intro-page" class="intro-page">
+        <h1>Welcome to Who Wants to Be a Millionaire - Group Game 🎉</h1>
+        <button id="start-game">Start Game 🚀</button>
+    </div>
+
     <div class="opening" id="opening">
-        <h1>Select a Category</h1>
+        <h1>Select a Category 🌟</h1>
         <div id="category-buttons">
-            <button onclick="selectCategory(0)">General Knowledge</button>
-            <button onclick="selectCategory(1)">Bible</button>
-            <button onclick="selectCategory(2)">He Never Said No</button>
-            <button onclick="selectCategory(3)">SPES NON CONFUNDIT</button>
-            <button onclick="selectCategory(4)">Sports</button>
+            <button onclick="selectCategory(0)">General Knowledge 📚</button>
+            <button onclick="selectCategory(1)">Bible ✝️</button>
+            <button onclick="selectCategory(2)">He Never Said No 🙏</button>
+            <button onclick="selectCategory(3)">SPES NON CONFUNDIT 🌈</button>
+            <button onclick="selectCategory(4)">Sports ⚽</button>
         </div>
     </div>
 
-    <div class="category-screen" id="category-screen" style="display: none;">
-        <h2>Category <span id="category-name"></span></h2>
+    <div class="category-screen" id="category-screen">
+        <h2>Category <span id="category-name"></span> 🎯</h2>
         <div id="number-buttons"></div>
-        <button id="back-to-category" onclick="goBackToCategorySelection()">Back to Categories</button>
+        <button id="back-to-category" onclick="goBackToCategorySelection()">Back to Categories 🔙</button>
     </div>
 
-    <div class="container" id="game-container" style="display: none;">
-        <div class="nav-buttons"></div>
-        <div class="question-container">
-            <p class="question" id="question">Loading question...</p>
-        </div>
+    <div class="container" id="game-container">
+        <p class="question" id="question"></p>
         <div class="options" id="options"></div>
         <div class="lifelines">
-            <button onclick="useFiftyFifty()">50:50</button>
-            <button id="askFriendButton" onclick="toggleAskAFriend()">Ask a Friend</button>
+            <button onclick="useFiftyFifty()">50:50 🎲</button>
+            <button id="askFriendButton" onclick="toggleAskAFriend()">Ask a Friend 📞</button>
         </div>
-        <div class="timer" id="timer">60s</div>
-        <img src="stay.jpg" alt="Manikutti" class="manikutti" id="manikutti-img">
+        <div class="timer" id="timer">60s ⏰</div>
+        <img src="stay.jpg" class="manikutti" id="manikutti-img">
+        <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
         <p id="phone-a-friend-message"></p>
+        <div class="guruji-popup" id="guruji-popup">
+            <iframe src="guruji.html"></iframe>
+            <button onclick="closeGurujiPopup()">Close</button>
+        </div>
     </div>
 
-    <!-- Custom Confirmation Box -->
     <div id="custom-confirm">
-        <p>Is that your final answer?</p>
-        <button id="confirm-yes">Yes</button>
-        <button id="confirm-no">No</button>
+        <p>Is that your final answer? 🤔</p>
+        <button id="confirm-yes">Yes ✅</button>
+        <button id="confirm-no">No ❌</button>
     </div>
 
-    <!-- Manikutti Dialogue Box -->
     <div id="manikutti-dialogue">
-        <p>Yo! I'm Manikutti, your zippy pal! Shall I bolt like a caffeinated squirrel?</p>
-        <button id="manikutti-yes">Yes</button>
+        <p>Yo! Shall I start the timer? ⏰</p>
+        <button id="manikutti-yes">Yes 👍</button>
     </div>
 
-    <!-- Team Switch Message -->
-    <div id="team-switch-message">Team A got it wrong. Next Team, you have 10 seconds!</div>
+    <div id="team-switch-message"></div>
 
     <script>
         const categories = [
             [ // General Knowledge
-                { question: "Which trio won the 2024 Nobel Prize in Chemistry for their work on proteins?", options: ["A: David Baker, Demis Hassabis, John Jumper", "B: Jennifer Doudna, Emmanuelle Charpentier, Virginijus Šikšnys", "C: Frances Arnold, George Smith, Greg Winter", "D: Katalin Karikó, Drew Weissman, Robert Malone"], answer: "A: David Baker, Demis Hassabis, John Jumper" },
-                { question: "Which scientist led the 2024 breakthrough in quantum computing using topological qubits?", options: ["A: John Preskill", "B: Mikhail Lukin", "C: Leo Kouwenhoven", "D: David Deutsch"], answer: "C: Leo Kouwenhoven" },
-                { question: "What record did Shohei Ohtani set in the 2024 MLB season?", options: ["A: Most home runs in a single season", "B: First 50-50 season (HRs and stolen bases)", "C: Highest batting average since 2000", "D: Most pitching wins by a position player"], answer: "B: First 50-50 season (HRs and stolen bases)" },
-                { question: "Which treaty was signed in 2025 to regulate AI development globally?", options: ["A: Geneva AI Accord", "B: Paris Digital Pact", "C: Kyoto Tech Protocol", "D: Vienna AI Framework"], answer: "D: Vienna AI Framework" },
-                { question: "What space mission discovered water ice on Mars in 2024?", options: ["A: NASA’s Perseverance", "B: ESA’s ExoMars", "C: China’s Tianwen-2", "D: SpaceX’s Starship"], answer: "B: ESA’s ExoMars" },
-                { question: "Which organization won the 2024 Nobel Prize in Economics for institutional studies?", options: ["A: Acemoglu, Johnson, Robinson", "B: Banerjee, Duflo, Kremer", "C: Nordhaus, Romer", "D: Piketty, Saez, Zucman"], answer: "A: Acemoglu, Johnson, Robinson" },
-                { question: "Who won the 2024 Sahitya Akademi Award for Hindi literature?", options: ["A: Krishna Sobti (posthumous)", "B: Sanjiv", "C: Geetanjali Shree", "D: Uday Prakash"], answer: "B: Sanjiv" },
-                { question: "Which Indian state topped the 2024 National Panchayat Awards for rural governance?", options: ["A: Gujarat", "B: Kerala", "C: Odisha", "D: Himachal Pradesh"], answer: "B: Kerala" },
-                { question: "What cultural event in 2024 celebrated 75 years of the Indian Constitution?", options: ["A: Samvidhan Mahotsav", "B: Bharat Parv", "C: Azadi Ka Amrit Mahotsav", "D: Sanskriti Sangam"], answer: "A: Samvidhan Mahotsav" },
-                { question: "Which Kerala personality was honored with the 2024 JC Daniel Award?", options: ["A: Shaji N Karun", "B: Adoor Gopalakrishnan", "C: MT Vasudevan Nair", "D: Hariharan"], answer: "A: Shaji N Karun" },
-                { question: "Which Kerala festival in 2024 was declared a UNESCO Intangible Heritage?", options: ["A: Thrissur Pooram", "B: Theyyam", "C: Onam", "D: Vishu"], answer: "B: Theyyam" },
-                { question: "Which Kerala scientist contributed to a 2024 global climate study?", options: ["A: Tessy Thomas", "B: VS Ramachandran", "C: KK Ramakrishnan", "D: Sabu Thomas"], answer: "D: Sabu Thomas" }
+                { question: "What is the capital of France?", options: ["A: Paris", "B: London", "C: Berlin", "D: Madrid"], answer: "A: Paris" },
+                { question: "What is the largest planet?", options: ["A: Jupiter", "B: Saturn", "C: Earth", "D: Mars"], answer: "A: Jupiter" },
+                { question: "Who invented the telephone?", options: ["A: Bell", "B: Edison", "C: Tesla", "D: Marconi"], answer: "A: Bell" },
+                { question: "What is the capital of Australia?", options: ["A: Sydney", "B: Melbourne", "C: Canberra", "D: Brisbane"], answer: "C: Canberra" },
+                { question: "Who wrote the play 'Romeo and Juliet'?", options: ["A: Shakespeare", "B: Dickens", "C: Twain", "D: Austen"], answer: "A: Shakespeare" },
+                { question: "What is the chemical symbol for gold?", options: ["A: Au", "B: Ag", "C: Fe", "D: Hg"], answer: "A: Au" },
+                { question: "Which planet is known as the Red Planet?", options: ["A: Mars", "B: Venus", "C: Jupiter", "D: Saturn"], answer: "A: Mars" },
+                { question: "Who painted the Mona Lisa?", options: ["A: Da Vinci", "B: Michelangelo", "C: Raphael", "D: Caravaggio"], answer: "A: Da Vinci" },
+                { question: "What is the largest ocean on Earth?", options: ["A: Pacific", "B: Atlantic", "C: Indian", "D: Arctic"], answer: "A: Pacific" },
+                { question: "What is the smallest country in the world?", options: ["A: Vatican City", "B: Monaco", "C: San Marino", "D: Liechtenstein"], answer: "A: Vatican City" },
+                { question: "Who discovered penicillin?", options: ["A: Fleming", "B: Pasteur", "C: Jenner", "D: Koch"], answer: "A: Fleming" },
+                { question: "What is the hardest natural substance on Earth?", options: ["A: Diamond", "B: Quartz", "C: Topaz", "D: Corundum"], answer: "A: Diamond" }
             ],
             [ // Bible
-                { question: "Which Indian film was India's official entry for Best International Feature Film at the 2024 Oscars?", options: ["A: 2018", "B: Jawan", "C: The Kerala Story", "D: RRR"], answer: "A: 2018" },
-                { question: "Who won the 2024 Grammy Award for Album of the Year?", options: ["A: Taylor Swift", "B: SZA", "C: Olivia Rodrigo", "D: Miley Cyrus"], answer: "A: Taylor Swift" },
-                { question: "Who won the Bharat Ratna award in 2024?", options: ["A: Sachin Tendulkar", "B: Karpoori Thakur", "C: A.P.J. Abdul Kalam", "D: Amitabh Bachchan"], answer: "B: Karpoori Thakur" },
-                { question: "Which writer won the 2023 Jnanpith Award?", options: ["A: Vinod Kumar Shukla", "B: Damodar Mauzo", "C: S. L. Bhyrappa", "D: Krishna Sobti"], answer: "A: Vinod Kumar Shukla" },
-                { question: "Who won the Palme d'Or at the 2023 Cannes Film Festival?", options: ["A: Justine Triet (Anatomy of a Fall)", "B: Jonathan Glazer (The Zone of Interest)", "C: Christopher Nolan (Oppenheimer)", "D: Wim Wenders (Perfect Days)"], answer: "A: Justine Triet (Anatomy of a Fall)" },
-                { question: "Which movie won Best Film at the 2024 BAFTA Awards?", options: ["A: Barbie", "B: Poor Things", "C: The Holdovers", "D: Oppenheimer"], answer: "D: Oppenheimer" },
-                { question: "Which Indian film was India's official entry for Best International Feature Film at the 2024 Oscars?", options: ["A: 2018", "B: Jawan", "C: The Kerala Story", "D: RRR"], answer: "A: 2018" },
-                { question: "Who won the 2024 Grammy Award for Album of the Year?", options: ["A: Taylor Swift", "B: SZA", "C: Olivia Rodrigo", "D: Miley Cyrus"], answer: "A: Taylor Swift" },
-                { question: "Who won the Bharat Ratna award in 2024?", options: ["A: Sachin Tendulkar", "B: Karpoori Thakur", "C: A.P.J. Abdul Kalam", "D: Amitabh Bachchan"], answer: "B: Karpoori Thakur" },
-                { question: "Which writer won the 2023 Jnanpith Award?", options: ["A: Vinod Kumar Shukla", "B: Damodar Mauzo", "C: S. L. Bhyrappa", "D: Krishna Sobti"], answer: "A: Vinod Kumar Shukla" },
-                { question: "Who won the Palme d'Or at the 2023 Cannes Film Festival?", options: ["A: Justine Triet (Anatomy of a Fall)", "B: Jonathan Glazer (The Zone of Interest)", "C: Christopher Nolan (Oppenheimer)", "D: Wim Wenders (Perfect Days)"], answer: "A: Justine Triet (Anatomy of a Fall)" },
-                { question: "Which movie won Best Film at the 2024 BAFTA Awards?", options: ["A: Barbie", "B: Poor Things", "C: The Holdovers", "D: Oppenheimer"], answer: "D: Oppenheimer" }
+                { question: "Who built the ark?", options: ["A: Noah", "B: Moses", "C: Abraham", "D: David"], answer: "A: Noah" },
+                { question: "What is the first book of the Bible?", options: ["A: Genesis", "B: Exodus", "C: Leviticus", "D: Numbers"], answer: "A: Genesis" },
+                { question: "Who was swallowed by a big fish?", options: ["A: Jonah", "B: Daniel", "C: Elijah", "D: Isaiah"], answer: "A: Jonah" },
+                { question: "What is the last book of the Bible?", options: ["A: Revelation", "B: Jude", "C: 3 John", "D: Malachi"], answer: "A: Revelation" },
+                { question: "Who led the Israelites out of Egypt?", options: ["A: Moses", "B: Aaron", "C: Joshua", "D: Caleb"], answer: "A: Moses" },
+                { question: "What is the shortest verse in the Bible?", options: ["A: Jesus wept", "B: God is love", "C: Pray continually", "D: Rejoice always"], answer: "A: Jesus wept" },
+                { question: "Who denied Jesus three times?", options: ["A: Peter", "B: Judas", "C: Thomas", "D: John"], answer: "A: Peter" },
+                { question: "What is the first miracle Jesus performed?", options: ["A: Turning water into wine", "B: Feeding 5000", "C: Walking on water", "D: Healing the blind"], answer: "A: Turning water into wine" },
+                { question: "Who wrote most of the New Testament?", options: ["A: Paul", "B: Peter", "C: John", "D: Luke"], answer: "A: Paul" },
+                { question: "What is the Golden Rule?", options: ["A: Do unto others as you would have them do unto you", "B: Love your neighbor as yourself", "C: Turn the other cheek", "D: Give to the poor"], answer: "A: Do unto others as you would have them do unto you" },
+                { question: "Who was the first king of Israel?", options: ["A: Saul", "B: David", "C: Solomon", "D: Samuel"], answer: "A: Saul" },
+                { question: "What are the Beatitudes?", options: ["A: Blessings from the Sermon on the Mount", "B: The Ten Commandments", "C: The Lord's Prayer", "D: The Fruits of the Spirit"], answer: "A: Blessings from the Sermon on the Mount" }
             ],
             [ // He Never Said No
-                { question: "Who won the 2023 Nobel Prize in Physics for work on electrons in matter?", options: ["A: Pierre Agostini, Ferenc Krausz, Anne L’Huillier", "B: John Clauser, Alain Aspect, Anton Zeilinger", "C: Syukuro Manabe, Klaus Hasselmann, Giorgio Parisi", "D: David Wineland, Serge Haroche"], answer: "A: Pierre Agostini, Ferenc Krausz, Anne L’Huillier" },
-                { question: "What is the prestigious award for outstanding contributions in the field of mathematics?", options: ["A: Abel Prize", "B: Fields Medal", "C: Turing Award", "D: Poincaré Prize"], answer: "B: Fields Medal" },
-                { question: "Who won the 2023 Man Booker International Prize?", options: ["A: Khaled Khalifa", "B: Georgi Gospodinov", "C: Olga Tokarczuk", "D: Jokha Alharthi"], answer: "B: Georgi Gospodinov" },
-                { question: "Which Malayalam actor won the Best Actor award at the 2024 Kerala State Film Awards?", options: ["A: Mammootty", "B: Fahadh Faasil", "C: Indrans", "D: Kunchacko Boban"], answer: "A: Mammootty" },
-                { question: "Which book won the Pulitzer Prize for Fiction in 2023?", options: ["A: Trust (Hernan Diaz)", "B: The Rabbit Hutch (Tess Gunty)", "C: Demon Copperhead (Barbara Kingsolver)", "D: Time Shelter (Georgi Gospodinov)"], answer: "A: Trust (Hernan Diaz)" },
-                { question: "Who won the 2023 Nobel Prize in Chemistry?", options: ["A: Moungi Bawendi, Louis Brus, Alexei Ekimov", "B: Carolyn Bertozzi, Morten Meldal, K. Barry Sharpless", "C: Emmanuelle Charpentier, Jennifer Doudna", "D: Akira Yoshino, John B. Goodenough"], answer: "A: Moungi Bawendi, Louis Brus, Alexei Ekimov" },
-                { question: "Who won the 2023 Nobel Prize in Physics for work on electrons in matter?", options: ["A: Pierre Agostini, Ferenc Krausz, Anne L’Huillier", "B: John Clauser, Alain Aspect, Anton Zeilinger", "C: Syukuro Manabe, Klaus Hasselmann, Giorgio Parisi", "D: David Wineland, Serge Haroche"], answer: "A: Pierre Agostini, Ferenc Krausz, Anne L’Huillier" },
-                { question: "What is the prestigious award for outstanding contributions in the field of mathematics?", options: ["A: Abel Prize", "B: Fields Medal", "C: Turing Award", "D: Poincaré Prize"], answer: "B: Fields Medal" },
-                { question: "Who won the 2023 Man Booker International Prize?", options: ["A: Khaled Khalifa", "B: Georgi Gospodinov", "C: Olga Tokarczuk", "D: Jokha Alharthi"], answer: "B: Georgi Gospodinov" },
-                { question: "Which Malayalam actor won the Best Actor award at the 2024 Kerala State Film Awards?", options: ["A: Mammootty", "B: Fahadh Faasil", "C: Indrans", "D: Kunchacko Boban"], answer: "A: Mammootty" },
-                { question: "Which book won the Pulitzer Prize for Fiction in 2023?", options: ["A: Trust (Hernan Diaz)", "B: The Rabbit Hutch (Tess Gunty)", "C: Demon Copperhead (Barbara Kingsolver)", "D: Time Shelter (Georgi Gospodinov)"], answer: "A: Trust (Hernan Diaz)" },
-                { question: "Who won the 2023 Nobel Prize in Chemistry?", options: ["A: Moungi Bawendi, Louis Brus, Alexei Ekimov", "B: Carolyn Bertozzi, Morten Meldal, K. Barry Sharpless", "C: Emmanuelle Charpentier, Jennifer Doudna", "D: Akira Yoshino, John B. Goodenough"], answer: "A: Moungi Bawendi, Louis Brus, Alexei Ekimov" }
+                { question: "Who is known for never saying no?", options: ["A: Jesus", "B: Moses", "C: Abraham", "D: David"], answer: "A: Jesus" },
+                { question: "What miracle did Jesus perform at Cana?", options: ["A: Turning water into wine", "B: Feeding 5000", "C: Walking on water", "D: Healing the blind"], answer: "A: Turning water into wine" },
+                { question: "What did Jesus say to the paralytic man?", options: ["A: Your sins are forgiven", "B: Take up your bed and walk", "C: Both A and B", "D: Neither"], answer: "C: Both A and B" },
+                { question: "How did Jesus respond to the woman caught in adultery?", options: ["A: Neither do I condemn you", "B: Go and sin no more", "C: Both A and B", "D: Stone her"], answer: "C: Both A and B" },
+                { question: "What did Jesus say to the thief on the cross?", options: ["A: Today you will be with me in paradise", "B: You are forgiven", "C: Remember me", "D: It is finished"], answer: "A: Today you will be with me in paradise" },
+                { question: "How did Jesus respond to Peter's denial?", options: ["A: Forgave him", "B: Rebuked him", "C: Ignored him", "D: Banished him"], answer: "A: Forgave him" },
+                { question: "What did Jesus say about paying taxes?", options: ["A: Render to Caesar what is Caesar's", "B: Do not pay taxes", "C: Taxes are unlawful", "D: Give to God what is God's"], answer: "A: Render to Caesar what is Caesar's" },
+                { question: "How did Jesus respond to the Canaanite woman's request?", options: ["A: Granted her request", "B: Ignored her", "C: Rebuked her", "D: Sent her away"], answer: "A: Granted her request" },
+                { question: "What did Jesus say to the rich young ruler?", options: ["A: Sell all you have and follow me", "B: Keep the commandments", "C: You lack one thing", "D: All of the above"], answer: "D: All of the above" },
+                { question: "How did Jesus respond to the lepers who asked for healing?", options: ["A: Healed them", "B: Sent them to the priests", "C: Both A and B", "D: Ignored them"], answer: "C: Both A and B" },
+                { question: "What did Jesus say to Lazarus?", options: ["A: Lazarus, come forth", "B: Your faith has healed you", "C: Go in peace", "D: Rise and walk"], answer: "A: Lazarus, come forth" },
+                { question: "How did Jesus respond to the blind man?", options: ["A: Healed him", "B: Gave him sight", "C: Both A and B", "D: Sent him away"], answer: "C: Both A and B" }
             ],
             [ // SPES NON CONFUNDIT
-                { question: "Which Indian writer won the Sahitya Akademi Award in 2023?", options: ["A: Geetanjali Shree", "B: Damodar Mauzo", "C: Vinod Kumar Shukla", "D: Perumal Murugan"], answer: "C: Vinod Kumar Shukla" },
-                { question: "Which Malayalam film won the Best Film award at the National Film Awards 2023?", options: ["A: Rorschach", "B: Home", "C: Nna Thaan Case Kodu", "D: 2018"], answer: "D: 2018" },
-                { question: "Who won the 2023 Nobel Prize in Medicine for work related to mRNA vaccines?", options: ["A: Katalin Karikó and Drew Weissman", "B: Svante Pääbo", "C: David Julius and Ardem Patapoutian", "D: Harvey J. Alter and Charles M. Rice"], answer: "A: Katalin Karikó and Drew Weissman" },
-                { question: "Who won the Best Director award at the 2024 Academy Awards?", options: ["A: Christopher Nolan", "B: Greta Gerwig", "C: Martin Scorsese", "D: Yorgos Lanthimos"], answer: "A: Christopher Nolan" },
-                { question: "Which Malayalam actress won the Best Actress award at the 2024 Kerala State Film Awards?", options: ["A: Aparna Balamurali", "B: Parvathy Thiruvothu", "C: Kani Kusruti", "D: Divya Prabha"], answer: "D: Divya Prabha" },
-                { question: "What prestigious award is given for outstanding journalism?", options: ["A: Booker Prize", "B: Pulitzer Prize", "C: Ramon Magsaysay Award", "D: Fields Medal"], answer: "B: Pulitzer Prize" },
-                { question: "Which Indian writer won the Sahitya Akademi Award in 2023?", options: ["A: Geetanjali Shree", "B: Damodar Mauzo", "C: Vinod Kumar Shukla", "D: Perumal Murugan"], answer: "C: Vinod Kumar Shukla" },
-                { question: "Which Malayalam film won the Best Film award at the National Film Awards 2023?", options: ["A: Rorschach", "B: Home", "C: Nna Thaan Case Kodu", "D: 2018"], answer: "D: 2018" },
-                { question: "Who won the 2023 Nobel Prize in Medicine for work related to mRNA vaccines?", options: ["A: Katalin Karikó and Drew Weissman", "B: Svante Pääbo", "C: David Julius and Ardem Patapoutian", "D: Harvey J. Alter and Charles M. Rice"], answer: "A: Katalin Karikó and Drew Weissman" },
-                { question: "Who won the Best Director award at the 2024 Academy Awards?", options: ["A: Christopher Nolan", "B: Greta Gerwig", "C: Martin Scorsese", "D: Yorgos Lanthimos"], answer: "A: Christopher Nolan" },
-                { question: "Which Malayalam actress won the Best Actress award at the 2024 Kerala State Film Awards?", options: ["A: Aparna Balamurali", "B: Parvathy Thiruvothu", "C: Kani Kusruti", "D: Divya Prabha"], answer: "D: Divya Prabha" },
-                { question: "What prestigious award is given for outstanding journalism?", options: ["A: Booker Prize", "B: Pulitzer Prize", "C: Ramon Magsaysay Award", "D: Fields Medal"], answer: "B: Pulitzer Prize" }
+                { question: "What does 'Spes Non Confundit' mean?", options: ["A: Hope does not disappoint", "B: Faith moves mountains", "C: Love conquers all", "D: Charity begins at home"], answer: "A: Hope does not disappoint" },
+                { question: "In which language is it?", options: ["A: Latin", "B: Greek", "C: Hebrew", "D: Aramaic"], answer: "A: Latin" },
+                { question: "What is the source of this phrase?", options: ["A: Romans 5:5", "B: 1 Corinthians 13:13", "C: Hebrews 11:1", "D: Psalm 23:1"], answer: "A: Romans 5:5" },
+                { question: "Who wrote the book of Romans?", options: ["A: Paul", "B: Peter", "C: John", "D: James"], answer: "A: Paul" },
+                { question: "What is the context of this phrase?", options: ["A: Hope in God's love", "B: Faith in God", "C: Love for others", "D: Charity for the poor"], answer: "A: Hope in God's love" },
+                { question: "How does hope not disappoint?", options: ["A: Because of God's love poured into our hearts", "B: Because of our faith", "C: Because of our works", "D: Because of our prayers"], answer: "A: Because of God's love poured into our hearts" },
+                { question: "What is the role of the Holy Spirit in this?", options: ["A: Pours God's love into our hearts", "B: Guides us", "C: Comforts us", "D: Convicts us"], answer: "A: Pours God's love into our hearts" },
+                { question: "What precedes this verse?", options: ["A: Suffering produces perseverance", "B: Faith without works is dead", "C: Love is patient", "D: The Lord is my shepherd"], answer: "A: Suffering produces perseverance" },
+                { question: "What follows this verse?", options: ["A: God's love has been poured out", "B: Now faith, hope, and love remain", "C: The just shall live by faith", "D: I will fear no evil"], answer: "A: God's love has been poured out" },
+                { question: "How does this relate to Christian faith?", options: ["A: Assurance of God's love", "B: Importance of works", "C: Necessity of prayer", "D: Value of scripture"], answer: "A: Assurance of God's love" },
+                { question: "What is the significance of hope in Christianity?", options: ["A: Central to faith", "B: Secondary to love", "C: Less important than faith", "D: Only for the future"], answer: "A: Central to faith" },
+                { question: "How can one apply this in daily life?", options: ["A: Trust in God's promises", "B: Work harder", "C: Pray more", "D: Read the Bible daily"], answer: "A: Trust in God's promises" }
             ],
             [ // Sports
-                { question: "Which movie won the Best Film award at the Filmfare Awards 2024?", options: ["A: Animal", "B: Jawan", "C: Pathaan", "D: 12th Fail"], answer: "D: 12th Fail" },
-                { question: "Which author won the 2024 Windham-Campbell Prize for Fiction?", options: ["A: Chimamanda Ngozi Adichie", "B: Marlon James", "C: Colson Whitehead", "D: Paul Harding"], answer: "D: Paul Harding" },
-                { question: "Which Indian film won the Best Documentary Short at the 2023 Oscars?", options: ["A: All That Breathes", "B: The Elephant Whisperers", "C: Writing with Fire", "D: Bhuj: The Day India Shook"], answer: "B: The Elephant Whisperers" },
-                { question: "Which prestigious award is given annually for advancements in computing?", options: ["A: Nobel Prize in Computer Science", "B: Turing Award", "C: Abel Prize", "D: Lasker Award"], answer: "B: Turing Award" },
-                { question: "Which female director won the Best Director award at the Golden Globes 2024?", options: ["A: Greta Gerwig", "B: Justine Triet", "C: Sofia Coppola", "D: Emerald Fennell"], answer: "B: Justine Triet" },
-                { question: "Who won the 2024 Dadasaheb Phalke Award for Outstanding Contribution to Indian Cinema?", options: ["A: Rajinikanth", "B: Mammootty", "C: Amitabh Bachchan", "D: Kamal Haasan"], answer: "A: Rajinikanth" },
-                { question: "Which movie won the Best Film award at the Filmfare Awards 2024?", options: ["A: Animal", "B: Jawan", "C: Pathaan", "D: 12th Fail"], answer: "D: 12th Fail" },
-                { question: "Which author won the 2024 Windham-Campbell Prize for Fiction?", options: ["A: Chimamanda Ngozi Adichie", "B: Marlon James", "C: Colson Whitehead", "D: Paul Harding"], answer: "D: Paul Harding" },
-                { question: "Which Indian film won the Best Documentary Short at the 2023 Oscars?", options: ["A: All That Breathes", "B: The Elephant Whisperers", "C: Writing with Fire", "D: Bhuj: The Day India Shook"], answer: "B: The Elephant Whisperers" },
-                { question: "Which prestigious award is given annually for advancements in computing?", options: ["A: Nobel Prize in Computer Science", "B: Turing Award", "C: Abel Prize", "D: Lasker Award"], answer: "B: Turing Award" },
-                { question: "Which female director won the Best Director award at the Golden Globes 2024?", options: ["A: Greta Gerwig", "B: Justine Triet", "C: Sofia Coppola", "D: Emerald Fennell"], answer: "B: Justine Triet" },
-                { question: "Who won the 2024 Dadasaheb Phalke Award for Outstanding Contribution to Indian Cinema?", options: ["A: Rajinikanth", "B: Mammootty", "C: Amitabh Bachchan", "D: Kamal Haasan"], answer: "A: Rajinikanth" }
+                { question: "Which sport is 'the beautiful game'?", options: ["A: Soccer", "B: Basketball", "C: Tennis", "D: Cricket"], answer: "A: Soccer" },
+                { question: "How many players on a basketball team?", options: ["A: 5", "B: 6", "C: 7", "D: 8"], answer: "A: 5" },
+                { question: "Who holds the record for the most home runs in MLB?", options: ["A: Barry Bonds", "B: Hank Aaron", "C: Babe Ruth", "D: Alex Rodriguez"], answer: "A: Barry Bonds" },
+                { question: "Which country has won the most FIFA World Cups?", options: ["A: Brazil", "B: Germany", "C: Italy", "D: Argentina"], answer: "A: Brazil" },
+                { question: "Who is considered the greatest basketball player of all time?", options: ["A: Michael Jordan", "B: LeBron James", "C: Kobe Bryant", "D: Magic Johnson"], answer: "A: Michael Jordan" },
+                { question: "What is the oldest tennis tournament?", options: ["A: Wimbledon", "B: US Open", "C: French Open", "D: Australian Open"], answer: "A: Wimbledon" },
+                { question: "Who has the most Olympic gold medals?", options: ["A: Michael Phelps", "B: Usain Bolt", "C: Carl Lewis", "D: Mark Spitz"], answer: "A: Michael Phelps" },
+                { question: "What is the national sport of Japan?", options: ["A: Sumo wrestling", "B: Baseball", "C: Soccer", "D: Judo"], answer: "A: Sumo wrestling" },
+                { question: "Who is the fastest man in the world?", options: ["A: Usain Bolt", "B: Tyson Gay", "C: Yohan Blake", "D: Justin Gatlin"], answer: "A: Usain Bolt" },
+                { question: "What sport is known as the 'king of sports'?", options: ["A: Soccer", "B: Basketball", "C: American Football", "D: Cricket"], answer: "A: Soccer" },
+                { question: "Who won the first Super Bowl?", options: ["A: Green Bay Packers", "B: Kansas City Chiefs", "C: New York Jets", "D: Baltimore Colts"], answer: "A: Green Bay Packers" },
+                { question: "What is the most watched sporting event?", options: ["A: FIFA World Cup", "B: Olympics", "C: Super Bowl", "D: UEFA Champions League"], answer: "A: FIFA World Cup" }
             ]
         ];
 
-        let answeredQuestions = {
-            0: new Set(),
-            1: new Set(),
-            2: new Set(),
-            3: new Set(),
-            4: new Set()
-        };
-
+        let answeredQuestions = { 0: new Set(), 1: new Set(), 2: new Set(), 3: new Set(), 4: new Set() };
         let gameState = {
             currentCategory: null,
             currentQuestionIndex: null,
             isFinalAnswer: false,
-            teamTurn: "A",
+            currentTeam: "A",
             timer: 60,
             timerInterval: null,
             optionsRevealed: [false, false, false, false],
@@ -524,9 +365,7 @@
         };
 
         function playSound(id) {
-            const sound = document.getElementById(id);
-            sound.currentTime = 0;
-            sound.play().catch(error => console.log("Audio playback failed:", error));
+            document.getElementById(id).play();
         }
 
         function stopSound(id) {
@@ -535,11 +374,11 @@
             sound.currentTime = 0;
         }
 
-        function selectCategory(categoryIndex) {
-            gameState.currentCategory = categoryIndex;
+        function selectCategory(index) {
+            gameState.currentCategory = index;
             document.getElementById("opening").style.display = "none";
             document.getElementById("category-screen").style.display = "block";
-            document.getElementById("category-name").textContent = categoryIndex + 1;
+            document.getElementById("category-name").textContent = ["General Knowledge", "Bible", "He Never Said No", "SPES NON CONFUNDIT", "Sports"][index];
             loadNumberButtons();
         }
 
@@ -547,22 +386,19 @@
             const numberButtonsDiv = document.getElementById("number-buttons");
             numberButtonsDiv.innerHTML = "";
             const answered = answeredQuestions[gameState.currentCategory];
-            for (let i = 0; i < 12; i++) {
+            for (let i = 0; i < categories[gameState.currentCategory].length; i++) {
                 if (!answered.has(i)) {
                     const btn = document.createElement("button");
+                    btn.className = "number-button";
                     btn.textContent = i + 1;
                     btn.onclick = () => selectQuestion(i);
                     numberButtonsDiv.appendChild(btn);
                 }
             }
-            if (answered.size === 12) {
-                alert("All questions in this category have been answered.");
-                goBackToCategorySelection();
-            }
         }
 
-        function selectQuestion(questionIndex) {
-            gameState.currentQuestionIndex = questionIndex;
+        function selectQuestion(index) {
+            gameState.currentQuestionIndex = index;
             document.getElementById("category-screen").style.display = "none";
             document.getElementById("game-container").style.display = "block";
             loadQuestion();
@@ -573,204 +409,126 @@
             document.getElementById("question").textContent = q.question;
             const options = document.getElementById("options");
             options.innerHTML = "";
-            ["A", "B", "C", "D"].forEach((label, index) => {
+            q.options.forEach((opt, i) => {
                 const btn = document.createElement("button");
-                btn.textContent = label;
-                btn.dataset.fullText = q.options[index];
-                btn.onclick = () => revealOption(btn, index, q.options[index]);
+                btn.textContent = opt[0];
+                btn.dataset.fullText = opt;
+                btn.onclick = () => revealOption(btn, i, opt);
                 options.appendChild(btn);
             });
-            document.getElementById("phone-a-friend-message").style.display = "none";
             gameState.optionsRevealed = [false, false, false, false];
             gameState.firstConfirmation = false;
             gameState.timer = 60;
             gameState.isTimerPaused = false;
             gameState.fiftyFiftyUsed = false;
-            document.getElementById("timer").textContent = `${gameState.timer}s`;
+            gameState.currentTeam = "A";
+            document.getElementById("timer").textContent = `${gameState.timer}s ⏰`;
             clearInterval(gameState.timerInterval);
             stopSound("timerTick");
-            document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = false);
-            document.getElementById("askFriendButton").textContent = "Ask a Friend";
-            document.getElementById("manikutti-img").src = "stay.jpg"; // Reset to starting image
-            showManikuttiDialogue(); // Show dialogue box automatically
+            document.getElementById("manikutti-dialogue").style.display = "block";
         }
 
         function revealOption(btn, index, fullText) {
-            if (gameState.fiftyFiftyUsed) {
-                if (!btn.disabled) {
-                    selectAnswer(btn, fullText);
-                }
-            } else if (!gameState.optionsRevealed[index]) {
+            if (!gameState.optionsRevealed[index]) {
                 btn.textContent = fullText;
                 gameState.optionsRevealed[index] = true;
-                if (gameState.optionsRevealed.every(revealed => revealed)) {
-                    start30sTimer();
-                }
+                if (gameState.optionsRevealed.every(r => r)) start30sTimer();
             } else if (!gameState.isTimerPaused) {
                 selectAnswer(btn, fullText);
             }
         }
 
         function start60sTimer() {
-            if (!gameState.timerInterval) {
-                playSound("timerTick");
-                gameState.timerInterval = setInterval(() => {
-                    if (!gameState.isTimerPaused) {
-                        gameState.timer--;
-                        document.getElementById("timer").textContent = `${gameState.timer}s`;
-                        if (gameState.timer <= 0) {
-                            clearInterval(gameState.timerInterval);
-                            stopSound("timerTick");
-                            playSound("timeUpSound");
-                            document.querySelectorAll(".options button").forEach(btn => btn.disabled = true);
-                            document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = true);
-                            setTimeout(completeQuestion, 2000);
-                        }
+            gameState.timerInterval = setInterval(() => {
+                if (!gameState.isTimerPaused) {
+                    gameState.timer--;
+                    document.getElementById("timer").textContent = `${gameState.timer}s ⏰`;
+                    if (gameState.timer <= 0) {
+                        clearInterval(gameState.timerInterval);
+                        playSound("timeUpSound");
+                        completeQuestion();
                     }
-                }, 1000);
-            }
+                }
+            }, 1000);
+            playSound("timerTick");
         }
 
         function start30sTimer() {
             clearInterval(gameState.timerInterval);
-            stopSound("timerTick");
             gameState.timer = 30;
-            document.getElementById("timer").textContent = `${gameState.timer}s`;
-            playSound("timerTick");
-            gameState.timerInterval = setInterval(() => {
-                if (!gameState.isTimerPaused) {
-                    gameState.timer--;
-                    document.getElementById("timer").textContent = `${gameState.timer}s`;
-                    if (gameState.timer <= 0) {
-                        clearInterval(gameState.timerInterval);
-                        stopSound("timerTick");
-                        playSound("timeUpSound");
-                        document.querySelectorAll(".options button").forEach(btn => btn.disabled = true);
-                        document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = true);
-                        setTimeout(completeQuestion, 2000);
-                    }
-                }
-            }, 1000);
+            document.getElementById("timer").textContent = `${gameState.timer}s ⏰`;
+            start60sTimer();
         }
 
         function start10sTimer() {
             clearInterval(gameState.timerInterval);
-            stopSound("timerTick");
             gameState.timer = 10;
-            document.getElementById("timer").textContent = `${gameState.timer}s`;
-            playSound("timerTick");
-            gameState.timerInterval = setInterval(() => {
-                if (!gameState.isTimerPaused) {
-                    gameState.timer--;
-                    document.getElementById("timer").textContent = `${gameState.timer}s`;
-                    if (gameState.timer <= 0) {
-                        clearInterval(gameState.timerInterval);
-                        stopSound("timerTick");
-                        playSound("timeUpSound");
-                        document.querySelectorAll(".options button").forEach(btn => btn.disabled = true);
-                        document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = true);
-                        setTimeout(completeQuestion, 2000);
-                    }
-                }
-            }, 1000);
+            document.getElementById("timer").textContent = `${gameState.timer}s ⏰`;
+            start60sTimer();
         }
 
         function resumeTimer() {
-            clearInterval(gameState.timerInterval);
-            playSound("timerTick");
-            gameState.timerInterval = setInterval(() => {
-                if (!gameState.isTimerPaused) {
-                    gameState.timer--;
-                    document.getElementById("timer").textContent = `${gameState.timer}s`;
-                    if (gameState.timer <= 0) {
-                        clearInterval(gameState.timerInterval);
-                        stopSound("timerTick");
-                        playSound("timeUpSound");
-                        document.querySelectorAll(".options button").forEach(btn => btn.disabled = true);
-                        document.querySelectorAll(".lifelines button").forEach(btn => btn.disabled = true);
-                        setTimeout(completeQuestion, 2000);
-                    }
-                }
-            }, 1000);
+            start60sTimer();
         }
 
         function selectAnswer(btn, selected) {
-            if (!gameState.isFinalAnswer) {
-                btn.style.background = "linear-gradient(to bottom, #ffa500, #ff4500)";
-                setTimeout(() => {
-                    const confirmBox = document.getElementById("custom-confirm");
-                    confirmBox.style.display = "block";
-
-                    return new Promise((resolve) => {
-                        document.getElementById("confirm-yes").onclick = () => {
-                            confirmBox.style.display = "none";
-                            playSound("finalAnswerSound");
-                            gameState.isFinalAnswer = true;
-                            checkAnswer(btn, selected);
-                            resolve(true);
-                        };
-                        document.getElementById("confirm-no").onclick = () => {
-                            confirmBox.style.display = "none";
-                            btn.style.background = "linear-gradient(to bottom, #000066, #000033)";
-                            resolve(false);
-                        };
-                    });
-                }, 500);
-            }
+            btn.style.background = "#ffa500";
+            const confirmBox = document.getElementById("custom-confirm");
+            confirmBox.style.display = "block";
+            document.getElementById("confirm-yes").onclick = () => {
+                confirmBox.style.display = "none";
+                playSound("finalAnswerSound");
+                gameState.isFinalAnswer = true;
+                checkAnswer(btn, selected);
+            };
+            document.getElementById("confirm-no").onclick = () => {
+                confirmBox.style.display = "none";
+                btn.style.background = "linear-gradient(to bottom, #000066, #000033)";
+            };
         }
 
         function checkAnswer(btn, selected) {
             clearInterval(gameState.timerInterval);
             stopSound("timerTick");
             const correct = categories[gameState.currentCategory][gameState.currentQuestionIndex].answer;
-
             if (!gameState.firstConfirmation) {
                 gameState.firstConfirmation = true;
                 if (selected === correct) {
                     playSound("correctSound");
-                    btn.style.background = "linear-gradient(to bottom, #00ff00, #008000)";
+                    btn.style.background = "#00ff00";
                     setTimeout(completeQuestion, 2000);
                 } else {
-                    btn.style.background = "linear-gradient(to bottom, #ffa500, #ff4500)";
+                    btn.style.background = "#ff0000";
                     if (gameState.fiftyFiftyUsed) {
-                        playSound("wrongSound");
-                        document.querySelectorAll(".options button").forEach(b => {
-                            if (b.dataset.fullText === correct) {
-                                b.style.background = "linear-gradient(to bottom, #00ff00, #008000)";
-                            }
-                        });
-                        setTimeout(completeQuestion, 2000);
+                        setTimeout(completeQuestion, 2000); // End question if 50/50 used
                     } else {
-                        setTimeout(() => {
-                            switchToNextTeam();
-                        }, 1000);
+                        setTimeout(switchToNextTeam, 1000); // Switch to next team
                     }
                 }
             } else {
                 if (selected === correct) {
                     playSound("correctSound");
-                    btn.style.background = "linear-gradient(to bottom, #00ff00, #008000)";
+                    btn.style.background = "#00ff00";
                 } else {
                     playSound("wrongSound");
+                    btn.style.background = "#ff0000";
                     document.querySelectorAll(".options button").forEach(b => {
-                        if (b.dataset.fullText === correct) {
-                            b.style.background = "linear-gradient(to bottom, #00ff00, #008000)";
-                        }
+                        if (b.dataset.fullText === correct) b.style.background = "#00ff00";
                     });
                 }
                 setTimeout(completeQuestion, 2000);
             }
-            gameState.isFinalAnswer = false;
         }
 
         function switchToNextTeam() {
-            gameState.teamTurn = "Next Team";
-            const teamSwitchMessage = document.getElementById("team-switch-message");
-            teamSwitchMessage.style.display = "block";
+            gameState.currentTeam = gameState.currentTeam === "A" ? "B" : "A";
+            const msg = document.getElementById("team-switch-message");
+            msg.textContent = `Team ${gameState.currentTeam === "A" ? "B" : "A"} got it wrong. Next Team, you have 10 seconds! ⏳`;
+            msg.style.display = "block";
             setTimeout(() => {
-                teamSwitchMessage.style.display = "none";
+                msg.style.display = "none";
                 start10sTimer();
-            }, 2000); // Display for 2 seconds before starting the timer
+            }, 2000);
         }
 
         function completeQuestion() {
@@ -782,22 +540,18 @@
 
         function goBackToCategorySelection() {
             document.getElementById("category-screen").style.display = "none";
-            document.getElementById("opening").style.display = "flex";
+            document.getElementById("opening").style.display = "block";
         }
 
         function useFiftyFifty() {
             playSound("lifelineSound");
             gameState.fiftyFiftyUsed = true;
             const q = categories[gameState.currentCategory][gameState.currentQuestionIndex];
-            let wrongOptions = q.options.filter(o => o !== q.answer);
-            let toRemove = [];
-            while (toRemove.length < 2) {
-                let r = wrongOptions[Math.floor(Math.random() * wrongOptions.length)];
-                if (!toRemove.includes(r)) toRemove.push(r);
-            }
+            let wrong = q.options.filter(o => o !== q.answer);
+            let toRemove = wrong.slice(0, 2);
             document.querySelectorAll(".options button").forEach(btn => {
                 if (toRemove.includes(btn.dataset.fullText)) {
-                    btn.textContent = "Eliminated";
+                    btn.textContent = "Eliminated 🚫";
                     btn.disabled = true;
                     btn.style.background = "grey";
                 } else {
@@ -809,36 +563,41 @@
         }
 
         function toggleAskAFriend() {
-            const askFriendButton = document.getElementById("askFriendButton");
+            const btn = document.getElementById("askFriendButton");
             if (!gameState.isTimerPaused) {
                 playSound("lifelineSound");
                 gameState.isTimerPaused = true;
                 clearInterval(gameState.timerInterval);
                 stopSound("timerTick");
+                document.getElementById("phone-a-friend-message").textContent = "Now you can Ask your Friend 📞 (Click 'Ask a Friend' again to resume)";
                 document.getElementById("phone-a-friend-message").style.display = "block";
-                document.getElementById("phone-a-friend-message").textContent = "Now you can Ask your Friend (Click 'Ask a Friend' again to resume)";
-                askFriendButton.textContent = "Resume Timer";
+                btn.textContent = "Resume Timer ⏳";
             } else {
                 gameState.isTimerPaused = false;
                 document.getElementById("phone-a-friend-message").style.display = "none";
-                askFriendButton.textContent = "Ask a Friend";
+                btn.textContent = "Ask a Friend 📞";
                 resumeTimer();
             }
         }
 
-        function showManikuttiDialogue() {
-            const dialogueBox = document.getElementById("manikutti-dialogue");
-            dialogueBox.style.display = "block";
-            document.getElementById("manikutti-yes").onclick = () => {
-                dialogueBox.style.display = "none";
-                document.getElementById("manikutti-img").src = "run.gif";
-                start60sTimer();
-            };
+        function openGurujiPopup() {
+            document.getElementById("guruji-popup").style.display = "flex";
         }
 
-        window.onload = () => {
-            playSound("backgroundMusic"); // Plays bgm.mp3 as background music
-            playSound("introSound");      // Plays intro music
+        function closeGurujiPopup() {
+            document.getElementById("guruji-popup").style.display = "none";
+        }
+
+        document.getElementById("start-game").onclick = () => {
+            document.getElementById("intro-page").style.display = "none";
+            document.getElementById("opening").style.display = "block";
+            playSound("backgroundMusic");
+        };
+
+        document.getElementById("manikutti-yes").onclick = () => {
+            document.getElementById("manikutti-dialogue").style.display = "none";
+            document.getElementById("manikutti-img").src = "run.gif";
+            start60sTimer();
         };
     </script>
 </body>

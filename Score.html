@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAMOS QUIZ 2025 - Team Scores</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #000033; /* Dark blue background */
+      margin: 0;
+      padding: 20px;
+      color: #f0f0f0; /* Light text */
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #ffd700; /* Gold header */
+    }
+    #input-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      background-color: #111111; /* Dark input section */
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    #input-section label {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      color: #f0f0f0; /* Light labels */
+    }
+    #input-section input {
+      margin-left: 5px;
+      padding: 5px;
+      width: 60px;
+      border: 1px solid #ffd700; /* Gold border */
+      border-radius: 5px;
+      background-color: #222222; /* Dark input background */
+      color: #f0f0f0; /* Light input text */
+    }
+    #submit-scores, #final-score-btn {
+      padding: 10px 20px;
+      background-color: #ffd700; /* Gold button */
+      color: #000033; /* Dark text */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-left: 10px;
+    }
+    #submit-scores:hover, #final-score-btn:hover {
+      background-color: #e6c200; /* Darker gold on hover */
+    }
+    #score-chart {
+      max-width: 800px;
+      margin: 0 auto 30px;
+    }
+    #score-table {
+      width: 50%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: #111111; /* Dark table background */
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    #score-table th, #score-table td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ffd700; /* Gold borders */
+      color: #f0f0f0; /* Light text */
+    }
+    #score-table th {
+      background-color: #222222; /* Darker header */
+      font-weight: bold;
+    }
+    #score-table tr:last-child td {
+      border-bottom: none;
+    }
+    #final-results {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 1000;
+      display: none;
+      text-align: center;
+      min-width: 660px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      font-size: 24px;
+      color: #fff;
+    }
+    .congrats-message {
+      font-size: 2em;
+      color: #ffd700;
+      margin-bottom: 20px;
+    }
+    .top-teams {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .team-card {
+      text-align: center;
+    }
+    .team-card img {
+      width: 200px;
+      height: 150px;
+      object-fit: cover;
+      border: 2px solid #ffd700;
+      border-radius: 5px;
+    }
+    .team-card p {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>VAMOS QUIZ 2025 - Team Scores</h1>
+  <div id="input-section"></div>
+  <canvas id="score-chart"></canvas>
+  <table id="score-table">
+    <thead>
+      <tr>
+        <th>Team</th>
+        <th>Score</th>
+        <th>Emoji</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <div id="final-results"></div>
+
+  <script>
+    // Define teams with names and colors
+    const teamNames = ["Team A", "Team B", "Team C", "Team D", "Team E", "Team F"];
+    const teamColors = ["#FF4500", "#1E90FF", "#32CD32", "#FFD700", "#9370DB", "#00CED1"];
+    let teams = teamNames.map((name, index) => ({
+      name: name,
+      score: 0,
+      color: teamColors[index]
+    }));
+
+    // Generate input fields dynamically
+    const inputSection = document.getElementById('input-section');
+    teams.forEach(team => {
+      const label = document.createElement('label');
+      label.textContent = `${team.name}: `;
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.id = `score-${team.name.replace(' ', '').toLowerCase()}`;
+      label.appendChild(input);
+      inputSection.appendChild(label);
+    });
+    const submitButton = document.createElement('button');
+    submitButton.id = 'submit-scores';
+    submitButton.textContent = 'Add Scores';
+    inputSection.appendChild(submitButton);
+
+    const finalScoreButton = document.createElement('button');
+    finalScoreButton.id = 'final-score-btn';
+    finalScoreButton.textContent = 'Final Score';
+    inputSection.appendChild(finalScoreButton);
+
+    // Initialize bar chart with Chart.js
+    const ctx = document.getElementById('score-chart').getContext('2d');
+    let chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: teams.map(team => team.name),
+        datasets: [{
+          label: 'Total Score',
+          data: teams.map(team => team.score),
+          backgroundColor: teams.map(team => team.color),
+          borderWidth: 1
+        }]
+      },
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: 'Live Scores',
+            color: '#f0f0f0',
+            font: { size: 20 }
+          },
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Score', color: '#f0f0f0' },
+            ticks: { color: '#f0f0f0' },
+            grid: { color: '#333333' }
+          },
+          x: {
+            title: { display: true, text: 'Teams', color: '#f0f0f0' },
+            ticks: { color: '#f0f0f0' },
+            grid: { color: '#333333' }
+          }
+        },
+        animation: { duration: 1000 }
+      }
+    });
+
+    // Select final results div
+    const finalResultsDiv = document.getElementById('final-results');
+
+    // Function to update the score table
+    function updateTable() {
+      const tbody = document.querySelector('#score-table tbody');
+      tbody.innerHTML = '';
+      teams.forEach((team, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${team.name}</td>
+          <td>${team.score}</td>
+          <td>${getEmoji(index)}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Function to assign emojis based on ranking
+    function getEmoji(rank) {
+      switch (rank) {
+        case 0: return '🥇';
+        case 1: return '🥈';
+        case 2: return '🥉';
+        default: return '🎉';
+      }
+    }
+
+    // Handle score submission
+    document.getElementById('submit-scores').addEventListener('click', () => {
+      teams.forEach(team => {
+        const input = document.getElementById(`score-${team.name.replace(' ', '').toLowerCase()}`);
+        const scoreToAdd = parseInt(input.value) || 0;
+        team.score += scoreToAdd;
+        input.value = '';
+      });
+
+      // Sort teams by score (descending)
+      teams.sort((a, b) => b.score - a.score);
+      chart.data.labels = teams.map(team => team.name);
+      chart.data.datasets[0].data = teams.map(team => team.score);
+      chart.data.datasets[0].backgroundColor = teams.map(team => team.color);
+      chart.update();
+      updateTable();
+    });
+
+    // Handle final score button
+    document.getElementById('final-score-btn').addEventListener('click', () => {
+      // Hide input section
+      document.getElementById('input-section').style.display = 'none';
+
+      // Update chart title to "Final Scores"
+      chart.options.plugins.title.text = 'Final Scores';
+      chart.update();
+
+      // Get winning team (first in sorted teams)
+      const winner = teams[0].name;
+
+      // Create congratulatory message
+      const congratsMessage = `<div class="congrats-message">Congratulations to ${winner} for winning the quiz!</div>`;
+
+      // Create top three teams HTML with images
+      const topTeamsHTML = teams.slice(0, 3).map((team, index) => {
+        const place = ['1st', '2nd', '3rd'][index];
+        const imgSrc = `images/${team.name.replace(' ', '')}.jpg`;
+        return `
+          <div class="team-card">
+            <img src="${imgSrc}" alt="${team.name}">
+            <p>${place} Place</p>
+          </div>
+        `;
+      }).join('');
+
+      // Set final results HTML with close button and display it
+      const finalResultsHTML = `
+        <span class="close-btn">&times;</span>
+        ${congratsMessage}
+        <div class="top-teams">
+          ${topTeamsHTML}
+        </div>
+      `;
+      finalResultsDiv.innerHTML = finalResultsHTML;
+      finalResultsDiv.style.display = 'block';
+
+      // Add event listener to close button
+      const closeBtn = finalResultsDiv.querySelector('.close-btn');
+      closeBtn.addEventListener('click', () => {
+        finalResultsDiv.style.display = 'none';
+      });
+    });
+
+    // Close popup on Escape key press
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && finalResultsDiv.style.display === 'block') {
+        finalResultsDiv.style.display = 'none';
+      }
+    });
+
+    // Initialize the table with starting scores (all 0)
+    updateTable();
+  </script>
+</body>
+</html>
