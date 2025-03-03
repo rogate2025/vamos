@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat Laptop</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  body { font-family: Arial, sans-serif; }
+  #chat { height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; }
+  #code { margin: 10px 0; }
+</style>
+</head>
+<body>
+<h1>Chat Laptop</h1>
+<div id="chat"></div>
+<input type="text" id="code" placeholder="Paste connection code...">
+<button onclick="connect()">Connect</button>
+<script>
+let pc = new RTCPeerConnection();
+pc.ondatachannel = event => {
+  let channel = event.channel;
+  channel.onmessage = e => {
+    let div = document.createElement('div');
+    div.textContent = e.data;
+    document.getElementById('chat').appendChild(div);
+    document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
+  };
+};
+async function connect() {
+  let offer = JSON.parse(atob(document.getElementById('code').value));
+  await pc.setRemoteDescription(offer);
+  let answer = await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+  alert('Send this code to the client: ' + btoa(JSON.stringify(pc.localDescription)));
+}
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+</body>
+</html>

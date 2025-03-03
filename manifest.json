@@ -1,0 +1,7 @@
+{
+  "name": "Ad-hoc Chat",
+  "short_name": "Chat",
+  "start_url": ".",
+  "display": "standalone",
+  "icons": [{"src": "icon.png", "sizes": "192x192", "type": "image/png"}]
+}

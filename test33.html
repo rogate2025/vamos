@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real-Time Messaging Platform</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f3f3f3; }
+  #chat { max-width: 800px; margin: 20px auto; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); }
+  #messages { height: 400px; overflow-y: scroll; border-bottom: 1px solid #ccc; margin-bottom: 10px; padding: 10px; }
+  .message { margin-bottom: 10px; padding: 10px; border-radius: 10px; }
+  .sent { background: #007bff; color: #fff; text-align: right; }
+  .received { background: #e0e0e0; text-align: left; }
+  #inputArea { display: flex; }
+  input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px; }
+  button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  button:hover { background: #0056b3; }
+</style>
+</head>
+<body>
+<div id="chat">
+  <div id="messages"></div>
+  <div id="inputArea">
+    <input type="text" id="message" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+    <button onclick="clearMessages()">Clear</button>
+  </div>
+</div>
+<script>
+  const ws = new WebSocket('wss://echo.websocket.org');
+  const userId = `User-${Math.floor(Math.random() * 1000)}`;
+  const messagesContainer = document.getElementById("messages");
+  const messageInput = document.getElementById("message");
+
+  ws.onmessage = function(event) {
+    try {
+      const messageData = JSON.parse(event.data);
+      if (messageData.sender && messageData.text && messageData.timestamp) {
+        if (!document.querySelector(`[data-id='${messageData.timestamp}-${messageData.sender}']`)) {
+          displayMessage(messageData.sender, messageData.text, messageData.timestamp, messageData.sender === userId ? 'sent' : 'received');
+          saveMessage(messageData);
+        }
+      }
+    } catch (error) {
+      console.error("Invalid JSON received:", event.data);
+    }
+  };
+
+  function sendMessage() {
+    const text = messageInput.value.trim();
+    if (text === '') return;
+    const timestamp = new Date().toLocaleTimeString();
+    const message = { sender: userId, text, timestamp };
+    ws.send(JSON.stringify(message));
+    displayMessage(userId, text, timestamp, 'sent');
+    saveMessage(message);
+    messageInput.value = '';
+  }
+
+  function displayMessage(sender, text, timestamp, className) {
+    const messageDiv = document.createElement("div");
+    messageDiv.className = `message ${className}`;
+    messageDiv.setAttribute("data-id", `${timestamp}-${sender}`);
+    messageDiv.innerHTML = `<strong>${sender}</strong>: ${text} <small>${timestamp}</small>`;
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  function saveMessage(message) {
+    const chatHistory = JSON.parse(sessionStorage.getItem("chatHistory") || "[]");
+    chatHistory.push(message);
+    sessionStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+  }
+
+  function clearMessages() {
+    messagesContainer.innerHTML = '';
+    sessionStorage.removeItem("chatHistory");
+  }
+
+  window.onload = function() {
+    const chatHistory = JSON.parse(sessionStorage.getItem("chatHistory") || "[]");
+    chatHistory.forEach(msg => displayMessage(msg.sender, msg.text, msg.timestamp, msg.sender === userId ? 'sent' : 'received'));
+  }
+</script>
+</body>
+</html>

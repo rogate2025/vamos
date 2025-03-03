@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat Phone</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  body { font-family: Arial, sans-serif; }
+  input, button { display: block; margin: 10px 0; }
+</style>
+</head>
+<body>
+<h1>Chat Phone</h1>
+<input type="text" id="name" placeholder="Your Name">
+<input type="text" id="code" placeholder="Paste connection code...">
+<button onclick="connect()">Connect</button>
+<input type="text" id="message" placeholder="Message">
+<button onclick="send()">Send</button>
+<script>
+let pc = new RTCPeerConnection();
+let channel;
+async function connect() {
+  channel = pc.createDataChannel("chat");
+  channel.onopen = () => alert('Connected');
+  let offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  alert('Send this code to the laptop: ' + btoa(JSON.stringify(pc.localDescription)));
+  let answer = JSON.parse(atob(document.getElementById('code').value));
+  await pc.setRemoteDescription(answer);
+}
+function send() {
+  let name = document.getElementById('name').value;
+  let message = document.getElementById('message').value;
+  if (channel.readyState === 'open') {
+    channel.send(`${name}: ${message}`);
+  }
+}
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+</body>
+</html>
