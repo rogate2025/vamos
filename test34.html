@@ -22,20 +22,34 @@
       margin-bottom: 20px;
       font-weight: bold;
     }
-    #roleSelection, #clientConnect, #messageArea, #hostControls {
+    #roleSelection, #clientConnect {
       text-align: center;
       margin-bottom: 20px;
     }
-    #chat {
-      margin: 0 auto;
-      border: 4px double #ffd700;
+    #chatContainer {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100%;
+    }
+    #hostControls {
+      text-align: center;
+      padding: 10px;
       background: #1a1a1a;
-      padding: 15px;
       width: 90%;
       max-width: 600px;
-      height: 70vh;
+      margin: 0 auto;
+    }
+    #chat {
+      flex-grow: 1;
       overflow-y: auto;
-      box-shadow: 0 0 10px rgba(255,215,0,0.5);
+      background: #1a1a1a;
+      padding: 15px;
+      border: 4px double #ffd700;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+      width: 90%;
+      max-width: 600px;
+      margin: 0 auto;
     }
     #chat p {
       margin-bottom: 10px;
@@ -51,12 +65,24 @@
       color: #ccc;
       font-style: italic;
     }
-    input[type="text"] {
+    #messageArea {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      background: #1a1a1a;
+      width: 90%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    #messageInput {
+      flex-grow: 1;
       padding: 10px;
       border: 1px solid #ffd700;
       background: #333;
       color: #ffd700;
       border-radius: 10px;
+      margin-right: 10px;
     }
     button {
       padding: 15px 20px;
@@ -72,33 +98,21 @@
     button:hover {
       background: #e6c200;
     }
-    #messageArea {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    #messageInput {
-      flex-grow: 1;
-      max-width: 400px;
-      margin-right: 10px;
-    }
-    /* Fix messaging area for mobile */
+    /* Media query for smartphones */
     @media (max-width: 600px) {
       #messageArea {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: #1a1a1a;
-        padding: 10px;
-        z-index: 10;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        flex-direction: column;
       }
-      #chat {
-        margin-bottom: 60px;
+      #messageInput {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+      #sendBtn {
+        width: 100%;
+      }
+      #hostControls, #chat, #messageArea {
+        width: 95%;
       }
     }
   </style>
@@ -116,13 +130,15 @@
     <input type="text" id="hostIdInput" placeholder="Enter Host ID">
     <button id="connectToHostBtn">Connect</button>
   </div>
-  <div id="chat" style="display:none;"></div>
-  <div id="messageArea" style="display:none;">
-    <input type="text" id="messageInput" placeholder="Type your message">
-    <button id="sendBtn">Send</button>
-  </div>
-  <div id="hostControls" style="display:none;">
-    <button id="clearBtn">Clear Chat</button>
+  <div id="chatContainer" style="display:none;">
+    <div id="hostControls" style="display:none;">
+      <button id="clearBtn">Clear Chat</button>
+    </div>
+    <div id="chat"></div>
+    <div id="messageArea">
+      <input type="text" id="messageInput" placeholder="Type your message">
+      <button id="sendBtn">Send</button>
+    </div>
   </div>
   <script>
     let peer;
@@ -164,8 +180,7 @@
     document.getElementById('hostBtn').addEventListener('click', function() {
       isHost = true;
       document.getElementById('roleSelection').style.display = 'none';
-      document.getElementById('chat').style.display = 'block';
-      document.getElementById('messageArea').style.display = 'flex';
+      document.getElementById('chatContainer').style.display = 'flex';
       document.getElementById('hostControls').style.display = 'block';
       document.getElementById('myNameDiv').textContent = "Your device name: Host";
 
@@ -193,8 +208,7 @@
         connection = peer.connect(hostId);
         connection.on('open', function() {
           document.getElementById('clientConnect').style.display = 'none';
-          document.getElementById('chat').style.display = 'block';
-          document.getElementById('messageArea').style.display = 'flex';
+          document.getElementById('chatContainer').style.display = 'flex';
           setupConnection(connection, false);
           displayMessage("Connected to host: " + hostId);
         });
