@@ -102,6 +102,12 @@
     @media (max-width: 600px) {
       #messageArea {
         flex-direction: column;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        background: #1a1a1a;
       }
       #messageInput {
         width: 100%;
@@ -110,8 +116,13 @@
       }
       #sendBtn {
         width: 100%;
+        padding: 15px;
+        font-size: 1.2em;
       }
-      #hostControls, #chat, #messageArea {
+      #chat {
+        margin-bottom: 120px; /* Space for fixed message area */
+      }
+      #hostControls, #chat {
         width: 95%;
       }
     }
@@ -160,7 +171,9 @@
         p.innerHTML = `<span class="timestamp">${arg1}</span> <span class="sender">${arg2}</span>: ${arg3}`;
       }
       chatDiv.appendChild(p);
-      chatDiv.scrollTop = chatDiv.scrollHeight;
+      setTimeout(() => {
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+      }, 100);
     }
 
     function initPeer() {
@@ -183,6 +196,7 @@
       document.getElementById('chatContainer').style.display = 'flex';
       document.getElementById('hostControls').style.display = 'block';
       document.getElementById('myNameDiv').textContent = "Your device name: Host";
+      document.getElementById('messageInput').focus();
 
       peer.on('connection', function(conn) {
         connections.push(conn);
@@ -211,6 +225,7 @@
           document.getElementById('chatContainer').style.display = 'flex';
           setupConnection(connection, false);
           displayMessage("Connected to host: " + hostId);
+          document.getElementById('messageInput').focus();
         });
         connection.on('error', function(err) {
           console.error(err);
@@ -277,6 +292,12 @@
         }
       }
       document.getElementById('messageInput').value = "";
+    });
+
+    document.getElementById('messageInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('sendBtn').click();
+      }
     });
 
     document.getElementById('clearBtn').addEventListener('click', function() {
