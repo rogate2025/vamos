@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Laptop</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 10px; }
+        #roomIdDisplay { font-weight: bold; margin-bottom: 10px; }
+        #chatWindow { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: auto; }
+        .message { margin: 5px 0; padding: 5px; background: #f0f0f0; }
+        .timestamp { color: #666; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+    <div id="roomIdDisplay">Share this room ID with your phone: <span id="roomId"></span></div>
+    <div id="chatWindow"></div>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        const socket = io('https://your-signaling-server.com'); // Replace with your server URL
+        const roomId = Math.random().toString(36).substr(2, 9);
+        document.getElementById('roomId').textContent = roomId;
+        socket.emit('create-room', roomId);
+
+        const peers = new Map();
+        const chatWindow = document.getElementById('chatWindow');
+
+        function displayMessage(msg) {
+            const div = document.createElement('div');
+            div.className = 'message';
+            div.innerHTML = `<span class="timestamp">[${new Date(msg.timestamp).toLocaleTimeString()}]</span> <strong>${msg.name}:</strong> ${msg.message}`;
+            chatWindow.appendChild(div);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        socket.on('phone-connected', (phoneSocketId) => {
+            const peer = new RTCPeerConnection();
+            peers.set(phoneSocketId, peer);
+
+            peer.ondatachannel = (event) => {
+                const channel = event.channel;
+                channel.onmessage = (event) => {
+                    const msg = JSON.parse(event.data);
+                    displayMessage(msg);
+                };
+            };
+
+            const channel = peer.createDataChannel('chat');
+            peer.createOffer().then((offer) => {
+                peer.setLocalDescription(offer);
+                socket.emit('offer', { offer, to: phoneSocketId });
+            });
+
+            peer.onicecandidate = (event) => {
+                if (event.candidate) {
+                    socket.emit('candidate', { candidate: event.candidate, to: phoneSocketId });
+                }
+            };
+        });
+
+        socket.on('answer', (data) => {
+            const peer = peers.get(data.from);
+            if (peer) peer.setRemoteDescription(data.answer);
+        });
+
+        socket.on('candidate', (data) => {
+            const peer = peers.get(data.from);
+            if (peer) peer.addIceCandidate(data.candidate);
+        });
+    </script>
+</body>
+</html>

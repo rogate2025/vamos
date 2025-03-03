@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Phone</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 10px; }
+        #connectionSection { margin-bottom: 10px; }
+        #messageSection { display: none; }
+        #inputForm { display: flex; gap: 10px; }
+        #nameInput { width: 100px; }
+        #messageInput { flex: 1; }
+    </style>
+</head>
+<body>
+    <div id="connectionSection">
+        <h3>Connect to Laptop</h3>
+        <input id="roomIdInput" placeholder="Enter Room ID" required>
+        <button id="connectButton">Connect</button>
+    </div>
+    <div id="messageSection">
+        <h3>Send Message</h3>
+        <form id="inputForm">
+            <input id="nameInput" placeholder="Your name" required>
+            <input id="messageInput" placeholder="Type a message" required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        const socket = io('https://your-signaling-server.com'); // Replace with your server URL
+        let peer, channel;
+
+        document.getElementById('connectButton').onclick = () => {
+            const roomId = document.getElementById('roomIdInput').value;
+            socket.emit('join-room', roomId);
+
+            peer = new RTCPeerConnection();
+            peer.ondatachannel = (event) => {
+                channel = event.channel;
+                channel.onopen = () => {
+                    document.getElementById('messageSection').style.display = 'block';
+                };
+            };
+
+            socket.on('offer', (data) => {
+                peer.setRemoteDescription(data.offer).then(() => {
+                    peer.createAnswer().then((answer) => {
+                        peer.setLocalDescription(answer);
+                        socket.emit('answer', { answer, to: data.from });
+                    });
+                });
+            });
+
+            peer.onicecandidate = (event) => {
+                if (event.candidate) {
+                    socket.emit('candidate', { candidate: event.candidate, to: socket.id });
+                }
+            };
+
+            socket.on('candidate', (data) => {
+                peer.addIceCandidate(data.candidate);
+            });
+        };
+
+        document.getElementById('inputForm').onsubmit = (e) => {
+            e.preventDefault();
+            if (channel && channel.readyState === 'open') {
+                const message = {
+                    name: document.getElementById('nameInput').value,
+                    message: document.getElementById('messageInput').value,
+                    timestamp: Date.now()
+                };
+                channel.send(JSON.stringify(message));
+                document.getElementById('messageInput').value = '';
+            }
+        };
+    </script>
+</body>
+</html>
