@@ -7,16 +7,17 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle, #0b2f8a, #000033);
-      color: #ffd700;
+      background: radial-gradient(circle, #0b2f8a, #000033); /* Gradient background for Millionaire vibe */
+      color: #ffd700; /* Gold text */
       padding: 20px;
       margin: 0;
+      overflow-x: hidden; /* Prevent horizontal scrolling */
     }
     h1 {
       text-align: center;
       font-size: 2em;
       margin-bottom: 10px;
-      text-shadow: 2px 2px 4px #000;
+      text-shadow: 2px 2px 4px #000; /* 3D title effect */
     }
     #myIdDiv, #myNameDiv {
       text-align: center;
@@ -28,9 +29,9 @@
       margin-bottom: 20px;
     }
     #chatContainer {
-      display: flex;
+      display: none; /* Hidden until connection */
       flex-direction: column;
-      height: 100vh;
+      min-height: calc(100vh - 120px); /* Adjusted for header and margins */
       width: 100%;
     }
     #hostControls {
@@ -40,6 +41,7 @@
       width: 90%;
       max-width: 600px;
       margin: 0 auto;
+      display: none; /* Hidden by default, shown for host */
     }
     #chat {
       flex-grow: 1;
@@ -47,7 +49,7 @@
       background: #1a1a1a;
       padding: 15px;
       border: 4px double #ffd700;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Golden glow */
       width: 90%;
       max-width: 600px;
       margin: 0 auto;
@@ -72,7 +74,7 @@
       align-items: center;
       padding: 10px;
       background: #1a1a1a;
-      width: 90%;
+      width: 90%!important;
       max-width: 600px;
       margin: 0 auto;
     }
@@ -84,6 +86,7 @@
       color: #ffd700;
       border-radius: 10px;
       margin-right: 10px;
+      width: calc(100% - 90px); /* Ensure it fits with button */
     }
     button {
       padding: 15px 20px;
@@ -92,42 +95,49 @@
       color: #0b2f8a;
       font-weight: bold;
       cursor: pointer;
-      margin: 5px;
       border-radius: 10px;
       box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
     }
     button:hover {
       background: #e6c200;
     }
+    /* Mobile-specific adjustments */
     @media (max-width: 600px) {
+      body {
+        padding: 5px; /* Less padding on small screens */
+      }
+      #chatContainer {
+        min-height: calc(100vh - 80px); /* Adjust for smaller header */
+      }
       #messageArea {
-        flex-direction: column;
-        position: fixed;
+       
+        padding: 5px;
+        position: sticky;
         bottom: 0;
         left: 0;
         right: 0;
-        padding: 20px;
         background: #1a1a1a;
+        z-index: 10;
       }
       #messageInput {
-        width: 100%;
-        margin-right: 0;
-        margin-bottom: 10px;
+        width: 65%; /* Adjusted for mobile */
+        margin-right: 5px;
+        padding: 8px;
       }
       #sendBtn {
-        width: 100%;
-        padding: 15px;
-        font-size: 1.2em;
+        width: 30%;
+        padding: 8px;
+        font-size: 1em;
       }
       #chat {
-        margin-bottom: 120px; /* Space for fixed message area */
+        margin-bottom: 50px; /* Space for message area */
       }
       #hostControls, #chat {
         width: 95%;
       }
     }
   </style>
-  <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+  <script src="https://unpkg.com/peerjs@1.3.2/dist/peerjs.min.js"></script>
 </head>
 <body>
   <h1>Team Chat (Millionaire Style)</h1>
@@ -146,21 +156,23 @@
       <button id="clearBtn">Clear Chat</button>
     </div>
     <div id="chat"></div>
-    <div id="messageArea">
+    <div id="messageArea" style="display:none;">
       <input type="text" id="messageInput" placeholder="Type your message">
       <button id="sendBtn">Send</button>
     </div>
   </div>
+
   <script>
     let peer;
-    let connections = [];
-    let connection = null;
+    let connections = []; // For host to track all client connections
+    let connection = null; // For client to track host connection
     let isHost = false;
     let myId = "";
     let myAssignedName = "";
-    let teamNames = {};
+    let teamNames = {}; // Maps client peer IDs to team names
     let nextTeamIndex = 0;
 
+    // Display messages in the chat area
     function displayMessage(arg1, arg2, arg3) {
       const chatDiv = document.getElementById('chat');
       const p = document.createElement('p');
@@ -173,9 +185,10 @@
       chatDiv.appendChild(p);
       setTimeout(() => {
         chatDiv.scrollTop = chatDiv.scrollHeight;
-      }, 100);
+      }, 100); // Ensures scroll works after DOM update
     }
 
+    // Initialize PeerJS
     function initPeer() {
       peer = new Peer();
       peer.on('open', function(id) {
@@ -184,19 +197,21 @@
       });
       peer.on('error', function(err) {
         console.error(err);
-        alert("Peer error: " + err);
+        alert("Peer error: " + err.type);
       });
     }
 
     initPeer();
 
+    // Host setup
     document.getElementById('hostBtn').addEventListener('click', function() {
       isHost = true;
       document.getElementById('roleSelection').style.display = 'none';
       document.getElementById('chatContainer').style.display = 'flex';
+      document.getElementById('messageArea').style.display = 'flex'; // Show message box immediately
       document.getElementById('hostControls').style.display = 'block';
       document.getElementById('myNameDiv').textContent = "Your device name: Host";
-      document.getElementById('messageInput').focus();
+      document.getElementById('messageInput').focus(); // Auto-focus input
 
       peer.on('connection', function(conn) {
         connections.push(conn);
@@ -211,6 +226,7 @@
       });
     });
 
+    // Client setup
     document.getElementById('clientBtn').addEventListener('click', function() {
       document.getElementById('roleSelection').style.display = 'none';
       document.getElementById('clientConnect').style.display = 'block';
@@ -223,26 +239,28 @@
         connection.on('open', function() {
           document.getElementById('clientConnect').style.display = 'none';
           document.getElementById('chatContainer').style.display = 'flex';
+          document.getElementById('messageArea').style.display = 'flex'; // Show message box immediately
           setupConnection(connection, false);
           displayMessage("Connected to host: " + hostId);
-          document.getElementById('messageInput').focus();
+          document.getElementById('messageInput').focus(); // Auto-focus input
         });
         connection.on('error', function(err) {
           console.error(err);
-          alert("Connection error: " + err);
+          alert("Connection error: " + err.type);
         });
+      } else {
+        alert("Please enter a valid Host ID.");
       }
     });
 
+    // Handle incoming data on connections
     function setupConnection(conn, isHostConn) {
       conn.on('data', function(data) {
         try {
           const msgObj = JSON.parse(data);
-          if (msgObj.type === "assign") {
-            if (!isHost) {
-              myAssignedName = msgObj.teamName;
-              document.getElementById('myNameDiv').textContent = "Your device name: " + myAssignedName;
-            }
+          if (msgObj.type === "assign" && !isHost) {
+            myAssignedName = msgObj.teamName;
+            document.getElementById('myNameDiv').textContent = "Your device name: " + myAssignedName;
           } else if (msgObj.type === "chat") {
             displayMessage(msgObj.timestamp, msgObj.deviceName, msgObj.text);
             if (isHost && msgObj.senderPeerId) {
@@ -264,6 +282,7 @@
       });
     }
 
+    // Send message on button click
     document.getElementById('sendBtn').addEventListener('click', function() {
       const messageText = document.getElementById('messageInput').value;
       if (messageText.trim() === "") return;
@@ -284,22 +303,22 @@
             conn.send(msgString);
           }
         });
+      } else if (connection && connection.open) {
+        connection.send(msgString);
       } else {
-        if (connection && connection.open) {
-          connection.send(msgString);
-        } else {
-          alert("Not connected to host.");
-        }
+        alert("Not connected to host.");
       }
       document.getElementById('messageInput').value = "";
     });
 
+    // Send message on Enter key press
     document.getElementById('messageInput').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
         document.getElementById('sendBtn').click();
       }
     });
 
+    // Clear chat (host only)
     document.getElementById('clearBtn').addEventListener('click', function() {
       document.getElementById('chat').innerHTML = "";
       if (isHost) {
@@ -312,9 +331,17 @@
       }
     });
 
+    // Generate team names (Team A, Team B, etc.)
     function teamNameFromIndex(index) {
       return "Team " + String.fromCharCode("A".charCodeAt(0) + index);
     }
+
+    // Focus input on mobile when clicked
+    document.getElementById('messageInput').addEventListener('focus', function() {
+      setTimeout(() => {
+        window.scrollTo(0, document.body.scrollHeight); // Scroll to bottom
+      }, 300); // Delay for virtual keyboard
+    });
   </script>
 </body>
 </html>
