@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Vamos Quiz 2025</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle, #0b2f8a, #000033); /* Gradient background */
+      color: #ffd700; /* Gold text */
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px #000; /* 3D effect for title */
+    }
+    #myIdDiv, #myNameDiv {
+      text-align: center;
+      margin-bottom: 20px; /* Increased spacing */
+      font-weight: bold;
+    }
+    #roleSelection, #clientConnect, #messageArea, #hostControls {
+      text-align: center;
+      margin-bottom: 20px; /* Increased spacing */
+    }
+    #chat {
+      margin: 0 auto;
+      border: 4px double #ffd700; /* Double border for elegance */
+      background: #1a1a1a;
+      padding: 15px; /* More internal padding */
+      width: 90%;
+      max-width: 600px;
+      height: 70vh; /* Responsive height */
+      overflow-y: auto;
+      box-shadow: 0 0 10px rgba(255,215,0,0.5); /* Golden glow */
+    }
+    #chat p {
+      margin-bottom: 10px; /* Space between messages */
+    }
+    .timestamp {
+      color: #aaa; /* Gray for less prominence */
+      font-size: 0.8em;
+    }
+    .sender {
+      font-weight: bold; /* Highlight sender */
+    }
+    .system-message {
+      color: #ccc; /* Light gray for system messages */
+      font-style: italic;
+    }
+    input[type="text"] {
+      padding: 10px;
+      border: 1px solid #ffd700;
+      background: #333;
+      color: #ffd700;
+      border-radius: 10px; /* Rounded corners */
+    }
+    button {
+      padding: 15px 20px; /* Larger buttons */
+      border: none;
+      background: #ffd700;
+      color: #0b2f8a;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 5px;
+      border-radius: 10px; /* Rounded corners */
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.5); /* Depth effect */
+    }
+    button:hover {
+      background: #e6c200; /* Slightly darker gold on hover */
+    }
+    #messageArea {
+      display: flex; /* Flexbox for alignment */
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap; /* Wrap on small screens */
+    }
+    #messageInput {
+      flex-grow: 1; /* Takes available space */
+      max-width: 400px; /* Limits width */
+      margin-right: 10px; /* Space before button */
+    }
+  </style>
+  <!-- Include PeerJS from CDN -->
+  <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+</head>
+<body>
+  <h1>Vamos Quiz 2025</h1>
+  <div id="myIdDiv"></div>
+  <div id="myNameDiv"></div>
+  <div id="roleSelection">
+    <button id="hostBtn">Become Host</button>
+    <button id="clientBtn">Connect as Client</button>
+  </div>
+  <div id="clientConnect" style="display:none;">
+    <input type="text" id="hostIdInput" placeholder="Enter Host ID">
+    <button id="connectToHostBtn">Connect</button>
+  </div>
+  <div id="chat" style="display:none;"></div>
+  <div id="messageArea" style="display:none;">
+    <input type="text" id="messageInput" placeholder="Type your message">
+    <button id="sendBtn">Send</button>
+  </div>
+  <div id="hostControls" style="display:none;">
+    <button id="clearBtn">Clear Chat</button>
+  </div>
+
+<script>
+  let peer;
+  let connections = [];
+  let connection = null;
+  let isHost = false;
+  let myId = "";
+  let myAssignedName = "";
+  let teamNames = {};
+  let nextTeamIndex = 0;
+
+  function displayMessage(arg1, arg2, arg3) {
+    const chatDiv = document.getElementById('chat');
+    const p = document.createElement('p');
+    if (typeof arg2 === 'undefined') {
+      p.textContent = arg1; /* System message */
+      p.className = 'system-message';
+    } else {
+      p.innerHTML = `<span class="timestamp">${arg1}</span> <span class="sender">${arg2}</span>: ${arg3}`;
+    }
+    chatDiv.appendChild(p);
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+  }
+
+  function initPeer() {
+    peer = new Peer();
+    peer.on('open', function(id) {
+      myId = id;
+      document.getElementById('myIdDiv').textContent = "Your Peer ID: " + id;
+    });
+    peer.on('error', function(err) {
+      console.error(err);
+      alert("Peer error: " + err);
+    });
+  }
+
+  initPeer();
+
+  document.getElementById('hostBtn').addEventListener('click', function() {
+    isHost = true;
+    document.getElementById('roleSelection').style.display = 'none';
+    document.getElementById('chat').style.display = 'block';
+    document.getElementById('messageArea').style.display = 'block';
+    document.getElementById('hostControls').style.display = 'block';
+    document.getElementById('myNameDiv').textContent = "Your device name: Host";
+
+    peer.on('connection', function(conn) {
+      connections.push(conn);
+      let assignedTeam = teamNameFromIndex(nextTeamIndex);
+      nextTeamIndex++;
+      teamNames[conn.peer] = assignedTeam;
+      conn.on('open', function() {
+        conn.send(JSON.stringify({ type: "assign", teamName: assignedTeam }));
+      });
+      setupConnection(conn, true);
+      displayMessage("Client connected: " + assignedTeam);
+    });
+  });
+
+  document.getElementById('clientBtn').addEventListener('click', function() {
+    document.getElementById('roleSelection').style.display = 'none';
+    document.getElementById('clientConnect').style.display = 'block';
+  });
+
+  document.getElementById('connectToHostBtn').addEventListener('click', function() {
+    const hostId = document.getElementById('hostIdInput').value.trim();
+    if (hostId) {
+      connection = peer.connect(hostId);
+      connection.on('open', function() {
+        document.getElementById('clientConnect').style.display = 'none';
+        document.getElementById('chat').style.display = 'block';
+        document.getElementById('messageArea').style.display = 'block';
+        setupConnection(connection, false);
+        displayMessage("Connected to host: " + hostId);
+      });
+      connection.on('error', function(err) {
+        console.error(err);
+        alert("Connection error: " + err);
+      });
+    }
+  });
+
+  function setupConnection(conn, isHostConn) {
+    conn.on('data', function(data) {
+      try {
+        const msgObj = JSON.parse(data);
+        if (msgObj.type === "assign") {
+          if (!isHost) {
+            myAssignedName = msgObj.teamName;
+            document.getElementById('myNameDiv').textContent = "Your device name: " + myAssignedName;
+          }
+        } else if (msgObj.type === "chat") {
+          displayMessage(msgObj.timestamp, msgObj.deviceName, msgObj.text);
+          if (isHost && msgObj.senderPeerId) {
+            connections.forEach(c => {
+              if (c.peer !== msgObj.senderPeerId && c.open) {
+                c.send(JSON.stringify(msgObj));
+              }
+            });
+          }
+        } else if (msgObj.type === "clear") {
+          document.getElementById('chat').innerHTML = "";
+        }
+      } catch (e) {
+        console.error("Error parsing message:", e);
+      }
+    });
+    conn.on('error', function(err) {
+      console.error("Connection error:", err);
+    });
+  }
+
+  document.getElementById('sendBtn').addEventListener('click', function() {
+    const messageText = document.getElementById('messageInput').value;
+    if (messageText.trim() === "") return;
+    const timestamp = new Date().toLocaleTimeString();
+    let senderName = isHost ? "Host" : (myAssignedName || myId);
+    const msgObj = {
+      type: "chat",
+      senderPeerId: myId,
+      deviceName: senderName,
+      text: messageText,
+      timestamp: timestamp
+    };
+    const msgString = JSON.stringify(msgObj);
+    displayMessage(timestamp, senderName, messageText);
+    if (isHost) {
+      connections.forEach(conn => {
+        if (conn.open) {
+          conn.send(msgString);
+        }
+      });
+    } else {
+      if (connection && connection.open) {
+        connection.send(msgString);
+      } else {
+        alert("Not connected to host.");
+      }
+    }
+    document.getElementById('messageInput').value = "";
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', function() {
+    document.getElementById('chat').innerHTML = "";
+    if (isHost) {
+      const clearMsg = JSON.stringify({ type: "clear" });
+      connections.forEach(conn => {
+        if (conn.open) {
+          conn.send(clearMsg);
+        }
+      });
+    }
+  });
+
+  function teamNameFromIndex(index) {
+    return "Team " + String.fromCharCode("A".charCodeAt(0) + index);
+  }
+</script>
+</body>
+</html>
