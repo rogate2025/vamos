@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Real-Time Chat</title>
+<title>Hybrid Chat System</title>
 <style>
   body { font-family: Arial, sans-serif; text-align: center; margin: 20px; background: #f3f3f3; }
   #messages { height: 400px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; background: #fff; margin-bottom: 20px; }
@@ -12,7 +12,7 @@
 </style>
 </head>
 <body>
-<h1>Hybrid Chat Sync 🔥</h1>
+<h1>Hybrid Chat</h1>
 <div id="messages"></div>
 <input type="text" id="username" placeholder="Your Name">
 <input type="text" id="message" placeholder="Type message...">
@@ -23,48 +23,37 @@
   const messagesDiv = document.getElementById("messages");
   const messageInput = document.getElementById("message");
   const usernameInput = document.getElementById("username");
-  const channel = new BroadcastChannel("offline_chat");
+  const channel = new BroadcastChannel("chat");
   let ws;
 
-  // Initialize WebSocket if Online
+  // WebSocket Connection (Online)
   function connectWebSocket() {
-    if (navigator.onLine) {
-      ws = new WebSocket("wss://websocket-broadcast-server.glitch.me");
-
-      ws.onopen = () => console.log("Connected to WebSocket");
-      ws.onmessage = (event) => receiveMessage(event.data);
-      ws.onerror = () => console.warn("WebSocket Error");
-      ws.onclose = () => console.warn("WebSocket Disconnected");
-    }
+    ws = new WebSocket("wss://echo.websocket.org");
+    ws.onopen = () => console.log("WebSocket Connected");
+    ws.onmessage = (event) => receiveMessage(event.data);
+    ws.onclose = () => console.warn("WebSocket Disconnected");
   }
 
   // Send Message
   function sendMessage() {
-    const text = messageInput.value.trim();
     const username = usernameInput.value.trim();
-    if (!text || !username) return;
+    const text = messageInput.value.trim();
+    if (!username || !text) return;
 
     const message = `${username}: ${text}`;
     displayMessage(message);
     saveMessage(message);
 
-    if (navigator.onLine && ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(message); // Online Sync
+    if (navigator.onLine) {
+      ws.send(message); // Online
     } else {
-      channel.postMessage(message); // Offline Sync
+      channel.postMessage(message); // Offline
     }
     messageInput.value = "";
   }
 
-  // Receive Messages
-  channel.onmessage = (event) => {
-    receiveMessage(event.data);
-  };
-
-  function receiveMessage(message) {
-    displayMessage(message);
-    saveMessage(message);
-  }
+  // Receive Messages (Offline)
+  channel.onmessage = (event) => receiveMessage(event.data);
 
   // Display Message
   function displayMessage(message) {
@@ -75,24 +64,32 @@
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   }
 
-  // Save Messages to LocalStorage
+  // Save to LocalStorage
   function saveMessage(message) {
-    let history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+    let history = JSON.parse(localStorage.getItem("chat") || "[]");
     history.push(message);
-    localStorage.setItem("chatHistory", JSON.stringify(history));
+    localStorage.setItem("chat", JSON.stringify(history));
   }
 
-  // Sync Old Messages
+  // Load Messages on Page Load
   window.onload = () => {
-    const history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+    const history = JSON.parse(localStorage.getItem("chat") || "[]");
     history.forEach(displayMessage);
-    connectWebSocket();
+    if (navigator.onLine) {
+      connectWebSocket();
+    }
   };
+
+  // Receive Messages
+  function receiveMessage(message) {
+    displayMessage(message);
+    saveMessage(message);
+  }
 
   // Clear Messages
   function clearMessages() {
     messagesDiv.innerHTML = "";
-    localStorage.removeItem("chatHistory");
+    localStorage.removeItem("chat");
   }
 </script>
 </body>
