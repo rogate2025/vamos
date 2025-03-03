@@ -3,78 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat - Phone</title>
+    <meta name="theme-color" content="#ffffff">
+    <title>AdHoc Chat - Phone</title>
+    <link rel="manifest" href="data:application/manifest+json,{
+        'name': 'AdHoc Chat - Phone',
+        'short_name': 'Chat Phone',
+        'start_url': '/',
+        'display': 'standalone',
+        'background_color': '#ffffff',
+        'theme_color': '#ffffff',
+        'icons': [{
+            'src': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACOSURBVHhe7dAxDgAwDMCw/ftftoYSaA8R5pABrW3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3btm3b9gD/AJ2eT1cWENQAAAABJRU5ErkJggg==',
+            'sizes': '100x100',
+            'type': 'image/png'
+        }]
+    }">
     <style>
-        body { font-family: Arial, sans-serif; padding: 10px; }
-        #connectionSection { margin-bottom: 10px; }
-        #messageSection { display: none; }
-        #inputForm { display: flex; gap: 10px; }
-        #nameInput { width: 100px; }
-        #messageInput { flex: 1; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            padding: 0;
+        }
+        textarea {
+            width: 100%;
+            height: 60px;
+            margin: 5px 0;
+            resize: none;
+            font-size: 0.9em;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        #chatForm {
+            display: none;
+            margin-top: 10px;
+        }
+        #chatForm input {
+            margin: 5px 0;
+            padding: 5px;
+        }
+        #nameInput {
+            width: 100px;
+        }
+        #messageInput {
+            width: 200px;
+        }
     </style>
 </head>
 <body>
+    <h2>AdHoc Chat - Phone</h2>
     <div id="connectionSection">
-        <h3>Connect to Laptop</h3>
-        <input id="roomIdInput" placeholder="Enter Room ID" required>
-        <button id="connectButton">Connect</button>
+        <textarea id="offer" placeholder="Paste laptop connection code here"></textarea>
+        <button id="generateAnswer">Generate Response</button>
+        <textarea id="answer" readonly placeholder="Copy this to laptop"></textarea>
     </div>
-    <div id="messageSection">
-        <h3>Send Message</h3>
-        <form id="inputForm">
-            <input id="nameInput" placeholder="Your name" required>
-            <input id="messageInput" placeholder="Type a message" required>
-            <button type="submit">Send</button>
-        </form>
-    </div>
+    <form id="chatForm">
+        <input id="nameInput" placeholder="Your name" required>
+        <input id="messageInput" placeholder="Type a message" required>
+        <button type="submit">Send</button>
+    </form>
 
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
-        const socket = io('https://your-signaling-server.com'); // Replace with your server URL
-        let peer, channel;
-
-        document.getElementById('connectButton').onclick = () => {
-            const roomId = document.getElementById('roomIdInput').value;
-            socket.emit('join-room', roomId);
-
-            peer = new RTCPeerConnection();
-            peer.ondatachannel = (event) => {
-                channel = event.channel;
-                channel.onopen = () => {
-                    document.getElementById('messageSection').style.display = 'block';
-                };
-            };
-
-            socket.on('offer', (data) => {
-                peer.setRemoteDescription(data.offer).then(() => {
-                    peer.createAnswer().then((answer) => {
-                        peer.setLocalDescription(answer);
-                        socket.emit('answer', { answer, to: data.from });
-                    });
+        // Register Service Worker for offline support
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                self.addEventListener('install', (e) => e.waitUntil(self.skipWaiting()));
+                self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+                self.addEventListener('fetch', (e) => {
+                    e.respondWith(new Response(document.documentElement.outerHTML, {
+                        headers: {'Content-Type': 'text/html'}
+                    }));
                 });
-            });
+            `;
+            const swBlob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(swBlob);
+            navigator.serviceWorker.register(swUrl).catch(err => console.error('Service Worker failed:', err));
+        }
 
-            peer.onicecandidate = (event) => {
-                if (event.candidate) {
-                    socket.emit('candidate', { candidate: event.candidate, to: socket.id });
+        const offerTextarea = document.getElementById('offer');
+        const generateAnswerBtn = document.getElementById('generateAnswer');
+        const answerTextarea = document.getElementById('answer');
+        const chatForm = document.getElementById('chatForm');
+        const nameInput = document.getElementById('nameInput');
+        const messageInput = document.getElementById('messageInput');
+        let channel;
+
+        // Generate WebRTC answer
+        generateAnswerBtn.onclick = async () => {
+            const offerData = JSON.parse(offerTextarea.value);
+            const peer = new RTCPeerConnection();
+            peer.ondatachannel = (e) => {
+                channel = e.channel;
+                channel.onopen = () => chatForm.style.display = 'block';
+            };
+            await peer.setRemoteDescription(offerData.offer);
+            for (const candidate of offerData.candidates) {
+                await peer.addIceCandidate(candidate);
+            }
+            const answer = await peer.createAnswer();
+            await peer.setLocalDescription(answer);
+            const candidates = [];
+            peer.onicecandidate = (e) => {
+                if (e.candidate) {
+                    candidates.push(e.candidate);
+                } else {
+                    const data = { answer: peer.localDescription, candidates };
+                    answerTextarea.value = JSON.stringify(data);
                 }
             };
-
-            socket.on('candidate', (data) => {
-                peer.addIceCandidate(data.candidate);
-            });
         };
 
-        document.getElementById('inputForm').onsubmit = (e) => {
+        // Send message to laptop
+        chatForm.onsubmit = (e) => {
             e.preventDefault();
             if (channel && channel.readyState === 'open') {
-                const message = {
-                    name: document.getElementById('nameInput').value,
-                    message: document.getElementById('messageInput').value,
+                const msg = {
+                    name: nameInput.value,
+                    message: messageInput.value,
                     timestamp: Date.now()
                 };
-                channel.send(JSON.stringify(message));
-                document.getElementById('messageInput').value = '';
+                channel.send(JSON.stringify(msg));
+                messageInput.value = '';
             }
         };
     </script>
