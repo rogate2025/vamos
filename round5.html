@@ -101,7 +101,7 @@
             margin-bottom: 20px;
         }
         .gift-box-container {
-            display: none; /* Hidden as interaction is now on the wheel */
+            display: none;
         }
         .guruji {
             width: 120px;
@@ -111,13 +111,12 @@
             border-radius: 50%;
             cursor: pointer;
             transition: transform 0.3s ease;
-            z-index: 15; /* Above fireworks but below modals */
+            z-index: 15;
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
         }
         .guruji:hover {
             transform: scale(1.1);
         }
-        /* Enhanced Guruji Popup Styles */
         .guruji-popup {
             position: fixed;
             top: 0;
@@ -358,18 +357,22 @@
         audio {
             display: none;
         }
+        .hidden-segment {
+            opacity: 0.3;
+            pointer-events: none;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Background Music -->
     <audio id="bgm" loop autoplay>
         <source src="bgm.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
-    <!-- Guruji Music -->
     <audio id="gurujiMusic" src="guruji.mp3"></audio>
+
+    <audio id="spinMusic" src="spin.mp3"></audio>
 
     <div class="game-container">
         <h1>Spin the Wheel</h1>
@@ -381,7 +384,6 @@
             </div>
         </div>
         <button id="spinBtn">Spin Now!</button>
-        <!-- Gift boxes remain in HTML but are hidden -->
         <div class="gift-box-container">
             <div class="gift-box" data-set="50">?</div>
             <div class="gift-box" data-set="100">?</div>
@@ -392,18 +394,15 @@
             <div class="gift-box" data-set="350">?</div>
             <div class="gift-box" data-set="400">?</div>
         </div>
-        <!-- Guruji Image -->
         <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
     </div>
 
-    <!-- Modal for Question -->
     <div id="questionModal">
         <div id="closeModal">❌</div>
         <div id="questionContent"></div>
         <button id="answerBtn">Show Answer</button>
     </div>
 
-    <!-- Enhanced Guruji Popup -->
     <div class="guruji-popup" id="guruji-popup">
         <div class="guruji-content">
             <img src="guruji.png" alt="Guruji" class="guruji-image">
@@ -418,7 +417,6 @@
     </div>
 
     <script>
-        // Background Music Fallback for User Interaction
         document.addEventListener('click', function() {
             const audio = document.getElementById('bgm');
             if (audio.paused) {
@@ -437,6 +435,7 @@
         const questionContent = document.getElementById('questionContent');
         const closeModal = document.getElementById('closeModal');
         const answerBtn = document.getElementById('answerBtn');
+        const spinMusic = document.getElementById('spinMusic');
 
         const questionSets = {
             "50": [
@@ -508,14 +507,14 @@
         ];
 
         const segments = [
-            { number: "50" },
-            { number: "100" },
-            { number: "150" },
-            { number: "200" },
-            { number: "250" },
-            { number: "300" },
-            { number: "350" },
-            { number: "400" }
+            { number: "50", visible: true },
+            { number: "100", visible: true },
+            { number: "150", visible: true },
+            { number: "200", visible: true },
+            { number: "250", visible: true },
+            { number: "300", visible: true },
+            { number: "350", visible: true },
+            { number: "400", visible: true }
         ];
 
         const usedQuestions = {
@@ -541,9 +540,10 @@
         function drawWheel() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             segments.forEach((segment, i) => {
+                if (!segment.visible) return;
                 const angle = currentAngle + (i * arc);
                 ctx.beginPath();
-                ctx.fillStyle = colors[i];
+                ctx.fillStyle = segment.visible ? colors[i] : '#666633';
                 ctx.moveTo(radius, radius);
                 ctx.arc(radius, radius, radius, angle, angle + arc);
                 ctx.lineTo(radius, radius);
@@ -560,14 +560,16 @@
         }
 
         function getSegmentAtAngle(angle) {
+            const visibleSegments = segments.filter(s => s.visible);
+            if (visibleSegments.length === 0) return null;
             const relativeAngle = normalizeAngle(angle - currentAngle);
-            const segmentIndex = Math.floor(relativeAngle / arc) % segments.length;
-            return segments[segmentIndex];
+            const segmentIndex = Math.floor(relativeAngle / arc) % visibleSegments.length;
+            return visibleSegments[segmentIndex];
         }
 
         function handleWheelClick(event) {
             if (isSpinning || !lastLandedNumber) {
-                return; /* Ignore clicks during spinning or before first spin */
+                return;
             }
             const rect = canvas.getBoundingClientRect();
             const x = event.clientX - rect.left;
@@ -576,13 +578,17 @@
             const dy = y - radius;
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist > radius) {
-                return; /* Click outside the wheel */
+                return;
             }
             const clickAngle = Math.atan2(dy, dx);
             const clickedSegment = getSegmentAtAngle(clickAngle);
-            if (clickedSegment.number === lastLandedNumber) {
+            if (clickedSegment && clickedSegment.number === lastLandedNumber) {
                 currentQuestion = getRandomQuestion(lastLandedNumber);
-                showQuestionModal(currentQuestion.question);
+                if (currentQuestion) {
+                    showQuestionModal(currentQuestion.question);
+                } else {
+                    alert(`No more questions available for section ${lastLandedNumber}!`);
+                }
             } else {
                 alert(`Please click on the landed sector: ${lastLandedNumber}`);
             }
@@ -592,7 +598,10 @@
             const availableQuestions = questionSets[setNumber].filter(q => !usedQuestions[setNumber].includes(q));
             if (availableQuestions.length === 0) {
                 usedQuestions[setNumber] = [];
-                return questionSets[setNumber][0];
+                const segment = segments.find(s => s.number === setNumber);
+                segment.visible = false;
+                drawWheel();
+                return null;
             }
             const question = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
             usedQuestions[setNumber].push(question);
@@ -619,14 +628,24 @@
 
         function spinWheel() {
             if (isSpinning) return;
+            
+            const visibleSegments = segments.filter(s => s.visible);
+            if (visibleSegments.length === 0) {
+                resultDiv.textContent = "All questions exhausted!";
+                resultDiv.style.opacity = '1';
+                return;
+            }
+
             isSpinning = true;
             spinBtn.disabled = true;
             resultDiv.style.opacity = '0';
             fireworksDiv.innerHTML = '';
 
+            spinMusic.play().catch(error => console.log("Spin music play failed:", error));
+
             const spins = 5 + Math.floor(Math.random() * 5);
-            const randomSegmentIndex = Math.floor(Math.random() * segments.length);
-            const segmentCenter = randomSegmentIndex * arc + arc / 2;
+            const randomSegmentIndex = Math.floor(Math.random() * visibleSegments.length);
+            const segmentCenter = segments.indexOf(visibleSegments[randomSegmentIndex]) * arc + arc / 2;
             const delta = normalizeAngle(pointerAngle - segmentCenter);
             const targetAngle = delta + 2 * Math.PI * spins;
 
@@ -652,6 +671,8 @@
                     createFireworks();
                     isSpinning = false;
                     spinBtn.disabled = false;
+                    spinMusic.pause();
+                    spinMusic.currentTime = 0;
                 }
             }
             requestAnimationFrame(animate);
@@ -668,7 +689,6 @@
             answerBtn.style.display = 'none';
         }
 
-        // Guruji Popup Functions
         function playSound(id) {
             document.getElementById(id).play();
         }
