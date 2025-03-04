@@ -3,127 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guruji</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Guruji's Wisdom</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            height: 100vh;
+            background: linear-gradient(135deg, #0a1a3d 0%, #1e3c72 50%, #000000 100%);
+            color: #ffffff;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
-        .modal-content {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 15px;
+        .container {
             text-align: center;
-            max-width: 600px;
-            width: 80%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            animation: zoomIn 0.5s ease-in-out;
-        }
-        @keyframes zoomIn {
-            from {
-                transform: scale(0);
-            }
-            to {
-                transform: scale(1);
-            }
-        }
-        .guruji-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            margin-bottom: 20px;
-            border: 3px solid #ffd700;
-        }
-        #greeting {
-            font-size: 26px;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-        }
-        .speech-bubble {
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
             position: relative;
-            background: #ffffff;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
         }
-        .speech-bubble::before {
-            content: "";
+        h1 {
+            font-size: 48px;
+            color: #ffd700;
+            text-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00;
+            animation: glowText 2s infinite alternate;
+            margin-bottom: 30px;
+        }
+        .guruji {
+            width: 150px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+        }
+        .guruji:hover {
+            transform: scale(1.1);
+        }
+        /* Enhanced Guruji Popup Styles */
+        .guruji-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeInOverlay 0.5s ease-in-out;
+        }
+        .guruji-content {
+            background: linear-gradient(135deg, #ffeb3b, #ff9800, #ff5722);
+            padding: 40px;
+            border-radius: 25px;
+            text-align: center;
+            position: relative;
+            width: 85%;
+            max-width: 700px;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 87, 34, 0.9), 
+                        inset 0 0 20px rgba(255, 255, 255, 0.3);
+            border: 5px solid #ffd700;
+            animation: bounceInPopup 0.7s ease-out;
+            overflow: hidden;
+        }
+        .guruji-content::before {
+            content: '';
             position: absolute;
-            top: -10px;
-            left: 50%;
-            margin-left: -10px;
-            width: 0;
-            height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-bottom: 10px solid #ffffff;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.2), transparent);
+            animation: rotateGlow 10s linear infinite;
         }
-        #question {
-            font-size: 20px;
-            color: #34495e;
+        .guruji-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 25px;
+            border: 6px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.9), 0 0 30px rgba(255, 87, 34, 0.7);
+            animation: spinImage 8s linear infinite;
+        }
+        .guruji-dialogue {
+            font-size: 1.4em;
+            color: #333;
+            position: relative;
+            z-index: 1;
+        }
+        #guruji-intro {
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #d81b60;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6), 0 0 10px #fff;
+            animation: slideIn 0.5s ease-in;
+            font-size: 1.6em;
+        }
+        #guruji-question {
+            margin-bottom: 25px;
+            font-size: 2.2em;
+            font-weight: bold;
+            font-style: italic;
+            color: #fff;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8), 0 0 15px #ffd700, 0 0 25px #ff5722;
+            background: linear-gradient(45deg, rgba(255, 215, 0, 0.3), rgba(255, 87, 34, 0.3));
+            padding: 15px 25px;
+            border-radius: 15px;
+            animation: pulseGlow 1.5s infinite;
+        }
+        #reveal-answer {
+            background: linear-gradient(45deg, #ffd700, #ff5722, #ffaa00);
+            border: none;
+            padding: 15px 30px;
+            cursor: pointer;
+            font-size: 1.3em;
+            border-radius: 10px;
+            color: #fff;
+            text-shadow: 2px 2px 4px #000;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 15px rgba(255, 87, 34, 0.8);
             margin-bottom: 20px;
         }
-        #question-image {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
+        #reveal-answer:hover {
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 0 25px rgba(255, 87, 34, 1), 0 0 35px rgba(255, 215, 0, 0.9);
+        }
+        #guruji-answer {
+            font-weight: bold;
+            color: #00e676;
+            font-size: 1.8em;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6), 0 0 15px #fff;
+            animation: fadeInAnswer 1s ease-in;
+        }
+        .guruji-close {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background: linear-gradient(45deg, #ff5722, #ff9800);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            text-shadow: 1px 1px 2px #000;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
+        .guruji-close:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 87, 34, 0.8);
+        }
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes bounceInPopup {
+            0% { transform: scale(0.7) rotate(-5deg); opacity: 0; }
+            60% { transform: scale(1.05) rotate(2deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes spinImage {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pulseGlow {
+            0% { transform: scale(1); box-shadow: 0 0 10px #ffd700; }
+            50% { transform: scale(1.03); box-shadow: 0 0 20px #ff5722; }
+            100% { transform: scale(1); box-shadow: 0 0 10px #ffd700; }
+        }
+        @keyframes fadeInAnswer {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glowText {
+            0% { text-shadow: 0 0 15px #ffd700, 0 0 30px #ffaa00; }
+            100% { text-shadow: 0 0 25px #ffd700, 0 0 50px #ffaa00; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        audio {
             display: none;
-            margin-top: 10px;
-            border: 2px solid #3498db;
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="modal-content">
-        <img src="guruji.png" alt="Guruji" class="guruji-img">
-        <p id="greeting">Greetings! I am Guruji. Let me ask you a question...</p>
-        <div class="speech-bubble">
-            <p id="question"></p>
-            <img id="question-image" src="" alt="Question Image">
+    <!-- Background Music -->
+    <audio id="bgm" loop autoplay>
+        <source src="bgm.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Guruji Music -->
+    <audio id="gurujiMusic" src="guruji.mp3"></audio>
+
+    <div class="container">
+        <h1>Guruji's Wisdom</h1>
+        <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
+    </div>
+
+    <!-- Guruji Popup -->
+    <div class="guruji-popup" id="guruji-popup">
+        <div class="guruji-content">
+            <img src="guruji.png" alt="Guruji" class="guruji-image">
+            <div class="guruji-dialogue">
+                <p id="guruji-intro">Greetings, knowledge seekers! I am Guruji, your Quiz Master. Behold my challenge:</p>
+                <p id="guruji-question"></p>
+                <button id="reveal-answer">Reveal Answer</button>
+                <p id="guruji-answer" style="display: none;"></p>
+            </div>
+            <button class="guruji-close" onclick="closeGurujiPopup()">Close</button>
         </div>
     </div>
+
     <script>
-        const questions = [
-            { text: "What is the capital of France?", image: null },
-            { text: "Who painted the Mona Lisa?", image: "mona_lisa.jpg" },
-            { text: "What is the largest planet in our solar system?", image: null },
-            { text: "Which element has the chemical symbol 'Au'?", image: null },
-            { text: "What is the tallest mountain in the world?", image: "everest.jpg" },
-            { text: "Who wrote the play 'Romeo and Juliet'?", image: null },
-            { text: "What is the currency of Japan?", image: null },
-            { text: "Which country is known as the Land of the Rising Sun?", image: "japan_flag.jpg" },
-            { text: "What is the main ingredient in guacamole?", image: null },
-            { text: "Who discovered penicillin?", image: null }
+        const gurujiQuestions = [
+            { question: "What is the capital of Italy?", answer: "Rome" },
+            { question: "Who wrote 'Hamlet'?", answer: "William Shakespeare" },
+            { question: "What is the largest mammal on Earth?", answer: "Blue Whale" },
+            { question: "What is the chemical symbol for water?", answer: "H2O" },
+            { question: "Who painted the Sistine Chapel ceiling?", answer: "Michelangelo" },
+            { question: "Which planet is closest to the Sun?", answer: "Mercury" },
+            { question: "What is the tallest mountain in the world?", answer: "Mount Everest" }
         ];
 
-        const randomIndex = Math.floor(Math.random() * questions.length);
-        const selectedQuestion = questions[randomIndex];
+        // Background Music Fallback for User Interaction
+        document.addEventListener('click', function() {
+            const audio = document.getElementById('bgm');
+            if (audio.paused) {
+                audio.play().catch(function(error) {
+                    console.log("Background music play failed:", error);
+                });
+            }
+        }, { once: true });
 
-        document.getElementById('question').textContent = selectedQuestion.text;
-
-        const img = document.getElementById('question-image');
-        if (selectedQuestion.image) {
-            img.src = selectedQuestion.image;
-            img.style.display = 'block';
-        } else {
-            img.style.display = 'none';
+        function playSound(id) {
+            document.getElementById(id).play();
         }
 
-        setTimeout(() => {
-            document.querySelector('.speech-bubble').style.opacity = 1;
-        }, 2000);
+        function stopSound(id) {
+            const sound = document.getElementById(id);
+            sound.pause();
+            sound.currentTime = 0;
+        }
+
+        function openGurujiPopup() {
+            const popup = document.getElementById("guruji-popup");
+            popup.style.display = "flex";
+            const questionElem = document.getElementById("guruji-question");
+            const answerElem = document.getElementById("guruji-answer");
+            const revealBtn = document.getElementById("reveal-answer");
+
+            playSound("gurujiMusic");
+            answerElem.style.display = "none";
+            revealBtn.style.display = "block";
+
+            const randomIndex = Math.floor(Math.random() * gurujiQuestions.length);
+            const selectedQuestion = gurujiQuestions[randomIndex];
+
+            questionElem.textContent = selectedQuestion.question;
+            answerElem.textContent = selectedQuestion.answer;
+
+            revealBtn.onclick = () => {
+                answerElem.style.display = "block";
+                revealBtn.style.display = "none";
+            };
+        }
+
+        function closeGurujiPopup() {
+            document.getElementById("guruji-popup").style.display = "none";
+            stopSound("gurujiMusic");
+        }
     </script>
 </body>
 </html>
