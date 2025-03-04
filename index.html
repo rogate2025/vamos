@@ -35,9 +35,9 @@
         }
 
         .round-image {
-            width: auto; /* Keeps original GIF width */
-            height: auto; /* Keeps original GIF height */
-            object-fit: contain; /* Maintains GIF aspect ratio */
+            width: auto;
+            height: auto;
+            object-fit: contain;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -104,17 +104,32 @@
     <audio id="intro-music" src="intro.mp3" loop></audio>
 
     <script>
+        const audio = document.getElementById('intro-music');
+        let roundWindow = null;
+
         function openRound(url) {
-            window.open(url, 'RoundWindow', 'width=800,height=600,scrollbars=yes');
+            if (roundWindow && !roundWindow.closed) {
+                roundWindow.close(); // Close existing window if open
+            }
+            audio.muted = true; // Mute the audio when opening a round
+            roundWindow = window.open(url, 'RoundWindow', 'width=800,height=600,scrollbars=yes');
+            
+            // Check if window is closed periodically
+            const checkWindowClosed = setInterval(() => {
+                if (roundWindow && roundWindow.closed) {
+                    clearInterval(checkWindowClosed);
+                    audio.muted = false; // Unmute when window is closed
+                    roundWindow = null;
+                }
+            }, 500);
         }
 
         document.getElementById('passkey-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
+            event.preventDefault();
             var passkey = document.getElementById('passkey-input').value;
             if (passkey === '3492') {
                 document.getElementById('passkey-container').style.display = 'none';
                 document.getElementById('quiz-content').style.display = 'block';
-                var audio = document.getElementById('intro-music');
                 audio.play();
             } else {
                 alert('Incorrect passkey, please try again.');
