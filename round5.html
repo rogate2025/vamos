@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spin the Wheel Game</title>
     <style>
+        /* All previous styles remain the same, adding this new class */
+        .hidden-sector {
+            opacity: 0.3;
+            transition: opacity 0.5s ease;
+        }
+        /* Rest of the styles remain unchanged */
         body { 
             display: flex; 
             flex-direction: column; 
@@ -357,21 +363,14 @@
         audio {
             display: none;
         }
-        .hidden-segment {
-            opacity: 0.3;
-            pointer-events: none;
-        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <audio id="bgm" loop autoplay>
         <source src="bgm.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
-
     <audio id="gurujiMusic" src="guruji.mp3"></audio>
-
     <audio id="spinMusic" src="spin.mp3"></audio>
 
     <div class="game-container">
@@ -540,22 +539,32 @@
         function drawWheel() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             segments.forEach((segment, i) => {
-                if (!segment.visible) return;
                 const angle = currentAngle + (i * arc);
                 ctx.beginPath();
-                ctx.fillStyle = segment.visible ? colors[i] : '#666633';
+                ctx.fillStyle = segment.visible ? colors[i] : '#333333';
                 ctx.moveTo(radius, radius);
                 ctx.arc(radius, radius, radius, angle, angle + arc);
                 ctx.lineTo(radius, radius);
                 ctx.fill();
+                
                 ctx.save();
                 ctx.translate(radius, radius);
                 ctx.rotate(angle + arc / 2);
-                ctx.fillStyle = '#0a1a3d';
+                ctx.fillStyle = segment.visible ? '#0a1a3d' : '#666666';
                 ctx.font = 'bold 24px Poppins';
                 ctx.textAlign = 'right';
                 ctx.fillText(segment.number, radius - 30, 10);
                 ctx.restore();
+
+                // Add faded effect for hidden sectors
+                if (!segment.visible) {
+                    ctx.beginPath();
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                    ctx.moveTo(radius, radius);
+                    ctx.arc(radius, radius, radius, angle, angle + arc);
+                    ctx.lineTo(radius, radius);
+                    ctx.fill();
+                }
             });
         }
 
@@ -568,18 +577,16 @@
         }
 
         function handleWheelClick(event) {
-            if (isSpinning || !lastLandedNumber) {
-                return;
-            }
+            if (isSpinning || !lastLandedNumber) return;
+            
             const rect = canvas.getBoundingClientRect();
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
             const dx = x - radius;
             const dy = y - radius;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist > radius) {
-                return;
-            }
+            if (dist > radius) return;
+
             const clickAngle = Math.atan2(dy, dx);
             const clickedSegment = getSegmentAtAngle(clickAngle);
             if (clickedSegment && clickedSegment.number === lastLandedNumber) {
@@ -587,7 +594,8 @@
                 if (currentQuestion) {
                     showQuestionModal(currentQuestion.question);
                 } else {
-                    alert(`No more questions available for section ${lastLandedNumber}!`);
+                    resultDiv.textContent = `Section ${lastLandedNumber} questions exhausted!`;
+                    resultDiv.style.opacity = '1';
                 }
             } else {
                 alert(`Please click on the landed sector: ${lastLandedNumber}`);
@@ -597,7 +605,6 @@
         function getRandomQuestion(setNumber) {
             const availableQuestions = questionSets[setNumber].filter(q => !usedQuestions[setNumber].includes(q));
             if (availableQuestions.length === 0) {
-                usedQuestions[setNumber] = [];
                 const segment = segments.find(s => s.number === setNumber);
                 segment.visible = false;
                 drawWheel();
@@ -605,6 +612,11 @@
             }
             const question = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
             usedQuestions[setNumber].push(question);
+            if (availableQuestions.length === 1) { // Last question was just used
+                const segment = segments.find(s => s.number === setNumber);
+                segment.visible = false;
+                drawWheel();
+            }
             return question;
         }
 
@@ -633,6 +645,7 @@
             if (visibleSegments.length === 0) {
                 resultDiv.textContent = "All questions exhausted!";
                 resultDiv.style.opacity = '1';
+                spinBtn.disabled = true;
                 return;
             }
 
@@ -728,16 +741,13 @@
         }
 
         closeModal.addEventListener('click', hideQuestionModal);
-
         answerBtn.addEventListener('click', () => {
             if (currentQuestion) {
                 questionContent.textContent = `Answer: ${currentQuestion.answer}`;
                 answerBtn.style.display = 'none';
             }
         });
-
         canvas.addEventListener('click', handleWheelClick);
-
         drawWheel();
         spinBtn.addEventListener('click', spinWheel);
     </script>
