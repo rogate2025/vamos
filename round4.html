@@ -15,57 +15,50 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative; /* For absolute positioning of Guruji */
+            position: relative;
         }
         .container {
             max-width: 90%;
             padding: 20px;
         }
-        h1, h2, h3, #timer {
-            text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700, 0 0 30px #ff4500;
-        }
         .category-buttons {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 4 columns */
-            grid-template-rows: repeat(3, 1fr); /* 3 rows */
-            gap: 15px; /* Space between boxes */
-            justify-items: center;
-            max-width: 800px; /* Adjust as needed */
+            grid-template-columns: repeat(4, 1fr); /* 3x4 grid achieved with 4 columns */
+            gap: 15px;
+            max-width: 800px;
             margin: 0 auto;
         }
-        .category-buttons .category-item {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .category-item {
             position: relative;
             width: 150px;
             height: 150px;
         }
-        .category-buttons .gift-box {
-            font-size: 120px; /* Larger size for the emoji */
+        .gift-box {
+            position: relative;
             width: 150px;
             height: 150px;
-            line-height: 150px; /* Center the emoji vertically */
             border-radius: 20px;
-            border: 4px solid #ffd700; /* Thicker gold border */
-            background: linear-gradient(135deg, #ff4500, #ffd700); /* Gradient background */
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 69, 0, 0.6);
-            transition: transform 0.3s, box-shadow 0.3s;
+            border: 4px solid #ffd700;
+            background: linear-gradient(135deg, #ff4500, #ffd700);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
             cursor: pointer;
         }
-        .category-buttons .gift-box:hover {
-            transform: scale(1.15); /* Slightly larger hover effect */
-            box-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 69, 0, 0.8);
-        }
-        .category-buttons .number {
+        .emoji {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 36px; /* Larger number */
-            color: #ffffff; /* White for contrast */
-            text-shadow: 0 0 5px #000, 0 0 10px #ffd700; /* Enhanced shadow */
-            font-weight: bold;
+            font-size: 120px;
+            z-index: 1;
+        }
+        .number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            color: #ffffff;
+            z-index: 2;
         }
         .question-container {
             display: none;
@@ -75,14 +68,8 @@
             margin: 20px auto;
             width: 80vw;
             max-width: 800px;
-            min-height: 300px;
-            box-sizing: border-box;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 69, 0, 0.5);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
             border: 3px solid #ffd700;
-            position: relative;
-        }
-        .button-container {
-            margin-top: 20px;
         }
         .quiz-button {
             padding: 15px 30px;
@@ -91,193 +78,14 @@
             border: none;
             font-size: 20px;
             cursor: pointer;
-            display: inline-block;
-            text-shadow: 0 0 5px #000, 0 0 10px #fff;
             border-radius: 10px;
-            transition: all 0.3s;
-        }
-        .quiz-button:hover {
-            background: linear-gradient(to right, #ffcc00, #ffd700);
-            box-shadow: 0 0 15px #ffd700;
-            transform: translateY(-2px);
-        }
-        #stop-quiz {
-            background: linear-gradient(to right, #ff4500, #ff6347);
-        }
-        #stop-quiz:hover {
-            background: linear-gradient(to right, #ff6347, #ff4500);
         }
         #home-button {
             background: linear-gradient(to right, #00ced1, #20b2aa);
         }
-        #home-button:hover {
-            background: linear-gradient(to right, #20b2aa, #00ced1);
-        }
         #timer {
             font-size: 24px;
             margin-top: 10px;
-        }
-        .guruji {
-            width: 120px;
-            position: fixed; /* Changed to fixed to position relative to the screen */
-            bottom: 20px;
-            left: 20px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
-            z-index: 1000; /* Ensure it stays above other elements */
-        }
-        .guruji:hover {
-            transform: scale(1.1);
-        }
-        /* Enhanced Guruji Popup Styles */
-        .guruji-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            animation: fadeInOverlay 0.5s ease-in-out;
-        }
-        .guruji-content {
-            background: linear-gradient(135deg, #ffeb3b, #ff9800, #ff5722);
-            padding: 40px;
-            border-radius: 25px;
-            text-align: center;
-            position: relative;
-            width: 85%;
-            max-width: 700px;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 87, 34, 0.9), 
-                        inset 0 0 20px rgba(255, 255, 255, 0.3);
-            border: 5px solid #ffd700;
-            animation: bounceInPopup 0.7s ease-out;
-            overflow: hidden;
-        }
-        .guruji-content::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.2), transparent);
-            animation: rotateGlow 10s linear infinite;
-        }
-        .guruji-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin-bottom: 25px;
-            border: 6px solid #ffd700;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.9), 0 0 30px rgba(255, 87, 34, 0.7);
-            animation: spinImage 8s linear infinite;
-        }
-        .guruji-dialogue {
-            font-size: 1.4em;
-            color: #333;
-            position: relative;
-            z-index: 1;
-        }
-        #guruji-intro {
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #d81b60;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6), 0 0 10px #fff;
-            animation: slideIn 0.5s ease-in;
-            font-size: 1.6em;
-        }
-        #guruji-question {
-            margin-bottom: 25px;
-            font-size: 2.2em;
-            font-weight: bold;
-            font-style: italic;
-            color: #fff;
-            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8), 0 0 15px #ffd700, 0 0 25px #ff5722;
-            background: linear-gradient(45deg, rgba(255, 215, 0, 0.3), rgba(255, 87, 34, 0.3));
-            padding: 15px 25px;
-            border-radius: 15px;
-            animation: pulseGlow 1.5s infinite;
-        }
-        #reveal-answer {
-            background: linear-gradient(45deg, #ffd700, #ff5722, #ffaa00);
-            border: none;
-            padding: 15px 30px;
-            cursor: pointer;
-            font-size: 1.3em;
-            border-radius: 10px;
-            color: #fff;
-            text-shadow: 2px 2px 4px #000;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 0 15px rgba(255, 87, 34, 0.8);
-            margin-bottom: 20px;
-        }
-        #reveal-answer:hover {
-            transform: scale(1.1) rotate(2deg);
-            box-shadow: 0 0 25px rgba(255, 87, 34, 1), 0 0 35px rgba(255, 215, 0, 0.9);
-        }
-        #guruji-answer {
-            font-weight: bold;
-            color: #00e676;
-            font-size: 1.8em;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6), 0 0 15px #fff;
-            animation: fadeInAnswer 1s ease-in;
-        }
-        .guruji-close {
-            padding: 10px 20px;
-            font-size: 1.2em;
-            background: linear-gradient(45deg, #ff5722, #ff9800);
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            text-shadow: 1px 1px 2px #000;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-        }
-        .guruji-close:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(255, 87, 34, 0.8);
-        }
-        @keyframes fadeInOverlay {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes bounceInPopup {
-            0% { transform: scale(0.7) rotate(-5deg); opacity: 0; }
-            60% { transform: scale(1.05) rotate(2deg); opacity: 1; }
-            100% { transform: scale(1) rotate(0deg); }
-        }
-        @keyframes rotateGlow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes spinImage {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes pulseGlow {
-            0% { transform: scale(1); box-shadow: 0 0 10px #ffd700; }
-            50% { transform: scale(1.03); box-shadow: 0 0 20px #ff5722; }
-            100% { transform: scale(1); box-shadow: 0 0 10px #ffd700; }
-        }
-        @keyframes fadeInAnswer {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideIn {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        audio {
-            display: none;
         }
     </style>
 </head>
@@ -295,28 +103,6 @@
                 <button class="quiz-button" id="home-button">Home 🏠</button>
                 <button class="quiz-button" id="stop-quiz">Stop Quiz 🛑</button>
             </div>
-            <img src="guruji.png" class="guruji" onclick="openGurujiPopup()"> <!-- Guruji in quiz -->
-        </div>
-    </div>
-    <img src="guruji.png" class="guruji" onclick="openGurujiPopup()" id="gurujiInitial"> <!-- Guruji on main -->
-
-    <!-- Guruji Music -->
-    <audio id="gurujiMusic" src="guruji.mp3"></audio>
-
-    <!-- Background Music -->
-    <audio id="backgroundMusic" src="bgm.mp3" loop preload="auto"></audio>
-
-    <!-- Enhanced Guruji Popup -->
-    <div class="guruji-popup" id="guruji-popup">
-        <div class="guruji-content">
-            <img src="guruji.png" alt="Guruji" class="guruji-image">
-            <div class="guruji-dialogue">
-                <p id="guruji-intro">Greetings, knowledge seekers! I am Guruji, your Quiz Master. Behold my challenge:</p>
-                <p id="guruji-question"></p>
-                <button id="reveal-answer">Reveal Answer</button>
-                <p id="guruji-answer" style="display: none;"></p>
-            </div>
-            <button class="guruji-close" onclick="closeGurujiPopup()">Close</button>
         </div>
     </div>
 
@@ -331,57 +117,47 @@
                 { question: "In which year did World War II end? ⏰", answer: "1945" }
             ],
             "3": [
-                { question: "What is the capital of France? 🗼", answer: "Paris" },
-                { question: "Which continent is the Sahara Desert located in? 🏜️", answer: "Africa" }
+                { question: "What is the largest mammal? 🐋", answer: "Blue Whale" },
+                { question: "What is the fastest land animal? 🐆", answer: "Cheetah" }
             ],
             "4": [
-                { question: "What is 5 + 7? ➕", answer: "12" },
-                { question: "What is the square root of 16? 🔢", answer: "4" }
+                { question: "What is the capital of France? 🗼", answer: "Paris" },
+                { question: "What is the longest river in the world? 🌊", answer: "Nile" }
             ],
             "5": [
-                { question: "How many players are on a soccer team? ⚽", answer: "11" },
-                { question: "What sport is played at Wimbledon? 🎾", answer: "Tennis" }
+                { question: "What gas do plants use for photosynthesis? 🌱", answer: "Carbon Dioxide" },
+                { question: "What is the hardest natural substance? 💎", answer: "Diamond" }
             ],
             "6": [
-                { question: "Who directed 'Titanic'? 🎥", answer: "James Cameron" },
-                { question: "Which movie features a character named Jack Sparrow? 🏴‍☠️", answer: "Pirates of the Caribbean" }
+                { question: "What is the largest desert in the world? 🏜️", answer: "Sahara" },
+                { question: "What ocean is the largest? 🌊", answer: "Pacific" }
             ],
             "7": [
-                { question: "Who is known as the King of Pop? 👑", answer: "Michael Jackson" },
-                { question: "Which band sang 'Bohemian Rhapsody'? 🎶", answer: "Queen" }
+                { question: "Who painted the Mona Lisa? 🎨", answer: "Leonardo da Vinci" },
+                { question: "What is the smallest country by land area? 🌍", answer: "Vatican City" }
             ],
             "8": [
-                { question: "Who founded Microsoft? 💻", answer: "Bill Gates" },
-                { question: "What does 'CPU' stand for? 🖥️", answer: "Central Processing Unit" }
+                { question: "What is 2 + 2? ➕", answer: "4" },
+                { question: "What shape has 8 sides? ⭕", answer: "Octagon" }
             ],
             "9": [
-                { question: "Who wrote 'Romeo and Juliet'? 📖", answer: "William Shakespeare" },
-                { question: "What is the main character’s name in '1984'? 📚", answer: "Winston Smith" }
+                { question: "What is the main ingredient in guacamole? 🥑", answer: "Avocado" },
+                { question: "What fruit is known as 'pomum aureum' in Latin? 🍎", answer: "Apple" }
             ],
             "10": [
-                { question: "What is the fastest land animal? 🐆", answer: "Cheetah" },
-                { question: "What is the largest mammal? 🐳", answer: "Blue Whale" }
+                { question: "What sport uses a shuttlecock? 🏸", answer: "Badminton" },
+                { question: "What is the national game of Japan? 🤼", answer: "Sumo Wrestling" }
             ],
             "11": [
-                { question: "What gas do plants use for photosynthesis? 🌱", answer: "Carbon Dioxide" },
-                { question: "What is the largest organ in the human body? 🧠", answer: "Skin" }
+                { question: "What element has the atomic number 1? ⚛️", answer: "Hydrogen" },
+                { question: "What metal is liquid at room temperature? 🌡️", answer: "Mercury" }
             ],
             "12": [
                 { question: "What is the currency of Japan? 💴", answer: "Yen" },
-                { question: "Which country hosted the 2016 Summer Olympics? 🏅", answer: "Brazil" }
+                { question: "What year did humans first land on the moon? 🌕", answer: "1969" }
             ]
         };
 
-        const gurujiQuestions = [
-            { question: "What is the capital of Italy?", answer: "Rome" },
-            { question: "Who wrote 'Hamlet'?", answer: "William Shakespeare" },
-            { question: "What is the largest mammal on Earth?", answer: "Blue Whale" },
-            { question: "What is the chemical symbol for water?", answer: "H2O" },
-            { question: "Who painted the Sistine Chapel ceiling?", answer: "Michelangelo" },
-            { question: "Which planet is closest to the Sun?", answer: "Mercury" },
-            { question: "What is the tallest mountain in the world?", answer: "Mount Everest" }
-        ];
-        
         const categoryContainer = document.getElementById("categories");
         const quizContainer = document.getElementById("quiz");
         const questionText = document.getElementById("question-text");
@@ -395,85 +171,76 @@
         let currentQuestionIndex = 0;
         let timeLeft = 60;
         let timer;
-        let hasChosen = false; // Track if a box has been chosen
+        let transitionTimeout;
+        const selectedCategories = new Set();
 
-        // Start background music on page load
         window.onload = function() {
             loadCategories();
-            const bgMusic = document.getElementById("backgroundMusic");
-            bgMusic.volume = 0.5; // Set volume (0.0 to 1.0)
-            bgMusic.play().catch(error => {
-                console.log("Autoplay prevented:", error);
-                document.body.addEventListener('click', function playOnClick() {
-                    bgMusic.play();
-                    document.body.removeEventListener('click', playOnClick);
-                }, { once: true });
-            });
         };
 
         function loadCategories() {
-            categoryContainer.innerHTML = ''; // Clear any existing content
+            categoryContainer.innerHTML = '';
             let number = 1;
             for (let category in categories) {
                 let div = document.createElement("div");
                 div.className = "category-item";
-                div.id = `category-${category}`;
                 
                 let giftBox = document.createElement("div");
                 giftBox.className = "gift-box";
-                giftBox.innerText = "🎁"; // Gift box emoji
-                giftBox.dataset.category = category; // Store category for reference
-                giftBox.addEventListener('click', handleGiftBoxClick); // Use event listener
+                giftBox.dataset.category = category;
+                
+                let emojiSpan = document.createElement("span");
+                emojiSpan.className = "emoji";
+                emojiSpan.innerText = selectedCategories.has(category) ? "🔒" : "🎁";
                 
                 let numSpan = document.createElement("span");
                 numSpan.className = "number";
                 numSpan.innerText = number;
                 
+                giftBox.appendChild(emojiSpan);
+                giftBox.appendChild(numSpan);
+                if (!selectedCategories.has(category)) {
+                    giftBox.addEventListener('click', handleGiftBoxClick);
+                } else {
+                    giftBox.style.cursor = "default";
+                }
+                
                 div.appendChild(giftBox);
-                div.appendChild(numSpan);
                 categoryContainer.appendChild(div);
                 number++;
             }
         }
 
         function handleGiftBoxClick(event) {
-            if (hasChosen) {
-                alert("You can only choose one gift box per game!");
+            const giftBox = event.currentTarget;
+            const category = giftBox.dataset.category;
+            if (selectedCategories.has(category)) {
+                alert("This category has already been selected!");
                 return;
             }
-            hasChosen = true; // Mark that a box has been chosen
-            const giftBox = event.target;
-            const category = giftBox.dataset.category;
-            const parentDiv = giftBox.parentElement;
-
-            startQuiz(category, parentDiv, giftBox);
+            startQuiz(category, giftBox);
         }
 
-        function startQuiz(category, element, giftBox) {
+        function startQuiz(category, giftBox) {
             currentQuestions = categories[category];
             currentQuestionIndex = 0;
-            giftBox.innerText = "🔒"; // Change to locked padlock emoji
-            giftBox.style.cursor = "default"; // Disable further clicking
-            giftBox.removeEventListener('click', handleGiftBoxClick); // Remove event listener
-            // Disable all other gift boxes
-            document.querySelectorAll('.gift-box').forEach(box => {
-                if (box !== giftBox) {
-                    box.style.cursor = "default";
-                    box.removeEventListener('click', handleGiftBoxClick);
-                }
-            });
+            selectedCategories.add(category);
+            const emojiSpan = giftBox.querySelector('.emoji');
+            emojiSpan.innerText = "🔒";
+            giftBox.style.cursor = "default";
+            giftBox.removeEventListener('click', handleGiftBoxClick);
             categoryContainer.style.display = "none";
-            document.getElementById("gurujiInitial").style.display = "none"; // Hide initial Guruji
             quizContainer.style.display = "block";
             loadQuestion();
+            timeLeft = 60;
+            timerDisplay.innerText = `Time Left: ${timeLeft}s ⏳`;
             startTimer();
         }
 
         function loadQuestion() {
             if (currentQuestionIndex >= currentQuestions.length) {
-                currentQuestionIndex = 0; // Loop back to the first question
+                currentQuestionIndex = 0;
             }
-            
             let question = currentQuestions[currentQuestionIndex];
             questionText.innerText = question.question;
             answerText.innerText = question.answer;
@@ -481,88 +248,46 @@
         }
 
         function startTimer() {
+            clearInterval(timer);
             timer = setInterval(() => {
                 timeLeft--;
                 timerDisplay.innerText = `Time Left: ${timeLeft}s ⏳`;
                 if (timeLeft <= 0) {
-                    stopQuiz("Time's up! ⏰");
+                    returnToCategories("Time's up! ⏰");
                 }
             }, 1000);
         }
 
-        function stopQuiz(message) {
+        function returnToCategories(message) {
             clearInterval(timer);
-            alert(message);
-            location.reload(); // Reset the entire game
-        }
-
-        function goHome() {
-            clearInterval(timer);
+            if (message) alert(message);
             quizContainer.style.display = "none";
-            categoryContainer.style.display = "block";
-            document.getElementById("gurujiInitial").style.display = "block"; // Show initial Guruji
+            categoryContainer.style.display = "grid"; // Ensure 3x4 grid
             timeLeft = 60;
             timerDisplay.innerText = `Time Left: ${timeLeft}s ⏳`;
-        }
-
-        // Guruji Popup Functions
-        function playSound(id) {
-            document.getElementById(id).play();
-        }
-
-        function stopSound(id) {
-            const sound = document.getElementById(id);
-            sound.pause();
-            sound.currentTime = 0;
-        }
-
-        function openGurujiPopup() {
-            const popup = document.getElementById("guruji-popup");
-            popup.style.display = "flex";
-            const questionElem = document.getElementById("guruji-question");
-            const answerElem = document.getElementById("guruji-answer");
-            const revealBtn = document.getElementById("reveal-answer");
-
-            playSound("gurujiMusic");
-            answerElem.style.display = "none";
-            revealBtn.style.display = "block";
-
-            const randomIndex = Math.floor(Math.random() * gurujiQuestions.length);
-            const selectedQuestion = gurujiQuestions[randomIndex];
-
-            questionElem.textContent = selectedQuestion.question;
-            answerElem.textContent = selectedQuestion.answer;
-
-            revealBtn.onclick = () => {
-                answerElem.style.display = "block";
-                revealBtn.style.display = "none";
-            };
-        }
-
-        function closeGurujiPopup() {
-            document.getElementById("guruji-popup").style.display = "none";
-            stopSound("gurujiMusic");
+            loadCategories(); // Refresh categories to maintain state
         }
 
         showAnswerButton.onclick = () => {
             answerText.style.display = "block";
-            setTimeout(() => {
+            transitionTimeout = setTimeout(() => {
                 currentQuestionIndex++;
                 loadQuestion();
             }, 2000);
         };
 
         passButton.onclick = () => {
+            clearTimeout(transitionTimeout);
             currentQuestionIndex++;
             loadQuestion();
         };
 
         stopQuizButton.onclick = () => {
-            stopQuiz("Quiz stopped! 🛑");
+            returnToCategories("Quiz session stopped! 🛑");
         };
 
         homeButton.onclick = () => {
-            goHome();
+            returnToCategories();
         };
 
         loadCategories();

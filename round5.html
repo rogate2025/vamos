@@ -5,12 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spin the Wheel Game</title>
     <style>
-        /* All previous styles remain the same, adding this new class */
-        .hidden-sector {
-            opacity: 0.3;
-            transition: opacity 0.5s ease;
-        }
-        /* Rest of the styles remain unchanged */
         body { 
             display: flex; 
             flex-direction: column; 
@@ -22,6 +16,7 @@
             background: linear-gradient(135deg, #0a1a3d 0%, #1e3c72 50%, #000000 100%);
             color: #ffffff;
             overflow: hidden;
+            transition: background 0.5s ease;
         }
         .game-container { 
             text-align: center; 
@@ -90,13 +85,10 @@
             max-width: 450px; 
             word-wrap: break-word; 
             text-shadow: 0 0 15px #ffd700, 0 0 30px #ffaa00; 
-            animation: popUp 0.5s ease-out forwards, glowText 1.5s infinite alternate;
             opacity: 0;
-            position: absolute; 
-            bottom: 15px; 
-            left: 0;
-            width: 100%; 
-            text-align: center; 
+            transition: opacity 0.5s ease-in-out; /* Smooth fade-in */
+            margin-top: 10px; /* Position just below wheel */
+            text-align: center;
             z-index: 5;
         }
         h1 { 
@@ -106,9 +98,7 @@
             animation: glowText 2s infinite alternate;
             margin-bottom: 20px;
         }
-        .gift-box-container {
-            display: none;
-        }
+        .gift-box-container { display: none; }
         .guruji {
             width: 120px;
             position: absolute;
@@ -120,9 +110,7 @@
             z-index: 15;
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
         }
-        .guruji:hover {
-            transform: scale(1.1);
-        }
+        .guruji:hover { transform: scale(1.1); }
         .guruji-popup {
             position: fixed;
             top: 0;
@@ -237,10 +225,56 @@
             transform: scale(1.1);
             box-shadow: 0 0 15px rgba(255, 87, 34, 0.8);
         }
+        .hidden-sector {
+            opacity: 0.3;
+            transition: opacity 0.5s ease;
+        }
+        #questionModal.glow {
+            box-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00;
+            animation: glowBorder 1.5s infinite alternate;
+        }
+        #congratsMessage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 40px;
+            border-radius: 15px;
+            color: #ffd700;
+            font-size: 32px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ffd700;
+            z-index: 25;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            animation: fall 3s ease-in-out forwards;
+        }
+        .balloon {
+            position: fixed;
+            width: 50px;
+            height: 70px;
+            border-radius: 50% 50% 40% 40%;
+            pointer-events: none;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            animation: float 4s ease-in-out forwards;
+        }
         @keyframes popUp {
-            0% { transform: scale(0.5); opacity: 0; }
-            80% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
+            0% { transform: scale(0.5) translate(-50%, -50%); opacity: 0; }
+            80% { transform: scale(1.1) translate(-50%, -50%); opacity: 1; }
+            100% { transform: scale(1) translate(-50%, -50%); opacity: 1; }
         }
         @keyframes glowWheel {
             0% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5); }
@@ -276,6 +310,18 @@
             50% { transform: scale(1.03); box-shadow: 0 0 20px #ff5722; }
             100% { transform: scale(1); box-shadow: 0 0 10px #ffd700; }
         }
+        @keyframes glowBorder {
+            0% { box-shadow: 0 0 20px #ffd700; }
+            100% { box-shadow: 0 0 40px #ffaa00; }
+        }
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh); opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
+        }
         @keyframes fadeInAnswer {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -293,6 +339,8 @@
             z-index: 10;
             width: 0;
             height: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
         }
         .particle {
             position: absolute;
@@ -318,9 +366,7 @@
             align-items: center;
             transition: all 0.3s ease-in-out;
         }
-        #questionModal.active {
-            display: flex;
-        }
+        #questionModal.active { display: flex; }
         #questionContent {
             font-size: 42px;
             font-weight: 600;
@@ -331,6 +377,13 @@
             max-width: 90%;
             text-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00;
             animation: glowText 1.5s infinite alternate;
+        }
+        #timer {
+            font-size: 36px;
+            color: #ffd700;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #ffd700;
+            transition: opacity 0.3s ease;
         }
         #closeModal {
             position: absolute;
@@ -347,7 +400,7 @@
             color: #ffaa00;
             text-shadow: 0 0 15px #ffaa00;
         }
-        #answerBtn {
+        #answerBtn, #congratsBtn {
             font-size: 28px;
             font-weight: bold;
             padding: 20px 50px;
@@ -355,14 +408,12 @@
             box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
             transition: all 0.3s ease;
         }
-        #answerBtn:hover {
+        #answerBtn:hover, #congratsBtn:hover {
             background: linear-gradient(45deg, #ffaa00, #ffd700);
             transform: translateY(-5px);
             box-shadow: 0 10px 25px rgba(255, 215, 0, 0.8);
         }
-        audio {
-            display: none;
-        }
+        audio { display: none; }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -372,16 +423,15 @@
     </audio>
     <audio id="gurujiMusic" src="guruji.mp3"></audio>
     <audio id="spinMusic" src="spin.mp3"></audio>
+    <audio id="celebrationMusic" src="celebration.mp3"></audio>
 
     <div class="game-container">
         <h1>Spin the Wheel</h1>
         <div class="wheel-container">
             <div class="pointer"></div>
             <canvas id="wheel" width="450" height="450"></canvas>
-            <div id="result">
-                <div class="fireworks" id="fireworks"></div>
-            </div>
         </div>
+        <div id="result"></div> <!-- Moved outside wheel-container -->
         <button id="spinBtn">Spin Now!</button>
         <div class="gift-box-container">
             <div class="gift-box" data-set="50">?</div>
@@ -399,8 +449,12 @@
     <div id="questionModal">
         <div id="closeModal">❌</div>
         <div id="questionContent"></div>
+        <div id="timer"></div>
         <button id="answerBtn">Show Answer</button>
+        <button id="congratsBtn" style="display: none;">Congratulations!</button>
     </div>
+
+    <div id="congratsMessage"></div>
 
     <div class="guruji-popup" id="guruji-popup">
         <div class="guruji-content">
@@ -429,12 +483,19 @@
         const ctx = canvas.getContext('2d');
         const spinBtn = document.getElementById('spinBtn');
         const resultDiv = document.getElementById('result');
-        const fireworksDiv = document.getElementById('fireworks');
+        const fireworksDiv = document.createElement('div'); // Create dynamically
+        fireworksDiv.className = 'fireworks';
+        document.body.appendChild(fireworksDiv);
         const questionModal = document.getElementById('questionModal');
         const questionContent = document.getElementById('questionContent');
         const closeModal = document.getElementById('closeModal');
         const answerBtn = document.getElementById('answerBtn');
+        const congratsBtn = document.getElementById('congratsBtn');
+        const congratsMessage = document.getElementById('congratsMessage');
         const spinMusic = document.getElementById('spinMusic');
+        const bgm = document.getElementById('bgm');
+        const celebrationMusic = document.getElementById('celebrationMusic');
+        let timerInterval;
 
         const questionSets = {
             "50": [
@@ -530,6 +591,14 @@
         let currentQuestion = null;
         let lastLandedNumber = null;
 
+        const motivationalQuotes = [
+            "Great job! The only way to do great work is to love what you do.",
+            "Well done! Success is the sum of small efforts repeated day in and day out.",
+            "Fantastic! Believe you can and you're halfway there.",
+            "Amazing work! The future belongs to those who believe in their dreams.",
+            "Brilliant! Every accomplishment starts with the decision to try."
+        ];
+
         function normalizeAngle(angle) {
             angle = angle % (2 * Math.PI);
             if (angle < 0) angle += 2 * Math.PI;
@@ -556,7 +625,6 @@
                 ctx.fillText(segment.number, radius - 30, 10);
                 ctx.restore();
 
-                // Add faded effect for hidden sectors
                 if (!segment.visible) {
                     ctx.beginPath();
                     ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
@@ -612,7 +680,7 @@
             }
             const question = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
             usedQuestions[setNumber].push(question);
-            if (availableQuestions.length === 1) { // Last question was just used
+            if (availableQuestions.length === 1) {
                 const segment = segments.find(s => s.number === setNumber);
                 segment.visible = false;
                 drawWheel();
@@ -636,6 +704,8 @@
                 particle.style.setProperty('--y', `${y}px`);
                 fireworksDiv.appendChild(particle);
             }
+            fireworksDiv.style.opacity = '1';
+            setTimeout(() => fireworksDiv.style.opacity = '0', 1200);
         }
 
         function spinWheel() {
@@ -652,8 +722,8 @@
             isSpinning = true;
             spinBtn.disabled = true;
             resultDiv.style.opacity = '0';
-            fireworksDiv.innerHTML = '';
-
+            
+            bgm.pause();
             spinMusic.play().catch(error => console.log("Spin music play failed:", error));
 
             const spins = 5 + Math.floor(Math.random() * 5);
@@ -686,6 +756,7 @@
                     spinBtn.disabled = false;
                     spinMusic.pause();
                     spinMusic.currentTime = 0;
+                    bgm.play().catch(error => console.log("Background music resume failed:", error));
                 }
             }
             requestAnimationFrame(animate);
@@ -695,11 +766,126 @@
             questionContent.textContent = `Question: ${question}`;
             questionModal.classList.add('active');
             answerBtn.style.display = 'block';
+            congratsBtn.style.display = 'none';
+            
+            let timeLeft = 60;
+            const timerDisplay = document.getElementById('timer');
+            timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+            timerDisplay.style.opacity = '1';
+            timerDisplay.style.animation = 'pulseGlow 1s infinite';
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+                
+                if (timeLeft <= 10) {
+                    timerDisplay.style.color = '#ff6f61';
+                    timerDisplay.style.animation = 'pulseGlow 0.5s infinite';
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    questionContent.textContent = "Time's up!";
+                    answerBtn.style.display = 'none';
+                    timerDisplay.style.opacity = '0';
+                    timerDisplay.style.animation = 'none';
+                }
+            }, 1000);
         }
 
         function hideQuestionModal() {
             questionModal.classList.remove('active');
+            questionModal.classList.remove('glow');
             answerBtn.style.display = 'none';
+            congratsBtn.style.display = 'none';
+            clearInterval(timerInterval);
+            const timerDisplay = document.getElementById('timer');
+            timerDisplay.style.opacity = '0';
+            timerDisplay.style.animation = 'none';
+            document.body.style.background = 'linear-gradient(135deg, #0a1a3d 0%, #1e3c72 50%, #000000 100%)';
+            congratsMessage.style.opacity = '0';
+            congratsMessage.style.display = 'none';
+            document.querySelectorAll('.confetti, .balloon').forEach(el => el.remove());
+            fireworksDiv.style.opacity = '0';
+        }
+
+        function triggerCelebration() {
+            const effects = [
+                () => { // Confetti
+                    for (let i = 0; i < 50; i++) {
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.left = `${Math.random() * 100}vw`;
+                        confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                        confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+                        document.body.appendChild(confetti);
+                        setTimeout(() => {
+                            confetti.style.opacity = '1';
+                            setTimeout(() => {
+                                confetti.style.opacity = '0';
+                                setTimeout(() => confetti.remove(), 300);
+                            }, 2700);
+                        }, 10);
+                    }
+                },
+                () => { // Fireworks
+                    createFireworks();
+                },
+                () => { // Pop-up message
+                    congratsMessage.textContent = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+                    congratsMessage.style.display = 'block';
+                    setTimeout(() => {
+                        congratsMessage.style.opacity = '1';
+                        setTimeout(() => {
+                            congratsMessage.style.opacity = '0';
+                            setTimeout(() => congratsMessage.style.display = 'none', 500);
+                        }, 2500);
+                    }, 10);
+                },
+                () => { // Balloons
+                    for (let i = 0; i < 10; i++) {
+                        const balloon = document.createElement('div');
+                        balloon.className = 'balloon';
+                        balloon.style.left = `${Math.random() * 100}vw`;
+                        balloon.style.background = `hsl(${Math.random() * 360}, 80%, 60%)`;
+                        balloon.style.animationDelay = `${Math.random() * 0.5}s`;
+                        document.body.appendChild(balloon);
+                        setTimeout(() => {
+                            balloon.style.opacity = '1';
+                            setTimeout(() => {
+                                balloon.style.opacity = '0';
+                                setTimeout(() => balloon.remove(), 300);
+                            }, 3700);
+                        }, 10);
+                    }
+                },
+                () => { // Glowing border
+                    questionModal.classList.add('glow');
+                    congratsMessage.textContent = "Well Done!";
+                    congratsMessage.style.display = 'block';
+                    setTimeout(() => {
+                        congratsMessage.style.opacity = '1';
+                        setTimeout(() => {
+                            questionModal.classList.remove('glow');
+                            congratsMessage.style.opacity = '0';
+                            setTimeout(() => congratsMessage.style.display = 'none', 500);
+                        }, 2500);
+                    }, 10);
+                },
+                () => { // Background flash
+                    document.body.style.background = 'linear-gradient(135deg, #ffd700, #ffaa00)';
+                    celebrationMusic.play().catch(error => console.log("Celebration music failed:", error));
+                    setTimeout(() => {
+                        document.body.style.background = 'linear-gradient(135deg, #0a1a3d 0%, #1e3c72 50%, #000000 100%)';
+                        celebrationMusic.pause();
+                        celebrationMusic.currentTime = 0;
+                    }, 2000);
+                }
+            ];
+
+            const randomEffect = effects[Math.floor(Math.random() * effects.length)];
+            randomEffect();
         }
 
         function playSound(id) {
@@ -743,10 +929,20 @@
         closeModal.addEventListener('click', hideQuestionModal);
         answerBtn.addEventListener('click', () => {
             if (currentQuestion) {
+                clearInterval(timerInterval);
                 questionContent.textContent = `Answer: ${currentQuestion.answer}`;
                 answerBtn.style.display = 'none';
+                congratsBtn.style.display = 'block';
+                const timerDisplay = document.getElementById('timer');
+                timerDisplay.style.opacity = '0';
+                timerDisplay.style.animation = 'none';
             }
         });
+
+        congratsBtn.addEventListener('click', () => {
+            triggerCelebration();
+        });
+
         canvas.addEventListener('click', handleWheelClick);
         drawWheel();
         spinBtn.addEventListener('click', spinWheel);
