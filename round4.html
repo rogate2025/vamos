@@ -15,21 +15,31 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative; /* For absolute positioning of Guruji */
         }
         .container {
             max-width: 90%;
             padding: 20px;
-            position: relative; /* For positioning Guruji */
         }
         h1, h2, h3, #timer {
             text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700, 0 0 30px #ff4500;
         }
+        .category-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columns */
+            grid-template-rows: repeat(3, 1fr); /* 3 rows */
+            gap: 15px; /* Space between boxes */
+            justify-items: center;
+            max-width: 800px; /* Adjust as needed */
+            margin: 0 auto;
+        }
         .category-buttons .category-item {
-            display: inline-block;
-            margin: 15px;
-            cursor: pointer;
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: relative;
+            width: 150px;
+            height: 150px;
         }
         .category-buttons .gift-box {
             font-size: 120px; /* Larger size for the emoji */
@@ -41,6 +51,7 @@
             background: linear-gradient(135deg, #ff4500, #ffd700); /* Gradient background */
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 69, 0, 0.6);
             transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
         }
         .category-buttons .gift-box:hover {
             transform: scale(1.15); /* Slightly larger hover effect */
@@ -108,13 +119,14 @@
         }
         .guruji {
             width: 120px;
-            position: absolute;
+            position: fixed; /* Changed to fixed to position relative to the screen */
             bottom: 20px;
             left: 20px;
             border-radius: 50%;
             cursor: pointer;
             transition: transform 0.3s ease;
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+            z-index: 1000; /* Ensure it stays above other elements */
         }
         .guruji:hover {
             transform: scale(1.1);
@@ -285,11 +297,14 @@
             </div>
             <img src="guruji.png" class="guruji" onclick="openGurujiPopup()"> <!-- Guruji in quiz -->
         </div>
-        <img src="guruji.png" class="guruji" onclick="openGurujiPopup()" id="gurujiInitial"> <!-- Guruji on main -->
     </div>
+    <img src="guruji.png" class="guruji" onclick="openGurujiPopup()" id="gurujiInitial"> <!-- Guruji on main -->
 
     <!-- Guruji Music -->
     <audio id="gurujiMusic" src="guruji.mp3"></audio>
+
+    <!-- Background Music -->
+    <audio id="backgroundMusic" src="bgm.mp3" loop preload="auto"></audio>
 
     <!-- Enhanced Guruji Popup -->
     <div class="guruji-popup" id="guruji-popup">
@@ -380,8 +395,24 @@
         let currentQuestionIndex = 0;
         let timeLeft = 60;
         let timer;
+        let hasChosen = false; // Track if a box has been chosen
+
+        // Start background music on page load
+        window.onload = function() {
+            loadCategories();
+            const bgMusic = document.getElementById("backgroundMusic");
+            bgMusic.volume = 0.5; // Set volume (0.0 to 1.0)
+            bgMusic.play().catch(error => {
+                console.log("Autoplay prevented:", error);
+                document.body.addEventListener('click', function playOnClick() {
+                    bgMusic.play();
+                    document.body.removeEventListener('click', playOnClick);
+                }, { once: true });
+            });
+        };
 
         function loadCategories() {
+            categoryContainer.innerHTML = ''; // Clear any existing content
             let number = 1;
             for (let category in categories) {
                 let div = document.createElement("div");
@@ -391,7 +422,8 @@
                 let giftBox = document.createElement("div");
                 giftBox.className = "gift-box";
                 giftBox.innerText = "🎁"; // Gift box emoji
-                giftBox.onclick = () => startQuiz(category, div);
+                giftBox.dataset.category = category; // Store category for reference
+                giftBox.addEventListener('click', handleGiftBoxClick); // Use event listener
                 
                 let numSpan = document.createElement("span");
                 numSpan.className = "number";
@@ -404,10 +436,32 @@
             }
         }
 
-        function startQuiz(category, element) {
+        function handleGiftBoxClick(event) {
+            if (hasChosen) {
+                alert("You can only choose one gift box per game!");
+                return;
+            }
+            hasChosen = true; // Mark that a box has been chosen
+            const giftBox = event.target;
+            const category = giftBox.dataset.category;
+            const parentDiv = giftBox.parentElement;
+
+            startQuiz(category, parentDiv, giftBox);
+        }
+
+        function startQuiz(category, element, giftBox) {
             currentQuestions = categories[category];
             currentQuestionIndex = 0;
-            element.style.display = "none"; // Hide the selected gift box and number
+            giftBox.innerText = "🔒"; // Change to locked padlock emoji
+            giftBox.style.cursor = "default"; // Disable further clicking
+            giftBox.removeEventListener('click', handleGiftBoxClick); // Remove event listener
+            // Disable all other gift boxes
+            document.querySelectorAll('.gift-box').forEach(box => {
+                if (box !== giftBox) {
+                    box.style.cursor = "default";
+                    box.removeEventListener('click', handleGiftBoxClick);
+                }
+            });
             categoryContainer.style.display = "none";
             document.getElementById("gurujiInitial").style.display = "none"; // Hide initial Guruji
             quizContainer.style.display = "block";

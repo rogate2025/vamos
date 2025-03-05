@@ -89,7 +89,7 @@
             text-shadow: 2px 2px 4px #000;
         }
         .manikutti {
-            width: 100px;
+            width: 150px;
             position: absolute;
             bottom: 20px;
             right: 20px;
@@ -246,6 +246,11 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes zoomInOut {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
         #phone-a-friend-message {
             font-size: 1.5em;
             color: #ffd700;
@@ -324,24 +329,56 @@
             margin: 10px;
             text-shadow: 1px 1px 2px #fff;
         }
+        .back-to-category-btn {
+            background: linear-gradient(45deg, #ffd700, #ffa500);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            color: #000;
+            font-size: 1.5em;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 20px;
+            text-shadow: 1px 1px 2px #fff;
+        }
+        #time-up-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ff4500;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px #000;
+            display: none;
+            animation: zoomInOut 1s ease-in-out 3;
+        }
     </style>
 </head>
 <body>
+    <!-- Audio Elements -->
     <audio id="backgroundMusic" src="bgm.mp3" loop></audio>
     <audio id="correctSound" src="correct_answer.mp3"></audio>
     <audio id="wrongSound" src="wrong_answer.mp3"></audio>
     <audio id="finalAnswerSound" src="final_answer.mp3"></audio>
     <audio id="lifelineSound" src="lifeline.mp3"></audio>
     <audio id="timerTick" src="timer_tick.mp3" loop></audio>
+    <audio id="fastTickSound" src="fast_tick.mp3" loop></audio>
     <audio id="timeUpSound" src="time_up.mp3"></audio>
     <audio id="gurujiMusic" src="guruji.mp3"></audio>
+    <audio id="tenSecondsSound" src="ten_seconds.mp3"></audio>
+    <audio id="countdownSound" src="countdown.mp3" loop></audio>
+    <audio id="nextTeamSound" src="next_team.mp3"></audio>
 
+    <!-- Intro Page -->
     <div id="intro-page" class="intro-page">
         <h1>Welcome to Who Wants to Be a Millionaire - Group Game 🎉</h1>
         <button id="start-game">Start Game 🚀</button>
         <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
     </div>
 
+    <!-- Category Selection -->
     <div class="opening" id="opening">
         <h1>Select a Category 🌟</h1>
         <div id="category-buttons">
@@ -354,6 +391,7 @@
         <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
     </div>
 
+    <!-- Category Question Selection -->
     <div class="category-screen" id="category-screen">
         <h2>Category <span id="category-name"></span> 🎯</h2>
         <div id="number-buttons"></div>
@@ -361,6 +399,7 @@
         <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
     </div>
 
+    <!-- Game Container -->
     <div class="container" id="game-container">
         <p class="question" id="question"></p>
         <div class="options" id="options"></div>
@@ -369,11 +408,13 @@
             <button id="askFriendButton" onclick="toggleAskAFriend()">Ask a Friend 📞</button>
         </div>
         <div class="timer" id="timer">60s ⏰</div>
+        <button class="back-to-category-btn" onclick="goBackToCategoryFromQuestion()">Back to Category 🔙</button>
         <img src="stay.jpg" class="manikutti" id="manikutti-img">
         <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
         <p id="phone-a-friend-message"></p>
     </div>
 
+    <!-- Guruji Popup -->
     <div class="guruji-popup" id="guruji-popup">
         <div class="guruji-content">
             <img src="guruji.png" alt="Guruji" class="guruji-image">
@@ -387,20 +428,25 @@
         </div>
     </div>
 
+    <!-- Confirmation Dialog -->
     <div id="custom-confirm">
         <p>Is that your final answer? 🤔</p>
         <button id="confirm-yes">Yes ✅</button>
         <button id="confirm-no">No ❌</button>
     </div>
 
+    <!-- Manikutti Dialog -->
     <div id="manikutti-dialogue">
         <p>Yo! Shall I start the timer? ⏰</p>
         <button id="manikutti-yes">Yes 👍</button>
     </div>
 
+    <!-- Team Switch and Time Up Messages -->
     <div id="team-switch-message"></div>
+    <div id="time-up-message">The Time is Up! ⏰</div>
 
     <script>
+        // Categories and Questions
         const categories = [
             [ // General Knowledge
                 { question: "What is the capital of France?", options: ["A: Paris", "B: London", "C: Berlin", "D: Madrid"], answer: "A: Paris" },
@@ -474,6 +520,7 @@
             ]
         ];
 
+        // Guruji Questions
         const gurujiQuestions = [
             { question: "What is the capital of Italy?", answer: "Rome" },
             { question: "Who wrote 'Hamlet'?", answer: "William Shakespeare" },
@@ -484,6 +531,7 @@
             { question: "What is the tallest mountain in the world?", answer: "Mount Everest" }
         ];
 
+        // Game State
         let answeredQuestions = { 0: new Set(), 1: new Set(), 2: new Set(), 3: new Set(), 4: new Set() };
         let gameState = {
             currentCategory: null,
@@ -495,9 +543,13 @@
             optionsRevealed: [false, false, false, false],
             firstConfirmation: false,
             isTimerPaused: false,
-            fiftyFiftyUsed: false
+            fiftyFiftyUsed: false,
+            tenSecondsPlayed: false,
+            fiveSecondsPlayed: false,
+            countdownPlaying: false
         };
 
+        // Sound Functions
         function playSound(id) {
             document.getElementById(id).play();
         }
@@ -508,6 +560,7 @@
             sound.currentTime = 0;
         }
 
+        // Category Selection
         function selectCategory(index) {
             gameState.currentCategory = index;
             document.getElementById("opening").style.display = "none";
@@ -531,6 +584,7 @@
             }
         }
 
+        // Question Selection and Loading
         function selectQuestion(index) {
             gameState.currentQuestionIndex = index;
             document.getElementById("category-screen").style.display = "none";
@@ -555,13 +609,20 @@
             gameState.timer = 60;
             gameState.isTimerPaused = false;
             gameState.fiftyFiftyUsed = false;
+            gameState.tenSecondsPlayed = false;
+            gameState.fiveSecondsPlayed = false;
+            gameState.countdownPlaying = false;
             gameState.currentTeam = "A";
             document.getElementById("timer").textContent = `${gameState.timer}s ⏰`;
             clearInterval(gameState.timerInterval);
             stopSound("timerTick");
+            stopSound("fastTickSound");
+            stopSound("countdownSound");
             document.getElementById("manikutti-dialogue").style.display = "block";
+            document.getElementById("time-up-message").style.display = "none";
         }
 
+        // Option Handling
         function revealOption(btn, index, fullText) {
             if (!gameState.optionsRevealed[index]) {
                 btn.textContent = fullText;
@@ -572,15 +633,31 @@
             }
         }
 
+        // Timer Functions
         function start60sTimer() {
             gameState.timerInterval = setInterval(() => {
                 if (!gameState.isTimerPaused) {
                     gameState.timer--;
                     document.getElementById("timer").textContent = `${gameState.timer}s ⏰`;
+                    if (gameState.timer === 10 && !gameState.tenSecondsPlayed) {
+                        playSound("tenSecondsSound");
+                        playSound("countdownSound");
+                        gameState.tenSecondsPlayed = true;
+                        gameState.countdownPlaying = true;
+                    }
+                    if (gameState.timer === 5 && !gameState.fiveSecondsPlayed) {
+                        stopSound("timerTick");
+                        playSound("fastTickSound");
+                        gameState.fiveSecondsPlayed = true;
+                    }
                     if (gameState.timer <= 0) {
                         clearInterval(gameState.timerInterval);
+                        stopSound("timerTick");
+                        stopSound("fastTickSound");
+                        stopSound("countdownSound");
                         playSound("timeUpSound");
-                        completeQuestion();
+                        showTimeUpMessage();
+                        gameState.countdownPlaying = false;
                     }
                 }
             }, 1000);
@@ -589,22 +666,56 @@
 
         function start30sTimer() {
             clearInterval(gameState.timerInterval);
+            stopSound("countdownSound");
             gameState.timer = 30;
+            gameState.countdownPlaying = false;
             document.getElementById("timer").textContent = `${gameState.timer}s ⏰`;
             start60sTimer();
         }
 
         function start10sTimer() {
             clearInterval(gameState.timerInterval);
+            stopSound("countdownSound");
             gameState.timer = 10;
+            gameState.tenSecondsPlayed = true;
+            gameState.fiveSecondsPlayed = true;
+            gameState.countdownPlaying = true;
             document.getElementById("timer").textContent = `${gameState.timer}s ⏰`;
+            playSound("countdownSound");
+            playSound("fastTickSound");
             start60sTimer();
         }
 
         function resumeTimer() {
+            if (gameState.timer <= 10 && !gameState.countdownPlaying) {
+                playSound("countdownSound");
+                gameState.countdownPlaying = true;
+            }
+            if (gameState.timer <= 5 && !gameState.fiveSecondsPlayed) {
+                stopSound("timerTick");
+                playSound("fastTickSound");
+                gameState.fiveSecondsPlayed = true;
+            }
             start60sTimer();
         }
 
+        function showTimeUpMessage() {
+            if (document.getElementById("game-container").style.display !== "none") {
+                const timeUpMsg = document.getElementById("time-up-message");
+                timeUpMsg.style.display = "block";
+                const correct = categories[gameState.currentCategory][gameState.currentQuestionIndex].answer;
+                document.querySelectorAll(".options button").forEach(btn => {
+                    if (btn.dataset.fullText === correct) {
+                        btn.style.background = "#00ff00";
+                    }
+                });
+                setTimeout(() => {
+                    timeUpMsg.style.display = "none";
+                }, 3000);
+            }
+        }
+
+        // Answer Handling
         function selectAnswer(btn, selected) {
             btn.style.background = "#ffa500";
             const confirmBox = document.getElementById("custom-confirm");
@@ -624,17 +735,24 @@
         function checkAnswer(btn, selected) {
             clearInterval(gameState.timerInterval);
             stopSound("timerTick");
+            stopSound("fastTickSound");
+            stopSound("countdownSound");
+            gameState.countdownPlaying = false;
             const correct = categories[gameState.currentCategory][gameState.currentQuestionIndex].answer;
             if (!gameState.firstConfirmation) {
                 gameState.firstConfirmation = true;
                 if (selected === correct) {
                     playSound("correctSound");
                     btn.style.background = "#00ff00";
-                    setTimeout(completeQuestion, 2000);
+                    answeredQuestions[gameState.currentCategory].add(gameState.currentQuestionIndex);
                 } else {
                     btn.style.background = "#ff0000";
                     if (gameState.fiftyFiftyUsed) {
-                        setTimeout(completeQuestion, 2000);
+                        setTimeout(() => {
+                            document.querySelectorAll(".options button").forEach(b => {
+                                if (b.dataset.fullText === correct) b.style.background = "#00ff00";
+                            });
+                        }, 1000);
                     } else {
                         setTimeout(switchToNextTeam, 1000);
                     }
@@ -643,6 +761,7 @@
                 if (selected === correct) {
                     playSound("correctSound");
                     btn.style.background = "#00ff00";
+                    answeredQuestions[gameState.currentCategory].add(gameState.currentQuestionIndex);
                 } else {
                     playSound("wrongSound");
                     btn.style.background = "#ff0000";
@@ -650,26 +769,31 @@
                         if (b.dataset.fullText === correct) b.style.background = "#00ff00";
                     });
                 }
-                setTimeout(completeQuestion, 2000);
             }
         }
 
+        // Team Switching
         function switchToNextTeam() {
             gameState.currentTeam = gameState.currentTeam === "A" ? "B" : "A";
             const msg = document.getElementById("team-switch-message");
             msg.textContent = `Team ${gameState.currentTeam === "A" ? "B" : "A"} got it wrong. Next Team, you have 10 seconds! ⏳`;
             msg.style.display = "block";
+            playSound("nextTeamSound");
             setTimeout(() => {
                 msg.style.display = "none";
                 start10sTimer();
             }, 2000);
         }
 
-        function completeQuestion() {
-            answeredQuestions[gameState.currentCategory].add(gameState.currentQuestionIndex);
+        // Navigation
+        function goBackToCategoryFromQuestion() {
+            clearInterval(gameState.timerInterval); // Stop the timer
             document.getElementById("game-container").style.display = "none";
             document.getElementById("category-screen").style.display = "block";
+            stopSound("countdownSound");
+            stopSound("fastTickSound");
             loadNumberButtons();
+            document.getElementById("time-up-message").style.display = "none"; // Hide the "Time is up" message
         }
 
         function goBackToCategorySelection() {
@@ -677,6 +801,7 @@
             document.getElementById("opening").style.display = "block";
         }
 
+        // Lifelines
         function useFiftyFifty() {
             playSound("lifelineSound");
             gameState.fiftyFiftyUsed = true;
@@ -703,6 +828,8 @@
                 gameState.isTimerPaused = true;
                 clearInterval(gameState.timerInterval);
                 stopSound("timerTick");
+                stopSound("fastTickSound");
+                if (gameState.countdownPlaying) stopSound("countdownSound");
                 document.getElementById("phone-a-friend-message").textContent = "Now you can Ask your Friend 📞 (Click 'Ask a Friend' again to resume)";
                 document.getElementById("phone-a-friend-message").style.display = "block";
                 btn.textContent = "Resume Timer ⏳";
@@ -714,6 +841,7 @@
             }
         }
 
+        // Guruji Popup
         function openGurujiPopup() {
             const popup = document.getElementById("guruji-popup");
             popup.style.display = "flex";
@@ -721,6 +849,7 @@
             const answerElem = document.getElementById("guruji-answer");
             const revealBtn = document.getElementById("reveal-answer");
 
+            stopSound("backgroundMusic");
             playSound("gurujiMusic");
             answerElem.style.display = "none";
             revealBtn.style.display = "block";
@@ -740,8 +869,10 @@
         function closeGurujiPopup() {
             document.getElementById("guruji-popup").style.display = "none";
             stopSound("gurujiMusic");
+            playSound("backgroundMusic");
         }
 
+        // Event Listeners
         document.getElementById("start-game").onclick = () => {
             document.getElementById("intro-page").style.display = "none";
             document.getElementById("opening").style.display = "block";
