@@ -354,6 +354,10 @@
             display: none;
             animation: zoomInOut 1s ease-in-out 3;
         }
+        /* Added for Guruji multiple-choice options */
+        #guruji-options button.selected {
+            background: #ffa500;
+        }
     </style>
 </head>
 <body>
@@ -414,13 +418,14 @@
         <p id="phone-a-friend-message"></p>
     </div>
 
-    <!-- Guruji Popup -->
+    <!-- Guruji Popup (Updated with options div) -->
     <div class="guruji-popup" id="guruji-popup">
         <div class="guruji-content">
             <img src="guruji.png" alt="Guruji" class="guruji-image">
             <div class="guruji-dialogue">
                 <p id="guruji-intro">Greetings, knowledge seekers! I am Guruji, your Quiz Master. Behold my challenge:</p>
                 <p id="guruji-question"></p>
+                <div id="guruji-options" class="options"></div>
                 <button id="reveal-answer">Reveal Answer</button>
                 <p id="guruji-answer" style="display: none;"></p>
             </div>
@@ -520,15 +525,15 @@
             ]
         ];
 
-        // Guruji Questions
+        // Guruji Questions (Updated to multiple choice)
         const gurujiQuestions = [
-            { question: "What is the capital of Italy?", answer: "Rome" },
-            { question: "Who wrote 'Hamlet'?", answer: "William Shakespeare" },
-            { question: "What is the largest mammal on Earth?", answer: "Blue Whale" },
-            { question: "What is the chemical symbol for water?", answer: "H2O" },
-            { question: "Who painted the Sistine Chapel ceiling?", answer: "Michelangelo" },
-            { question: "Which planet is closest to the Sun?", answer: "Mercury" },
-            { question: "What is the tallest mountain in the world?", answer: "Mount Everest" }
+            { question: "What is the capital of Italy?", options: ["A: Rome", "B: Milan", "C: Naples", "D: Florence"], answer: "A: Rome" },
+            { question: "Who wrote 'Hamlet'?", options: ["A: William Shakespeare", "B: Charles Dickens", "C: Mark Twain", "D: Jane Austen"], answer: "A: William Shakespeare" },
+            { question: "What is the largest mammal on Earth?", options: ["A: Blue Whale", "B: Elephant", "C: Giraffe", "D: Hippopotamus"], answer: "A: Blue Whale" },
+            { question: "What is the chemical symbol for water?", options: ["A: H2O", "B: CO2", "C: O2", "D: NaCl"], answer: "A: H2O" },
+            { question: "Who painted the Sistine Chapel ceiling?", options: ["A: Michelangelo", "B: Leonardo da Vinci", "C: Raphael", "D: Donatello"], answer: "A: Michelangelo" },
+            { question: "Which planet is closest to the Sun?", options: ["A: Mercury", "B: Venus", "C: Earth", "D: Mars"], answer: "A: Mercury" },
+            { question: "What is the tallest mountain in the world?", options: ["A: Mount Everest", "B: K2", "C: Kangchenjunga", "D: Lhotse"], answer: "A: Mount Everest" }
         ];
 
         // Game State
@@ -841,28 +846,64 @@
             }
         }
 
-        // Guruji Popup
+        // Guruji Popup (Updated to multiple choice)
         function openGurujiPopup() {
             const popup = document.getElementById("guruji-popup");
             popup.style.display = "flex";
             const questionElem = document.getElementById("guruji-question");
             const answerElem = document.getElementById("guruji-answer");
             const revealBtn = document.getElementById("reveal-answer");
+            const optionsDiv = document.getElementById("guruji-options");
 
             stopSound("backgroundMusic");
             playSound("gurujiMusic");
             answerElem.style.display = "none";
             revealBtn.style.display = "block";
+            optionsDiv.innerHTML = "";
 
             const randomIndex = Math.floor(Math.random() * gurujiQuestions.length);
             const selectedQuestion = gurujiQuestions[randomIndex];
+            const correctAnswer = selectedQuestion.answer;
 
             questionElem.textContent = selectedQuestion.question;
-            answerElem.textContent = selectedQuestion.answer;
+
+            selectedQuestion.options.forEach((opt, i) => {
+                const btn = document.createElement("button");
+                btn.textContent = opt;
+                btn.className = "guruji-option";
+                btn.onclick = () => {
+                    document.querySelectorAll(".guruji-option").forEach(b => b.classList.remove("selected"));
+                    btn.classList.add("selected");
+                };
+                optionsDiv.appendChild(btn);
+            });
 
             revealBtn.onclick = () => {
-                answerElem.style.display = "block";
-                revealBtn.style.display = "none";
+                const selectedBtn = document.querySelector(".guruji-option.selected");
+                if (selectedBtn) {
+                    const selectedText = selectedBtn.textContent;
+                    if (selectedText === correctAnswer) {
+                        playSound("correctSound");
+                        selectedBtn.style.background = "#00ff00";
+                        answerElem.textContent = "Correct! 🎉";
+                    } else {
+                        playSound("wrongSound");
+                        selectedBtn.style.background = "#ff0000";
+                        answerElem.textContent = `Wrong! The correct answer is ${correctAnswer} ❌`;
+                        document.querySelectorAll(".guruji-option").forEach(btn => {
+                            if (btn.textContent === correctAnswer) {
+                                btn.style.background = "#00ff00";
+                            }
+                        });
+                    }
+                    answerElem.style.display = "block";
+                    revealBtn.style.display = "none";
+                    document.querySelectorAll(".guruji-option").forEach(btn => {
+                        btn.disabled = true;
+                    });
+                } else {
+                    alert("Please select an option first!");
+                }
             };
         }
 
