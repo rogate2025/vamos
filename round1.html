@@ -17,7 +17,7 @@
             align-items: center;
             margin: 0;
         }
-        .intro-page, .opening, .category-screen, .container {
+        .intro-page, .container {
             width: 100%;
             height: 100%;
         }
@@ -28,12 +28,12 @@
             left: 0;
             z-index: 1000;
         }
-        .intro-page h1, .opening h1 {
+        .intro-page h1 {
             font-size: 3em;
             color: #ffd700;
             text-shadow: 2px 2px 4px #000;
         }
-        .intro-page button, #category-buttons button, #back-to-category {
+        .intro-page button {
             background: linear-gradient(45deg, #ffd700, #ffa500);
             border: 2px solid #ffd700;
             border-radius: 10px;
@@ -43,9 +43,6 @@
             cursor: pointer;
             margin: 10px;
             text-shadow: 1px 1px 2px #fff;
-        }
-        .opening, .category-screen {
-            display: none;
         }
         .container {
             display: none;
@@ -87,6 +84,18 @@
             font-size: 2em;
             color: #ffd700;
             text-shadow: 2px 2px 4px #000;
+        }
+        #next-question {
+            background: linear-gradient(45deg, #ffd700, #ffa500);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            color: #000;
+            font-size: 1.5em;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 10px;
+            text-shadow: 1px 1px 2px #fff;
+            display: none;
         }
         .manikutti {
             width: 150px;
@@ -246,11 +255,6 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes zoomInOut {
-            0% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.2); }
-            100% { transform: translate(-50%, -50%) scale(1); }
-        }
         #phone-a-friend-message {
             font-size: 1.5em;
             color: #ffd700;
@@ -318,28 +322,6 @@
             text-shadow: 2px 2px 4px #000;
             display: none;
         }
-        .number-button {
-            background: linear-gradient(45deg, #ffd700, #ffa500);
-            border: 2px solid #ffd700;
-            border-radius: 10px;
-            color: #000;
-            font-size: 1.5em;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin: 10px;
-            text-shadow: 1px 1px 2px #fff;
-        }
-        .back-to-category-btn {
-            background: linear-gradient(45deg, #ffd700, #ffa500);
-            border: 2px solid #ffd700;
-            border-radius: 10px;
-            color: #000;
-            font-size: 1.5em;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin: 20px;
-            text-shadow: 1px 1px 2px #fff;
-        }
         #time-up-message {
             position: fixed;
             top: 50%;
@@ -352,9 +334,7 @@
             font-size: 2em;
             text-shadow: 2px 2px 4px #000;
             display: none;
-            animation: zoomInOut 1s ease-in-out 3;
         }
-        /* Added for Guruji multiple-choice options */
         #guruji-options button.selected {
             background: #ffa500;
         }
@@ -382,27 +362,6 @@
         <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
     </div>
 
-    <!-- Category Selection -->
-    <div class="opening" id="opening">
-        <h1>Select a Category 🌟</h1>
-        <div id="category-buttons">
-            <button onclick="selectCategory(0)">General Knowledge 📚</button>
-            <button onclick="selectCategory(1)">Bible ✝️</button>
-            <button onclick="selectCategory(2)">He Never Said No 🙏</button>
-            <button onclick="selectCategory(3)">SPES NON CONFUNDIT 🌈</button>
-            <button onclick="selectCategory(4)">Sports ⚽</button>
-        </div>
-        <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
-    </div>
-
-    <!-- Category Question Selection -->
-    <div class="category-screen" id="category-screen">
-        <h2>Category <span id="category-name"></span> 🎯</h2>
-        <div id="number-buttons"></div>
-        <button id="back-to-category" onclick="goBackToCategorySelection()">Back to Categories 🔙</button>
-        <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
-    </div>
-
     <!-- Game Container -->
     <div class="container" id="game-container">
         <p class="question" id="question"></p>
@@ -412,13 +371,13 @@
             <button id="askFriendButton" onclick="toggleAskAFriend()">Ask a Friend 📞</button>
         </div>
         <div class="timer" id="timer">60s ⏰</div>
-        <button class="back-to-category-btn" onclick="goBackToCategoryFromQuestion()">Back to Category 🔙</button>
+        <button id="next-question">Next Question ⏭️</button>
         <img src="stay.jpg" class="manikutti" id="manikutti-img">
         <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
         <p id="phone-a-friend-message"></p>
     </div>
 
-    <!-- Guruji Popup (Updated with options div) -->
+    <!-- Guruji Popup -->
     <div class="guruji-popup" id="guruji-popup">
         <div class="guruji-content">
             <img src="guruji.png" alt="Guruji" class="guruji-image">
@@ -451,81 +410,76 @@
     <div id="time-up-message">The Time is Up! ⏰</div>
 
     <script>
-        // Categories and Questions
-        const categories = [
-            [ // General Knowledge
-                { question: "What is the capital of France?", options: ["A: Paris", "B: London", "C: Berlin", "D: Madrid"], answer: "A: Paris" },
-                { question: "What is the largest planet?", options: ["A: Jupiter", "B: Saturn", "C: Earth", "D: Mars"], answer: "A: Jupiter" },
-                { question: "Who invented the telephone?", options: ["A: Bell", "B: Edison", "C: Tesla", "D: Marconi"], answer: "A: Bell" },
-                { question: "What is the capital of Australia?", options: ["A: Sydney", "B: Melbourne", "C: Canberra", "D: Brisbane"], answer: "C: Canberra" },
-                { question: "Who wrote the play 'Romeo and Juliet'?", options: ["A: Shakespeare", "B: Dickens", "C: Twain", "D: Austen"], answer: "A: Shakespeare" },
-                { question: "What is the chemical symbol for gold?", options: ["A: Au", "B: Ag", "C: Fe", "D: Hg"], answer: "A: Au" },
-                { question: "Which planet is known as the Red Planet?", options: ["A: Mars", "B: Venus", "C: Jupiter", "D: Saturn"], answer: "A: Mars" },
-                { question: "Who painted the Mona Lisa?", options: ["A: Da Vinci", "B: Michelangelo", "C: Raphael", "D: Caravaggio"], answer: "A: Da Vinci" },
-                { question: "What is the largest ocean on Earth?", options: ["A: Pacific", "B: Atlantic", "C: Indian", "D: Arctic"], answer: "A: Pacific" },
-                { question: "What is the smallest country in the world?", options: ["A: Vatican City", "B: Monaco", "C: San Marino", "D: Liechtenstein"], answer: "A: Vatican City" },
-                { question: "Who discovered penicillin?", options: ["A: Fleming", "B: Pasteur", "C: Jenner", "D: Koch"], answer: "A: Fleming" },
-                { question: "What is the hardest natural substance on Earth?", options: ["A: Diamond", "B: Quartz", "C: Topaz", "D: Corundum"], answer: "A: Diamond" }
-            ],
-            [ // Bible
-                { question: "Who built the ark?", options: ["A: Noah", "B: Moses", "C: Abraham", "D: David"], answer: "A: Noah" },
-                { question: "What is the first book of the Bible?", options: ["A: Genesis", "B: Exodus", "C: Leviticus", "D: Numbers"], answer: "A: Genesis" },
-                { question: "Who was swallowed by a big fish?", options: ["A: Jonah", "B: Daniel", "C: Elijah", "D: Isaiah"], answer: "A: Jonah" },
-                { question: "What is the last book of the Bible?", options: ["A: Revelation", "B: Jude", "C: 3 John", "D: Malachi"], answer: "A: Revelation" },
-                { question: "Who led the Israelites out of Egypt?", options: ["A: Moses", "B: Aaron", "C: Joshua", "D: Caleb"], answer: "A: Moses" },
-                { question: "What is the shortest verse in the Bible?", options: ["A: Jesus wept", "B: God is love", "C: Pray continually", "D: Rejoice always"], answer: "A: Jesus wept" },
-                { question: "Who denied Jesus three times?", options: ["A: Peter", "B: Judas", "C: Thomas", "D: John"], answer: "A: Peter" },
-                { question: "What is the first miracle Jesus performed?", options: ["A: Turning water into wine", "B: Feeding 5000", "C: Walking on water", "D: Healing the blind"], answer: "A: Turning water into wine" },
-                { question: "Who wrote most of the New Testament?", options: ["A: Paul", "B: Peter", "C: John", "D: Luke"], answer: "A: Paul" },
-                { question: "What is the Golden Rule?", options: ["A: Do unto others as you would have them do unto you", "B: Love your neighbor as yourself", "C: Turn the other cheek", "D: Give to the poor"], answer: "A: Do unto others as you would have them do unto you" },
-                { question: "Who was the first king of Israel?", options: ["A: Saul", "B: David", "C: Solomon", "D: Samuel"], answer: "A: Saul" },
-                { question: "What are the Beatitudes?", options: ["A: Blessings from the Sermon on the Mount", "B: The Ten Commandments", "C: The Lord's Prayer", "D: The Fruits of the Spirit"], answer: "A: Blessings from the Sermon on the Mount" }
-            ],
-            [ // He Never Said No
-                { question: "Who is known for never saying no?", options: ["A: Jesus", "B: Moses", "C: Abraham", "D: David"], answer: "A: Jesus" },
-                { question: "What miracle did Jesus perform at Cana?", options: ["A: Turning water into wine", "B: Feeding 5000", "C: Walking on water", "D: Healing the blind"], answer: "A: Turning water into wine" },
-                { question: "What did Jesus say to the paralytic man?", options: ["A: Your sins are forgiven", "B: Take up your bed and walk", "C: Both A and B", "D: Neither"], answer: "C: Both A and B" },
-                { question: "How did Jesus respond to the woman caught in adultery?", options: ["A: Neither do I condemn you", "B: Go and sin no more", "C: Both A and B", "D: Stone her"], answer: "C: Both A and B" },
-                { question: "What did Jesus say to the thief on the cross?", options: ["A: Today you will be with me in paradise", "B: You are forgiven", "C: Remember me", "D: It is finished"], answer: "A: Today you will be with me in paradise" },
-                { question: "How did Jesus respond to Peter's denial?", options: ["A: Forgave him", "B: Rebuked him", "C: Ignored him", "D: Banished him"], answer: "A: Forgave him" },
-                { question: "What did Jesus say about paying taxes?", options: ["A: Render to Caesar what is Caesar's", "B: Do not pay taxes", "C: Taxes are unlawful", "D: Give to God what is God's"], answer: "A: Render to Caesar what is Caesar's" },
-                { question: "How did Jesus respond to the Canaanite woman's request?", options: ["A: Granted her request", "B: Ignored her", "C: Rebuked her", "D: Sent her away"], answer: "A: Granted her request" },
-                { question: "What did Jesus say to the rich young ruler?", options: ["A: Sell all you have and follow me", "B: Keep the commandments", "C: You lack one thing", "D: All of the above"], answer: "D: All of the above" },
-                { question: "How did Jesus respond to the lepers who asked for healing?", options: ["A: Healed them", "B: Sent them to the priests", "C: Both A and B", "D: Ignored them"], answer: "C: Both A and B" },
-                { question: "What did Jesus say to Lazarus?", options: ["A: Lazarus, come forth", "B: Your faith has healed you", "C: Go in peace", "D: Rise and walk"], answer: "A: Lazarus, come forth" },
-                { question: "How did Jesus respond to the blind man?", options: ["A: Healed him", "B: Gave him sight", "C: Both A and B", "D: Sent him away"], answer: "C: Both A and B" }
-            ],
-            [ // SPES NON CONFUNDIT
-                { question: "What does 'Spes Non Confundit' mean?", options: ["A: Hope does not disappoint", "B: Faith moves mountains", "C: Love conquers all", "D: Charity begins at home"], answer: "A: Hope does not disappoint" },
-                { question: "In which language is it?", options: ["A: Latin", "B: Greek", "C: Hebrew", "D: Aramaic"], answer: "A: Latin" },
-                { question: "What is the source of this phrase?", options: ["A: Romans 5:5", "B: 1 Corinthians 13:13", "C: Hebrews 11:1", "D: Psalm 23:1"], answer: "A: Romans 5:5" },
-                { question: "Who wrote the book of Romans?", options: ["A: Paul", "B: Peter", "C: John", "D: James"], answer: "A: Paul" },
-                { question: "What is the context of this phrase?", options: ["A: Hope in God's love", "B: Faith in God", "C: Love for others", "D: Charity for the poor"], answer: "A: Hope in God's love" },
-                { question: "How does hope not disappoint?", options: ["A: Because of God's love poured into our hearts", "B: Because of our faith", "C: Because of our works", "D: Because of our prayers"], answer: "A: Because of God's love poured into our hearts" },
-                { question: "What is the role of the Holy Spirit in this?", options: ["A: Pours God's love into our hearts", "B: Guides us", "C: Comforts us", "D: Convicts us"], answer: "A: Pours God's love into our hearts" },
-                { question: "What precedes this verse?", options: ["A: Suffering produces perseverance", "B: Faith without works is dead", "C: Love is patient", "D: The Lord is my shepherd"], answer: "A: Suffering produces perseverance" },
-                { question: "What follows this verse?", options: ["A: God's love has been poured out", "B: Now faith, hope, and love remain", "C: The just shall live by faith", "D: I will fear no evil"], answer: "A: God's love has been poured out" },
-                { question: "How does this relate to Christian faith?", options: ["A: Assurance of God's love", "B: Importance of works", "C: Necessity of prayer", "D: Value of scripture"], answer: "A: Assurance of God's love" },
-                { question: "What is the significance of hope in Christianity?", options: ["A: Central to faith", "B: Secondary to love", "C: Less important than faith", "D: Only for the future"], answer: "A: Central to faith" },
-                { question: "How can one apply this in daily life?", options: ["A: Trust in God's promises", "B: Work harder", "C: Pray more", "D: Read the Bible daily"], answer: "A: Trust in God's promises" }
-            ],
-            [ // Sports
-                { question: "Which sport is 'the beautiful game'?", options: ["A: Soccer", "B: Basketball", "C: Tennis", "D: Cricket"], answer: "A: Soccer" },
-                { question: "How many players on a basketball team?", options: ["A: 5", "B: 6", "C: 7", "D: 8"], answer: "A: 5" },
-                { question: "Who holds the record for the most home runs in MLB?", options: ["A: Barry Bonds", "B: Hank Aaron", "C: Babe Ruth", "D: Alex Rodriguez"], answer: "A: Barry Bonds" },
-                { question: "Which country has won the most FIFA World Cups?", options: ["A: Brazil", "B: Germany", "C: Italy", "D: Argentina"], answer: "A: Brazil" },
-                { question: "Who is considered the greatest basketball player of all time?", options: ["A: Michael Jordan", "B: LeBron James", "C: Kobe Bryant", "D: Magic Johnson"], answer: "A: Michael Jordan" },
-                { question: "What is the oldest tennis tournament?", options: ["A: Wimbledon", "B: US Open", "C: French Open", "D: Australian Open"], answer: "A: Wimbledon" },
-                { question: "Who has the most Olympic gold medals?", options: ["A: Michael Phelps", "B: Usain Bolt", "C: Carl Lewis", "D: Mark Spitz"], answer: "A: Michael Phelps" },
-                { question: "What is the national sport of Japan?", options: ["A: Sumo wrestling", "B: Baseball", "C: Soccer", "D: Judo"], answer: "A: Sumo wrestling" },
-                { question: "Who is the fastest man in the world?", options: ["A: Usain Bolt", "B: Tyson Gay", "C: Yohan Blake", "D: Justin Gatlin"], answer: "A: Usain Bolt" },
-                { question: "What sport is known as the 'king of sports'?", options: ["A: Soccer", "B: Basketball", "C: American Football", "D: Cricket"], answer: "A: Soccer" },
-                { question: "Who won the first Super Bowl?", options: ["A: Green Bay Packers", "B: Kansas City Chiefs", "C: New York Jets", "D: Baltimore Colts"], answer: "A: Green Bay Packers" },
-                { question: "What is the most watched sporting event?", options: ["A: FIFA World Cup", "B: Olympics", "C: Super Bowl", "D: UEFA Champions League"], answer: "A: FIFA World Cup" }
-            ]
+        // All Questions Combined
+        const allQuestions = [
+            // General Knowledge
+            { question: "What is the capital of France?", options: ["A: Paris", "B: London", "C: Berlin", "D: Madrid"], answer: "A: Paris" },
+            { question: "What is the largest planet?", options: ["A: Jupiter", "B: Saturn", "C: Earth", "D: Mars"], answer: "A: Jupiter" },
+            { question: "Who invented the telephone?", options: ["A: Bell", "B: Edison", "C: Tesla", "D: Marconi"], answer: "A: Bell" },
+            { question: "What is the capital of Australia?", options: ["A: Sydney", "B: Melbourne", "C: Canberra", "D: Brisbane"], answer: "C: Canberra" },
+            { question: "Who wrote the play 'Romeo and Juliet'?", options: ["A: Shakespeare", "B: Dickens", "C: Twain", "D: Austen"], answer: "A: Shakespeare" },
+            { question: "What is the chemical symbol for gold?", options: ["A: Au", "B: Ag", "C: Fe", "D: Hg"], answer: "A: Au" },
+            { question: "Which planet is known as the Red Planet?", options: ["A: Mars", "B: Venus", "C: Jupiter", "D: Saturn"], answer: "A: Mars" },
+            { question: "Who painted the Mona Lisa?", options: ["A: Da Vinci", "B: Michelangelo", "C: Raphael", "D: Caravaggio"], answer: "A: Da Vinci" },
+            { question: "What is the largest ocean on Earth?", options: ["A: Pacific", "B: Atlantic", "C: Indian", "D: Arctic"], answer: "A: Pacific" },
+            { question: "What is the smallest country in the world?", options: ["A: Vatican City", "B: Monaco", "C: San Marino", "D: Liechtenstein"], answer: "A: Vatican City" },
+            { question: "Who discovered penicillin?", options: ["A: Fleming", "B: Pasteur", "C: Jenner", "D: Koch"], answer: "A: Fleming" },
+            { question: "What is the hardest natural substance on Earth?", options: ["A: Diamond", "B: Quartz", "C: Topaz", "D: Corundum"], answer: "A: Diamond" },
+            // Bible
+            { question: "Who built the ark?", options: ["A: Noah", "B: Moses", "C: Abraham", "D: David"], answer: "A: Noah" },
+            { question: "What is the first book of the Bible?", options: ["A: Genesis", "B: Exodus", "C: Leviticus", "D: Numbers"], answer: "A: Genesis" },
+            { question: "Who was swallowed by a big fish?", options: ["A: Jonah", "B: Daniel", "C: Elijah", "D: Isaiah"], answer: "A: Jonah" },
+            { question: "What is the last book of the Bible?", options: ["A: Revelation", "B: Jude", "C: 3 John", "D: Malachi"], answer: "A: Revelation" },
+            { question: "Who led the Israelites out of Egypt?", options: ["A: Moses", "B: Aaron", "C: Joshua", "D: Caleb"], answer: "A: Moses" },
+            { question: "What is the shortest verse in the Bible?", options: ["A: Jesus wept", "B: God is love", "C: Pray continually", "D: Rejoice always"], answer: "A: Jesus wept" },
+            { question: "Who denied Jesus three times?", options: ["A: Peter", "B: Judas", "C: Thomas", "D: John"], answer: "A: Peter" },
+            { question: "What is the first miracle Jesus performed?", options: ["A: Turning water into wine", "B: Feeding 5000", "C: Walking on water", "D: Healing the blind"], answer: "A: Turning water into wine" },
+            { question: "Who wrote most of the New Testament?", options: ["A: Paul", "B: Peter", "C: John", "D: Luke"], answer: "A: Paul" },
+            { question: "What is the Golden Rule?", options: ["A: Do unto others as you would have them do unto you", "B: Love your neighbor as yourself", "C: Turn the other cheek", "D: Give to the poor"], answer: "A: Do unto others as you would have them do unto you" },
+            { question: "Who was the first king of Israel?", options: ["A: Saul", "B: David", "C: Solomon", "D: Samuel"], answer: "A: Saul" },
+            { question: "What are the Beatitudes?", options: ["A: Blessings from the Sermon on the Mount", "B: The Ten Commandments", "C: The Lord's Prayer", "D: The Fruits of the Spirit"], answer: "A: Blessings from the Sermon on the Mount" },
+            // He Never Said No
+            { question: "Who is known for never saying no?", options: ["A: Jesus", "B: Moses", "C: Abraham", "D: David"], answer: "A: Jesus" },
+            { question: "What miracle did Jesus perform at Cana?", options: ["A: Turning water into wine", "B: Feeding 5000", "C: Walking on water", "D: Healing the blind"], answer: "A: Turning water into wine" },
+            { question: "What did Jesus say to the paralytic man?", options: ["A: Your sins are forgiven", "B: Take up your bed and walk", "C: Both A and B", "D: Neither"], answer: "C: Both A and B" },
+            { question: "How did Jesus respond to the woman caught in adultery?", options: ["A: Neither do I condemn you", "B: Go and sin no more", "C: Both A and B", "D: Stone her"], answer: "C: Both A and B" },
+            { question: "What did Jesus say to the thief on the cross?", options: ["A: Today you will be with me in paradise", "B: You are forgiven", "C: Remember me", "D: It is finished"], answer: "A: Today you will be with me in paradise" },
+            { question: "How did Jesus respond to Peter's denial?", options: ["A: Forgave him", "B: Rebuked him", "C: Ignored him", "D: Banished him"], answer: "A: Forgave him" },
+            { question: "What did Jesus say about paying taxes?", options: ["A: Render to Caesar what is Caesar's", "B: Do not pay taxes", "C: Taxes are unlawful", "D: Give to God what is God's"], answer: "A: Render to Caesar what is Caesar's" },
+            { question: "How did Jesus respond to the Canaanite woman's request?", options: ["A: Granted her request", "B: Ignored her", "C: Rebuked her", "D: Sent her away"], answer: "A: Granted her request" },
+            { question: "What did Jesus say to the rich young ruler?", options: ["A: Sell all you have and follow me", "B: Keep the commandments", "C: You lack one thing", "D: All of the above"], answer: "D: All of the above" },
+            { question: "How did Jesus respond to the lepers who asked for healing?", options: ["A: Healed them", "B: Sent them to the priests", "C: Both A and B", "D: Ignored them"], answer: "C: Both A and B" },
+            { question: "What did Jesus say to Lazarus?", options: ["A: Lazarus, come forth", "B: Your faith has healed you", "C: Go in peace", "D: Rise and walk"], answer: "A: Lazarus, come forth" },
+            { question: "How did Jesus respond to the blind man?", options: ["A: Healed him", "B: Gave him sight", "C: Both A and B", "D: Sent him away"], answer: "C: Both A and B" },
+            // SPES NON CONFUNDIT
+            { question: "What does 'Spes Non Confundit' mean?", options: ["A: Hope does not disappoint", "B: Faith moves mountains", "C: Love conquers all", "D: Charity begins at home"], answer: "A: Hope does not disappoint" },
+            { question: "In which language is it?", options: ["A: Latin", "B: Greek", "C: Hebrew", "D: Aramaic"], answer: "A: Latin" },
+            { question: "What is the source of this phrase?", options: ["A: Romans 5:5", "B: 1 Corinthians 13:13", "C: Hebrews 11:1", "D: Psalm 23:1"], answer: "A: Romans 5:5" },
+            { question: "Who wrote the book of Romans?", options: ["A: Paul", "B: Peter", "C: John", "D: James"], answer: "A: Paul" },
+            { question: "What is the context of this phrase?", options: ["A: Hope in God's love", "B: Faith in God", "C: Love for others", "D: Charity for the poor"], answer: "A: Hope in God's love" },
+            { question: "How does hope not disappoint?", options: ["A: Because of God's love poured into our hearts", "B: Because of our faith", "C: Because of our works", "D: Because of our prayers"], answer: "A: Because of God's love poured into our hearts" },
+            { question: "What is the role of the Holy Spirit in this?", options: ["A: Pours God's love into our hearts", "B: Guides us", "C: Comforts us", "D: Convicts us"], answer: "A: Pours God's love into our hearts" },
+            { question: "What precedes this verse?", options: ["A: Suffering produces perseverance", "B: Faith without works is dead", "C: Love is patient", "D: The Lord is my shepherd"], answer: "A: Suffering produces perseverance" },
+            { question: "What follows this verse?", options: ["A: God's love has been poured out", "B: Now faith, hope, and love remain", "C: The just shall live by faith", "D: I will fear no evil"], answer: "A: God's love has been poured out" },
+            { question: "How does this relate to Christian faith?", options: ["A: Assurance of God's love", "B: Importance of works", "C: Necessity of prayer", "D: Value of scripture"], answer: "A: Assurance of God's love" },
+            { question: "What is the significance of hope in Christianity?", options: ["A: Central to faith", "B: Secondary to love", "C: Less important than faith", "D: Only for the future"], answer: "A: Central to faith" },
+            { question: "How can one apply this in daily life?", options: ["A: Trust in God's promises", "B: Work harder", "C: Pray more", "D: Read the Bible daily"], answer: "A: Trust in God's promises" },
+            // Sports
+            { question: "Which sport is 'the beautiful game'?", options: ["A: Soccer", "B: Basketball", "C: Tennis", "D: Cricket"], answer: "A: Soccer" },
+            { question: "How many players on a basketball team?", options: ["A: 5", "B: 6", "C: 7", "D: 8"], answer: "A: 5" },
+            { question: "Who holds the record for the most home runs in MLB?", options: ["A: Barry Bonds", "B: Hank Aaron", "C: Babe Ruth", "D: Alex Rodriguez"], answer: "A: Barry Bonds" },
+            { question: "Which country has won the most FIFA World Cups?", options: ["A: Brazil", "B: Germany", "C: Italy", "D: Argentina"], answer: "A: Brazil" },
+            { question: "Who is considered the greatest basketball player of all time?", options: ["A: Michael Jordan", "B: LeBron James", "C: Kobe Bryant", "D: Magic Johnson"], answer: "A: Michael Jordan" },
+            { question: "What is the oldest tennis tournament?", options: ["A: Wimbledon", "B: US Open", "C: French Open", "D: Australian Open"], answer: "A: Wimbledon" },
+            { question: "Who has the most Olympic gold medals?", options: ["A: Michael Phelps", "B: Usain Bolt", "C: Carl Lewis", "D: Mark Spitz"], answer: "A: Michael Phelps" },
+            { question: "What is the national sport of Japan?", options: ["A: Sumo wrestling", "B: Baseball", "C: Soccer", "D: Judo"], answer: "A: Sumo wrestling" },
+            { question: "Who is the fastest man in the world?", options: ["A: Usain Bolt", "B: Tyson Gay", "C: Yohan Blake", "D: Justin Gatlin"], answer: "A: Usain Bolt" },
+            { question: "What sport is known as the 'king of sports'?", options: ["A: Soccer", "B: Basketball", "C: American Football", "D: Cricket"], answer: "A: Soccer" },
+            { question: "Who won the first Super Bowl?", options: ["A: Green Bay Packers", "B: Kansas City Chiefs", "C: New York Jets", "D: Baltimore Colts"], answer: "A: Green Bay Packers" },
+            { question: "What is the most watched sporting event?", options: ["A: FIFA World Cup", "B: Olympics", "C: Super Bowl", "D: UEFA Champions League"], answer: "A: FIFA World Cup" }
         ];
 
-        // Guruji Questions (Updated to multiple choice)
+        // Guruji Questions
         const gurujiQuestions = [
             { question: "What is the capital of Italy?", options: ["A: Rome", "B: Milan", "C: Naples", "D: Florence"], answer: "A: Rome" },
             { question: "Who wrote 'Hamlet'?", options: ["A: William Shakespeare", "B: Charles Dickens", "C: Mark Twain", "D: Jane Austen"], answer: "A: William Shakespeare" },
@@ -537,10 +491,8 @@
         ];
 
         // Game State
-        let answeredQuestions = { 0: new Set(), 1: new Set(), 2: new Set(), 3: new Set(), 4: new Set() };
         let gameState = {
-            currentCategory: null,
-            currentQuestionIndex: null,
+            currentQuestionIndex: 0,
             isFinalAnswer: false,
             currentTeam: "A",
             timer: 60,
@@ -551,7 +503,8 @@
             fiftyFiftyUsed: false,
             tenSecondsPlayed: false,
             fiveSecondsPlayed: false,
-            countdownPlaying: false
+            countdownPlaying: false,
+            questionAnswered: false // Track if the question is answered
         };
 
         // Sound Functions
@@ -565,40 +518,15 @@
             sound.currentTime = 0;
         }
 
-        // Category Selection
-        function selectCategory(index) {
-            gameState.currentCategory = index;
-            document.getElementById("opening").style.display = "none";
-            document.getElementById("category-screen").style.display = "block";
-            document.getElementById("category-name").textContent = ["General Knowledge", "Bible", "He Never Said No", "SPES NON CONFUNDIT", "Sports"][index];
-            loadNumberButtons();
-        }
-
-        function loadNumberButtons() {
-            const numberButtonsDiv = document.getElementById("number-buttons");
-            numberButtonsDiv.innerHTML = "";
-            const answered = answeredQuestions[gameState.currentCategory];
-            for (let i = 0; i < categories[gameState.currentCategory].length; i++) {
-                if (!answered.has(i)) {
-                    const btn = document.createElement("button");
-                    btn.className = "number-button";
-                    btn.textContent = i + 1;
-                    btn.onclick = () => selectQuestion(i);
-                    numberButtonsDiv.appendChild(btn);
-                }
-            }
-        }
-
-        // Question Selection and Loading
-        function selectQuestion(index) {
-            gameState.currentQuestionIndex = index;
-            document.getElementById("category-screen").style.display = "none";
-            document.getElementById("game-container").style.display = "block";
-            loadQuestion();
-        }
-
+        // Question Loading
         function loadQuestion() {
-            const q = categories[gameState.currentCategory][gameState.currentQuestionIndex];
+            if (gameState.currentQuestionIndex >= allQuestions.length) {
+                document.getElementById("question").textContent = "All questions have been attempted!";
+                document.getElementById("options").innerHTML = "";
+                document.getElementById("next-question").style.display = "none";
+                return;
+            }
+            const q = allQuestions[gameState.currentQuestionIndex];
             document.getElementById("question").textContent = q.question;
             const options = document.getElementById("options");
             options.innerHTML = "";
@@ -618,6 +546,7 @@
             gameState.fiveSecondsPlayed = false;
             gameState.countdownPlaying = false;
             gameState.currentTeam = "A";
+            gameState.questionAnswered = false; // Reset for new question
             document.getElementById("timer").textContent = `${gameState.timer}s ⏰`;
             clearInterval(gameState.timerInterval);
             stopSound("timerTick");
@@ -625,6 +554,7 @@
             stopSound("countdownSound");
             document.getElementById("manikutti-dialogue").style.display = "block";
             document.getElementById("time-up-message").style.display = "none";
+            document.getElementById("next-question").style.display = "none"; // Hide Next button
         }
 
         // Option Handling
@@ -640,6 +570,7 @@
 
         // Timer Functions
         function start60sTimer() {
+            clearInterval(gameState.timerInterval); // Ensure no existing interval
             gameState.timerInterval = setInterval(() => {
                 if (!gameState.isTimerPaused) {
                     gameState.timer--;
@@ -670,7 +601,7 @@
         }
 
         function start30sTimer() {
-            clearInterval(gameState.timerInterval);
+            clearInterval(gameState.timerInterval); // Clear existing interval
             stopSound("countdownSound");
             gameState.timer = 30;
             gameState.countdownPlaying = false;
@@ -679,7 +610,7 @@
         }
 
         function start10sTimer() {
-            clearInterval(gameState.timerInterval);
+            clearInterval(gameState.timerInterval); // Clear existing interval
             stopSound("countdownSound");
             gameState.timer = 10;
             gameState.tenSecondsPlayed = true;
@@ -705,19 +636,20 @@
         }
 
         function showTimeUpMessage() {
-            if (document.getElementById("game-container").style.display !== "none") {
-                const timeUpMsg = document.getElementById("time-up-message");
-                timeUpMsg.style.display = "block";
-                const correct = categories[gameState.currentCategory][gameState.currentQuestionIndex].answer;
-                document.querySelectorAll(".options button").forEach(btn => {
-                    if (btn.dataset.fullText === correct) {
-                        btn.style.background = "#00ff00";
-                    }
-                });
-                setTimeout(() => {
-                    timeUpMsg.style.display = "none";
-                }, 3000);
-            }
+            const timeUpMsg = document.getElementById("time-up-message");
+            timeUpMsg.style.display = "block";
+            const q = allQuestions[gameState.currentQuestionIndex];
+            const correct = q.answer;
+            document.querySelectorAll(".options button").forEach(btn => {
+                if (btn.dataset.fullText === correct) {
+                    btn.style.background = "#00ff00";
+                }
+            });
+            gameState.questionAnswered = true;
+            document.getElementById("next-question").style.display = "block"; // Show Next button
+            setTimeout(() => {
+                timeUpMsg.style.display = "none";
+            }, 3000);
         }
 
         // Answer Handling
@@ -743,13 +675,15 @@
             stopSound("fastTickSound");
             stopSound("countdownSound");
             gameState.countdownPlaying = false;
-            const correct = categories[gameState.currentCategory][gameState.currentQuestionIndex].answer;
+            const q = allQuestions[gameState.currentQuestionIndex];
+            const correct = q.answer;
             if (!gameState.firstConfirmation) {
                 gameState.firstConfirmation = true;
                 if (selected === correct) {
                     playSound("correctSound");
                     btn.style.background = "#00ff00";
-                    answeredQuestions[gameState.currentCategory].add(gameState.currentQuestionIndex);
+                    gameState.questionAnswered = true;
+                    document.getElementById("next-question").style.display = "block"; // Show Next button
                 } else {
                     btn.style.background = "#ff0000";
                     if (gameState.fiftyFiftyUsed) {
@@ -757,6 +691,8 @@
                             document.querySelectorAll(".options button").forEach(b => {
                                 if (b.dataset.fullText === correct) b.style.background = "#00ff00";
                             });
+                            gameState.questionAnswered = true;
+                            document.getElementById("next-question").style.display = "block"; // Show Next button
                         }, 1000);
                     } else {
                         setTimeout(switchToNextTeam, 1000);
@@ -766,13 +702,16 @@
                 if (selected === correct) {
                     playSound("correctSound");
                     btn.style.background = "#00ff00";
-                    answeredQuestions[gameState.currentCategory].add(gameState.currentQuestionIndex);
+                    gameState.questionAnswered = true;
+                    document.getElementById("next-question").style.display = "block"; // Show Next button
                 } else {
                     playSound("wrongSound");
                     btn.style.background = "#ff0000";
                     document.querySelectorAll(".options button").forEach(b => {
                         if (b.dataset.fullText === correct) b.style.background = "#00ff00";
                     });
+                    gameState.questionAnswered = true;
+                    document.getElementById("next-question").style.display = "block"; // Show Next button
                 }
             }
         }
@@ -790,27 +729,11 @@
             }, 2000);
         }
 
-        // Navigation
-        function goBackToCategoryFromQuestion() {
-            clearInterval(gameState.timerInterval); // Stop the timer
-            document.getElementById("game-container").style.display = "none";
-            document.getElementById("category-screen").style.display = "block";
-            stopSound("countdownSound");
-            stopSound("fastTickSound");
-            loadNumberButtons();
-            document.getElementById("time-up-message").style.display = "none"; // Hide the "Time is up" message
-        }
-
-        function goBackToCategorySelection() {
-            document.getElementById("category-screen").style.display = "none";
-            document.getElementById("opening").style.display = "block";
-        }
-
         // Lifelines
         function useFiftyFifty() {
             playSound("lifelineSound");
             gameState.fiftyFiftyUsed = true;
-            const q = categories[gameState.currentCategory][gameState.currentQuestionIndex];
+            const q = allQuestions[gameState.currentQuestionIndex];
             let wrong = q.options.filter(o => o !== q.answer);
             let toRemove = wrong.slice(0, 2);
             document.querySelectorAll(".options button").forEach(btn => {
@@ -846,7 +769,7 @@
             }
         }
 
-        // Guruji Popup (Updated to multiple choice)
+        // Guruji Popup
         function openGurujiPopup() {
             const popup = document.getElementById("guruji-popup");
             popup.style.display = "flex";
@@ -913,10 +836,20 @@
             playSound("backgroundMusic");
         }
 
+        // Next Question Function
+        function goToNextQuestion() {
+            if (gameState.questionAnswered) {
+                gameState.currentQuestionIndex++;
+                loadQuestion();
+            }
+        }
+
         // Event Listeners
         document.getElementById("start-game").onclick = () => {
             document.getElementById("intro-page").style.display = "none";
-            document.getElementById("opening").style.display = "block";
+            document.getElementById("game-container").style.display = "block";
+            gameState.currentQuestionIndex = 0;
+            loadQuestion();
             playSound("backgroundMusic");
         };
 
@@ -925,6 +858,8 @@
             document.getElementById("manikutti-img").src = "run.gif";
             start60sTimer();
         };
+
+        document.getElementById("next-question").onclick = goToNextQuestion;
     </script>
 </body>
 </html>

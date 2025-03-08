@@ -5,420 +5,412 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spin the Wheel Game</title>
     <style>
-        body { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            font-family: 'Poppins', sans-serif; 
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #0a1a3d 0%, #1e3c72 50%, #000000 100%);
-            color: #ffffff;
-            overflow: hidden;
-            transition: background 0.5s ease;
-        }
-        .game-container { 
-            text-align: center; 
-            padding: 30px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: auto;
+            color: #fff;
             position: relative;
-            width: 550px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
         }
-        .wheel-container { 
-            position: relative; 
-            width: 450px; 
-            height: 500px; 
-            margin: 30px auto; 
+
+        .game-container {
+            text-align: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            text-shadow: 0 0 10px #ffd700;
+            margin-bottom: 20px;
+        }
+
+        .wheel-container {
+            width: 450px;
+            height: 450px;
+            margin: 0 auto;
+            position: relative;
             border-radius: 50%;
             background: radial-gradient(circle, #ffd700 10%, transparent 60%);
         }
-        canvas { 
-            width: 100%; 
-            height: 450px; 
-            border-radius: 50%;
-            animation: glowWheel 2s infinite alternate;
-        }
-        .pointer { 
-            position: absolute; 
-            top: -10px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 0; 
-            height: 0; 
-            border-left: 20px solid transparent; 
-            border-right: 20px solid transparent; 
-            border-top: 40px solid #ffd700; 
-            z-index: 10; 
-            filter: drop-shadow(0 0 10px #ffd700);
-        }
-        button { 
-            padding: 15px 30px; 
-            font-size: 18px; 
-            font-weight: bold;
-            background: linear-gradient(45deg, #ffd700, #ffaa00);
-            color: #0a1a3d; 
-            border: none; 
-            border-radius: 50px; 
-            cursor: pointer; 
-            transition: all 0.3s ease; 
-            margin: 15px;
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
-        }
-        button:hover { 
-            background: linear-gradient(45deg, #ffaa00, #ffd700);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.7);
-        }
-        button:disabled { 
-            background: #666633; 
-            cursor: not-allowed; 
-            box-shadow: none;
-            transform: none;
-        }
-        #result { 
-            font-size: 24px; 
-            font-weight: bold; 
-            color: #ffd700; 
-            max-width: 450px; 
-            word-wrap: break-word; 
-            text-shadow: 0 0 15px #ffd700, 0 0 30px #ffaa00; 
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out; /* Smooth fade-in */
-            margin-top: 10px; /* Position just below wheel */
-            text-align: center;
-            z-index: 5;
-        }
-        h1 { 
-            color: #ffd700; 
-            font-size: 48px;
-            text-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00;
-            animation: glowText 2s infinite alternate;
-            margin-bottom: 20px;
-        }
-        .gift-box-container { display: none; }
-        .guruji {
-            width: 120px;
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            z-index: 15;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
-        }
-        .guruji:hover { transform: scale(1.1); }
-        .guruji-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
+
+        canvas {
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            animation: fadeInOverlay 0.5s ease-in-out;
-        }
-        .guruji-content {
-            background: linear-gradient(135deg, #ffeb3b, #ff9800, #ff5722);
-            padding: 40px;
-            border-radius: 25px;
-            text-align: center;
-            position: relative;
-            width: 85%;
-            max-width: 700px;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 87, 34, 0.9), 
-                        inset 0 0 20px rgba(255, 255, 255, 0.3);
-            border: 5px solid #ffd700;
-            animation: bounceInPopup 0.7s ease-out;
-            overflow: hidden;
-        }
-        .guruji-content::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.2), transparent);
-            animation: rotateGlow 10s linear infinite;
-        }
-        .guruji-image {
-            width: 150px;
-            height: 150px;
             border-radius: 50%;
-            margin-bottom: 25px;
-            border: 6px solid #ffd700;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.9), 0 0 30px rgba(255, 87, 34, 0.7);
-            animation: spinImage 8s linear infinite;
         }
-        .guruji-dialogue {
-            font-size: 1.4em;
-            color: #333;
-            position: relative;
-            z-index: 1;
-        }
-        #guruji-intro {
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #d81b60;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6), 0 0 10px #fff;
-            animation: slideIn 0.5s ease-in;
-            font-size: 1.6em;
-        }
-        #guruji-question {
-            margin-bottom: 25px;
-            font-size: 2.2em;
-            font-weight: bold;
-            font-style: italic;
-            color: #fff;
-            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8), 0 0 15px #ffd700, 0 0 25px #ff5722;
-            background: linear-gradient(45deg, rgba(255, 215, 0, 0.3), rgba(255, 87, 34, 0.3));
-            padding: 15px 25px;
-            border-radius: 15px;
-            animation: pulseGlow 1.5s infinite;
-        }
-        #reveal-answer {
-            background: linear-gradient(45deg, #ffd700, #ff5722, #ffaa00);
-            border: none;
-            padding: 15px 30px;
-            cursor: pointer;
-            font-size: 1.3em;
-            border-radius: 10px;
-            color: #fff;
-            text-shadow: 2px 2px 4px #000;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 0 15px rgba(255, 87, 34, 0.8);
-            margin-bottom: 20px;
-        }
-        #reveal-answer:hover {
-            transform: scale(1.1) rotate(2deg);
-            box-shadow: 0 0 25px rgba(255, 87, 34, 1), 0 0 35px rgba(255, 215, 0, 0.9);
-        }
-        #guruji-answer {
-            font-weight: bold;
-            color: #00e676;
-            font-size: 1.8em;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6), 0 0 15px #fff;
-            animation: fadeInAnswer 1s ease-in;
-        }
-        .guruji-close {
-            padding: 10px 20px;
-            font-size: 1.2em;
-            background: linear-gradient(45deg, #ff5722, #ff9800);
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            text-shadow: 1px 1px 2px #000;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+
+        .pointer {
             position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #ffd700;
+            z-index: 10;
+            filter: drop-shadow(0 0 10px #ffd700);
+        }
+
+        #result, #guruji-result {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            text-shadow: 0 0 10px #ffd700;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: linear-gradient(45deg, #ffaa00, #ffd700);
+            border: none;
+            border-radius: 25px;
+            color: #0a1a3d;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #ffd700;
+        }
+
+        button:disabled {
+            background: #666666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .guruji {
+            position: fixed;
             bottom: 20px;
-            right: 20px;
+            left: 20px;
+            width: 200px;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
-        .guruji-close:hover {
+
+        .guruji:hover {
             transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(255, 87, 34, 0.8);
         }
-        .hidden-sector {
-            opacity: 0.3;
-            transition: opacity 0.5s ease;
-        }
-        #questionModal.glow {
-            box-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00;
-            animation: glowBorder 1.5s infinite alternate;
-        }
-        #congratsMessage {
+
+        #questionModal {
+            display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px 40px;
-            border-radius: 15px;
-            color: #ffd700;
-            font-size: 32px;
-            font-weight: bold;
-            text-shadow: 0 0 10px #ffd700;
-            z-index: 25;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            background: linear-gradient(135deg, #1e3c72, #0a1a3d);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+            z-index: 1000;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
         }
+
+        #questionModal.active {
+            display: block;
+        }
+
+        #questionModal.glow {
+            box-shadow: 0 0 30px #ffd700, 0 0 60px #ffaa00;
+        }
+
+        #closeModal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #ff6f61;
+        }
+
+        #questionContent {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        #timer {
+            font-size: 18px;
+            margin-bottom: 20px;
+            opacity: 0;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .fireworks {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 999;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            opacity: 0;
+            animation: explode 1.5s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% { transform: translate(0, 0); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)); opacity: 0; }
+        }
+
         .confetti {
             position: fixed;
             width: 10px;
             height: 10px;
-            pointer-events: none;
-            z-index: 30;
             opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-            animation: fall 3s ease-in-out forwards;
+            animation: fall 3s ease-out forwards;
+            z-index: 1001;
         }
-        .balloon {
-            position: fixed;
-            width: 50px;
-            height: 70px;
-            border-radius: 50% 50% 40% 40%;
-            pointer-events: none;
-            z-index: 20;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-            animation: float 4s ease-in-out forwards;
-        }
-        @keyframes popUp {
-            0% { transform: scale(0.5) translate(-50%, -50%); opacity: 0; }
-            80% { transform: scale(1.1) translate(-50%, -50%); opacity: 1; }
-            100% { transform: scale(1) translate(-50%, -50%); opacity: 1; }
-        }
-        @keyframes glowWheel {
-            0% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5); }
-            100% { box-shadow: 0 0 60px rgba(255, 215, 0, 0.8); }
-        }
-        @keyframes glowText {
-            0% { text-shadow: 0 0 15px #ffd700, 0 0 30px #ffaa00; }
-            100% { text-shadow: 0 0 25px #ffd700, 0 0 50px #ffaa00; }
-        }
-        @keyframes burst {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
-        }
-        @keyframes fadeInOverlay {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes bounceInPopup {
-            0% { transform: scale(0.7) rotate(-5deg); opacity: 0; }
-            60% { transform: scale(1.05) rotate(2deg); opacity: 1; }
-            100% { transform: scale(1) rotate(0deg); }
-        }
-        @keyframes rotateGlow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes spinImage {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes pulseGlow {
-            0% { transform: scale(1); box-shadow: 0 0 10px #ffd700; }
-            50% { transform: scale(1.03); box-shadow: 0 0 20px #ff5722; }
-            100% { transform: scale(1); box-shadow: 0 0 10px #ffd700; }
-        }
-        @keyframes glowBorder {
-            0% { box-shadow: 0 0 20px #ffd700; }
-            100% { box-shadow: 0 0 40px #ffaa00; }
-        }
+
         @keyframes fall {
             0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
-        @keyframes float {
+
+        .balloon {
+            position: fixed;
+            width: 30px;
+            height: 40px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            opacity: 0;
+            animation: rise 4s ease-out forwards;
+            z-index: 1001;
+        }
+
+        @keyframes rise {
             0% { transform: translateY(100vh); opacity: 1; }
             100% { transform: translateY(-100vh); opacity: 0; }
         }
-        @keyframes fadeInAnswer {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-30px); }
+            60% { transform: translateY(-15px); }
         }
-        @keyframes slideIn {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+
+        .bouncing-balloon {
+            animation: bounce 2s infinite;
         }
-        .fireworks {
-            position: absolute;
+
+        #congratsMessage {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 24px;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 1002;
+            display: none;
+        }
+
+        .guruji-popup {
+            display: none;
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 10;
+            background: linear-gradient(135deg, #1e3c72, #0a1a3d);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+            z-index: 1000;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .guruji-content {
+            position: relative;
+        }
+
+        .guruji-image {
+            width: 100px;
+            margin-bottom: 10px;
+        }
+
+        #guruji-intro {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .guruji-content .wheel-container {
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            position: relative;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffd700 10%, transparent 60%);
+        }
+
+        .guruji-content canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .guruji-content .pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
             width: 0;
             height: 0;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #ffd700;
+            z-index: 10;
+            filter: drop-shadow(0 0 10px #ffd700);
         }
-        .particle {
+
+        .guruji-content button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        .guruji-close {
+            background: #ff6f61;
+            color: #fff;
+        }
+
+        #guruji-question-container {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            position: relative;
+            color: #fff;
+        }
+
+        #guruji-question-content {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        #guruji-timer {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        #closeGurujiQuestion {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            opacity: 1;
-            animation: burst 1.2s ease-out forwards;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-        }
-        #questionModal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(10, 26, 61, 0.4);
-            backdrop-filter: blur(15px);
-            z-index: 20;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s ease-in-out;
-        }
-        #questionModal.active { display: flex; }
-        #questionContent {
-            font-size: 42px;
-            font-weight: 600;
-            color: #ffd700;
-            text-align: center;
-            margin-bottom: 50px;
-            padding: 0 30px;
-            max-width: 90%;
-            text-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00;
-            animation: glowText 1.5s infinite alternate;
-        }
-        #timer {
-            font-size: 36px;
-            color: #ffd700;
-            margin-bottom: 30px;
-            text-shadow: 0 0 10px #ffd700;
-            transition: opacity 0.3s ease;
-        }
-        #closeModal {
-            position: absolute;
-            top: 25px;
-            right: 25px;
+            top: 5px;
+            right: 5px;
             cursor: pointer;
-            font-size: 36px;
-            color: #ffd700;
-            text-shadow: 0 0 10px #ffd700;
-            transition: all 0.3s ease;
+            color: #ff6f61;
+            font-size: 20px;
         }
-        #closeModal:hover {
-            transform: scale(1.2) rotate(90deg);
-            color: #ffaa00;
-            text-shadow: 0 0 15px #ffaa00;
+
+        .glitter {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 215, 0, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: glitterFade 1s ease-out forwards;
         }
-        #answerBtn, #congratsBtn {
-            font-size: 28px;
-            font-weight: bold;
-            padding: 20px 50px;
-            background: linear-gradient(45deg, #ffd700, #ffaa00);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
-            transition: all 0.3s ease;
+
+        @keyframes glitterFade {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
         }
-        #answerBtn:hover, #congratsBtn:hover {
-            background: linear-gradient(45deg, #ffaa00, #ffd700);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.8);
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.3);
+            pointer-events: none;
+            animation: ripple 1s ease-out forwards;
         }
-        audio { display: none; }
+
+        @keyframes ripple {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(4); opacity: 0; }
+        }
+
+        .snowflake, .leaf {
+            position: fixed;
+            font-size: 1.5em;
+            opacity: 0.8;
+            animation: fallAnimation 5s linear forwards;
+        }
+
+        @keyframes fallAnimation {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .bubble {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 215, 0, 0.5);
+            border-radius: 50%;
+            animation: bubblePop 2s ease-out forwards;
+        }
+
+        @keyframes bubblePop {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
+            80% { transform: translateY(-20vh) scale(1); opacity: 1; }
+            100% { transform: translateY(-30vh) scale(0); opacity: 0; }
+        }
+
+        .confetti-trail {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: hsl(var(--hue), 100%, 50%);
+            animation: confettiTrail 1s ease-out forwards;
+        }
+
+        @keyframes confettiTrail {
+            0% { opacity: 1; transform: translate(0, 0); }
+            100% { opacity: 0; transform: translate(var(--x), var(--y)); }
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <audio id="bgm" loop autoplay>
+    <audio id="bgm" loop>
         <source src="bgm.mp3" type="audio/mpeg">
     </audio>
     <audio id="gurujiMusic" src="guruji.mp3"></audio>
@@ -431,18 +423,8 @@
             <div class="pointer"></div>
             <canvas id="wheel" width="450" height="450"></canvas>
         </div>
-        <div id="result"></div> <!-- Moved outside wheel-container -->
+        <div id="result"></div>
         <button id="spinBtn">Spin Now!</button>
-        <div class="gift-box-container">
-            <div class="gift-box" data-set="50">?</div>
-            <div class="gift-box" data-set="100">?</div>
-            <div class="gift-box" data-set="150">?</div>
-            <div class="gift-box" data-set="200">?</div>
-            <div class="gift-box" data-set="250">?</div>
-            <div class="gift-box" data-set="300">?</div>
-            <div class="gift-box" data-set="350">?</div>
-            <div class="gift-box" data-set="400">?</div>
-        </div>
         <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
     </div>
 
@@ -459,31 +441,39 @@
     <div class="guruji-popup" id="guruji-popup">
         <div class="guruji-content">
             <img src="guruji.png" alt="Guruji" class="guruji-image">
-            <div class="guruji-dialogue">
-                <p id="guruji-intro">Greetings, knowledge seekers! I am Guruji, your Quiz Master. Behold my challenge:</p>
-                <p id="guruji-question"></p>
-                <button id="reveal-answer">Reveal Answer</button>
-                <p id="guruji-answer" style="display: none;"></p>
+            <p id="guruji-intro">Greetings, knowledge seekers! I am Guruji, your Quiz Master. Spin the wheel to get your challenge!</p>
+            <div class="wheel-container">
+                <div class="pointer"></div>
+                <canvas id="guruji-wheel" width="300" height="300"></canvas>
+            </div>
+            <button id="guruji-spinBtn">Spin Now!</button>
+            <div id="guruji-result"></div>
+            <div id="guruji-question-container" style="display: none;">
+                <div id="guruji-question-content"></div>
+                <div id="guruji-timer"></div>
+                <button id="guruji-answerBtn">Show Answer</button>
+                <button id="guruji-congratsBtn" style="display: none;">Congratulations!</button>
+                <div id="closeGurujiQuestion">❌</div>
             </div>
             <button class="guruji-close" onclick="closeGurujiPopup()">Close</button>
         </div>
     </div>
 
     <script>
+        // Autoplay background music on first click
         document.addEventListener('click', function() {
             const audio = document.getElementById('bgm');
             if (audio.paused) {
-                audio.play().catch(function(error) {
-                    console.log("Background music play failed:", error);
-                });
+                audio.play().catch(error => console.log("Background music play failed:", error));
             }
         }, { once: true });
 
+        // Main Wheel Setup
         const canvas = document.getElementById('wheel');
         const ctx = canvas.getContext('2d');
         const spinBtn = document.getElementById('spinBtn');
         const resultDiv = document.getElementById('result');
-        const fireworksDiv = document.createElement('div'); // Create dynamically
+        const fireworksDiv = document.createElement('div');
         fireworksDiv.className = 'fireworks';
         document.body.appendChild(fireworksDiv);
         const questionModal = document.getElementById('questionModal');
@@ -496,63 +486,50 @@
         const bgm = document.getElementById('bgm');
         const celebrationMusic = document.getElementById('celebrationMusic');
         let timerInterval;
+        let gurujiTimerInterval;
+        let mainCurrentQuestion = null;
+        let gurujiCurrentQuestion = null;
 
         const questionSets = {
             "50": [
                 { question: "What is the capital of France?", answer: "Paris" },
                 { question: "Who wrote 'Romeo and Juliet'?", answer: "William Shakespeare" },
-                { question: "What is the largest planet in our solar system?", answer: "Jupiter" },
-                { question: "What is the chemical symbol for water?", answer: "H2O" },
-                { question: "Who painted the Mona Lisa?", answer: "Leonardo da Vinci" }
+                { question: "What is the largest planet in our solar system?", answer: "Jupiter" }
             ],
             "100": [
                 { question: "What is the smallest prime number?", answer: "2" },
                 { question: "What is the square root of 64?", answer: "8" },
-                { question: "What is the longest river in the world?", answer: "The Nile" },
-                { question: "What is the freezing point of water in Celsius?", answer: "0°C" },
-                { question: "Who discovered gravity?", answer: "Isaac Newton" }
+                { question: "What is the longest river in the world?", answer: "The Nile" }
             ],
             "150": [
                 { question: "What is the capital of Japan?", answer: "Tokyo" },
                 { question: "What is the largest ocean on Earth?", answer: "Pacific Ocean" },
-                { question: "What is the chemical symbol for gold?", answer: "Au" },
-                { question: "Who is known as the father of computers?", answer: "Charles Babbage" },
-                { question: "What is the speed of light?", answer: "299,792,458 meters per second" }
+                { question: "What is the chemical symbol for gold?", answer: "Au" }
             ],
             "200": [
                 { question: "What is the capital of Australia?", answer: "Canberra" },
                 { question: "What is the largest mammal on Earth?", answer: "Blue Whale" },
-                { question: "What is the smallest country in the world?", answer: "Vatican City" },
-                { question: "What is the boiling point of water in Celsius?", answer: "100°C" },
-                { question: "Who wrote 'The Theory of Relativity'?", answer: "Albert Einstein" }
+                { question: "What is the smallest country in the world?", answer: "Vatican City" }
             ],
             "250": [
                 { question: "What is the capital of Brazil?", answer: "Brasília" },
                 { question: "What is the largest desert in the world?", answer: "Sahara Desert" },
-                { question: "What is the chemical symbol for oxygen?", answer: "O" },
-                { question: "Who invented the telephone?", answer: "Alexander Graham Bell" },
-                { question: "What is the largest bone in the human body?", answer: "Femur" }
+                { question: "What is the chemical symbol for oxygen?", answer: "O" }
             ],
             "300": [
                 { question: "What is the capital of Canada?", answer: "Ottawa" },
                 { question: "What is the largest island in the world?", answer: "Greenland" },
-                { question: "What is the chemical symbol for carbon?", answer: "C" },
-                { question: "Who discovered penicillin?", answer: "Alexander Fleming" },
-                { question: "What is the hardest natural substance on Earth?", answer: "Diamond" }
+                { question: "What is the chemical symbol for carbon?", answer: "C" }
             ],
             "350": [
                 { question: "What is the capital of Russia?", answer: "Moscow" },
                 { question: "What is the largest continent on Earth?", answer: "Asia" },
-                { question: "What is the chemical symbol for silver?", answer: "Ag" },
-                { question: "Who wrote 'The Origin of Species'?", answer: "Charles Darwin" },
-                { question: "What is the smallest unit of life?", answer: "Cell" }
+                { question: "What is the chemical symbol for silver?", answer: "Ag" }
             ],
             "400": [
                 { question: "What is the capital of China?", answer: "Beijing" },
                 { question: "What is the largest moon in the solar system?", answer: "Ganymede" },
-                { question: "What is the chemical symbol for iron?", answer: "Fe" },
-                { question: "Who invented the light bulb?", answer: "Thomas Edison" },
-                { question: "What is the largest organ in the human body?", answer: "Skin" }
+                { question: "What is the chemical symbol for iron?", answer: "Fe" }
             ]
         };
 
@@ -578,7 +555,7 @@
         ];
 
         const usedQuestions = {
-            "50": [], "100": [], "150": [], "200": [], 
+            "50": [], "100": [], "150": [], "200": [],
             "250": [], "300": [], "350": [], "400": []
         };
 
@@ -588,23 +565,37 @@
         const pointerAngle = 3 * Math.PI / 2;
         let currentAngle = 0;
         let isSpinning = false;
-        let currentQuestion = null;
         let lastLandedNumber = null;
 
         const motivationalQuotes = [
             "Great job! The only way to do great work is to love what you do.",
             "Well done! Success is the sum of small efforts repeated day in and day out.",
-            "Fantastic! Believe you can and you're halfway there.",
-            "Amazing work! The future belongs to those who believe in their dreams.",
-            "Brilliant! Every accomplishment starts with the decision to try."
+            "Fantastic! Believe you can and you're halfway there."
         ];
 
+        // Guruji Wheel Setup
+        const gurujiCanvas = document.getElementById('guruji-wheel');
+        const gurujiCtx = gurujiCanvas.getContext('2d');
+        const gurujiRadius = gurujiCanvas.width / 2;
+        const gurujiArc = 2 * Math.PI / gurujiQuestions.length;
+        let gurujiCurrentAngle = 0;
+        let gurujiIsSpinning = false;
+        let gurujiLastLandedSegment = null;
+
+        const gurujiSegments = gurujiQuestions.map((q, index) => ({
+            number: (index + 1).toString(),
+            visible: true,
+            question: q
+        }));
+
+        // Utility Functions
         function normalizeAngle(angle) {
             angle = angle % (2 * Math.PI);
             if (angle < 0) angle += 2 * Math.PI;
             return angle;
         }
 
+        // Main Wheel Functions
         function drawWheel() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             segments.forEach((segment, i) => {
@@ -615,7 +606,7 @@
                 ctx.arc(radius, radius, radius, angle, angle + arc);
                 ctx.lineTo(radius, radius);
                 ctx.fill();
-                
+
                 ctx.save();
                 ctx.translate(radius, radius);
                 ctx.rotate(angle + arc / 2);
@@ -646,7 +637,7 @@
 
         function handleWheelClick(event) {
             if (isSpinning || !lastLandedNumber) return;
-            
+
             const rect = canvas.getBoundingClientRect();
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
@@ -658,9 +649,9 @@
             const clickAngle = Math.atan2(dy, dx);
             const clickedSegment = getSegmentAtAngle(clickAngle);
             if (clickedSegment && clickedSegment.number === lastLandedNumber) {
-                currentQuestion = getRandomQuestion(lastLandedNumber);
-                if (currentQuestion) {
-                    showQuestionModal(currentQuestion.question);
+                mainCurrentQuestion = getRandomQuestion(lastLandedNumber);
+                if (mainCurrentQuestion) {
+                    showQuestionModal(mainCurrentQuestion.question);
                 } else {
                     resultDiv.textContent = `Section ${lastLandedNumber} questions exhausted!`;
                     resultDiv.style.opacity = '1';
@@ -688,29 +679,9 @@
             return question;
         }
 
-        function createFireworks() {
-            fireworksDiv.innerHTML = '';
-            const particleCount = 30;
-            const particleColors = ['#ffd700', '#ffaa00', '#ff6f61', '#6b5b95', '#88b04b'];
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                const angle = Math.random() * 2 * Math.PI;
-                const distance = Math.random() * 120 + 60;
-                const x = Math.cos(angle) * distance;
-                const y = Math.sin(angle) * distance;
-                particle.style.background = particleColors[Math.floor(Math.random() * particleColors.length)];
-                particle.style.setProperty('--x', `${x}px`);
-                particle.style.setProperty('--y', `${y}px`);
-                fireworksDiv.appendChild(particle);
-            }
-            fireworksDiv.style.opacity = '1';
-            setTimeout(() => fireworksDiv.style.opacity = '0', 1200);
-        }
-
         function spinWheel() {
             if (isSpinning) return;
-            
+
             const visibleSegments = segments.filter(s => s.visible);
             if (visibleSegments.length === 0) {
                 resultDiv.textContent = "All questions exhausted!";
@@ -722,7 +693,7 @@
             isSpinning = true;
             spinBtn.disabled = true;
             resultDiv.style.opacity = '0';
-            
+
             bgm.pause();
             spinMusic.play().catch(error => console.log("Spin music play failed:", error));
 
@@ -762,28 +733,166 @@
             requestAnimationFrame(animate);
         }
 
+        // Guruji Wheel Functions
+        function drawGurujiWheel() {
+            gurujiCtx.clearRect(0, 0, gurujiCanvas.width, gurujiCanvas.height);
+            gurujiSegments.forEach((segment, i) => {
+                const angle = gurujiCurrentAngle + (i * gurujiArc);
+                gurujiCtx.beginPath();
+                gurujiCtx.fillStyle = segment.visible ? colors[i % colors.length] : '#333333';
+                gurujiCtx.moveTo(gurujiRadius, gurujiRadius);
+                gurujiCtx.arc(gurujiRadius, gurujiRadius, gurujiRadius, angle, angle + gurujiArc);
+                gurujiCtx.lineTo(gurujiRadius, gurujiRadius);
+                gurujiCtx.fill();
+
+                gurujiCtx.save();
+                gurujiCtx.translate(gurujiRadius, gurujiRadius);
+                gurujiCtx.rotate(angle + gurujiArc / 2);
+                gurujiCtx.fillStyle = segment.visible ? '#0a1a3d' : '#666666';
+                gurujiCtx.font = 'bold 18px Poppins';
+                gurujiCtx.textAlign = 'right';
+                gurujiCtx.fillText(segment.number, gurujiRadius - 20, 5);
+                gurujiCtx.restore();
+
+                if (!segment.visible) {
+                    gurujiCtx.beginPath();
+                    gurujiCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                    gurujiCtx.moveTo(gurujiRadius, gurujiRadius);
+                    gurujiCtx.arc(gurujiRadius, gurujiRadius, gurujiRadius, angle, angle + gurujiArc);
+                    gurujiCtx.lineTo(gurujiRadius, gurujiRadius);
+                    gurujiCtx.fill();
+                }
+            });
+        }
+
+        function getGurujiSegmentAtAngle(angle) {
+            const visibleSegments = gurujiSegments.filter(s => s.visible);
+            if (visibleSegments.length === 0) return null;
+            const relativeAngle = normalizeAngle(angle - gurujiCurrentAngle);
+            const segmentIndex = Math.floor(relativeAngle / gurujiArc) % visibleSegments.length;
+            return visibleSegments[segmentIndex];
+        }
+
+        function spinGurujiWheel() {
+            if (gurujiIsSpinning) return;
+
+            const visibleSegments = gurujiSegments.filter(s => s.visible);
+            if (visibleSegments.length === 0) {
+                document.getElementById('guruji-result').textContent = "All questions exhausted!";
+                document.getElementById('guruji-result').style.opacity = '1';
+                document.getElementById('guruji-spinBtn').disabled = true;
+                return;
+            }
+
+            gurujiIsSpinning = true;
+            document.getElementById('guruji-spinBtn').disabled = true;
+            document.getElementById('guruji-result').style.opacity = '0';
+
+            bgm.pause();
+            spinMusic.play().catch(error => console.log("Spin music play failed:", error));
+
+            const spins = 5 + Math.floor(Math.random() * 5);
+            const randomSegmentIndex = Math.floor(Math.random() * visibleSegments.length);
+            const segmentCenter = gurujiSegments.indexOf(visibleSegments[randomSegmentIndex]) * gurujiArc + gurujiArc / 2;
+            const delta = normalizeAngle(pointerAngle - segmentCenter);
+            const targetAngle = delta + 2 * Math.PI * spins;
+
+            let startTime;
+            const duration = 5000;
+
+            function animate(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                gurujiCurrentAngle = easeProgress * targetAngle;
+                drawGurujiWheel();
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    gurujiCurrentAngle = targetAngle;
+                    drawGurujiWheel();
+                    const selected = getGurujiSegmentAtAngle(pointerAngle);
+                    gurujiLastLandedSegment = selected;
+                    document.getElementById('guruji-result').textContent = `You landed on: ${selected.number}`;
+                    document.getElementById('guruji-result').style.opacity = '1';
+                    createFireworks();
+                    gurujiIsSpinning = false;
+                    document.getElementById('guruji-spinBtn').disabled = false;
+                    spinMusic.pause();
+                    spinMusic.currentTime = 0;
+                    bgm.play().catch(error => console.log("Background music resume failed:", error));
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function handleGurujiWheelClick(event) {
+            if (gurujiIsSpinning || !gurujiLastLandedSegment) return;
+
+            const rect = gurujiCanvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const dx = x - gurujiRadius;
+            const dy = y - gurujiRadius;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist > gurujiRadius) return;
+
+            const clickAngle = Math.atan2(dy, dx);
+            const clickedSegment = getGurujiSegmentAtAngle(clickAngle);
+            if (clickedSegment && clickedSegment.number === gurujiLastLandedSegment.number) {
+                if (clickedSegment.visible) {
+                    gurujiCurrentQuestion = clickedSegment.question;
+                    showGurujiQuestionInPopup(gurujiCurrentQuestion.question);
+                    clickedSegment.visible = false;
+                    drawGurujiWheel();
+                } else {
+                    document.getElementById('guruji-result').textContent = "Question already answered!";
+                    document.getElementById('guruji-result').style.opacity = '1';
+                }
+            } else {
+                alert(`Please click on the landed sector: ${gurujiLastLandedSegment.number}`);
+            }
+        }
+
+        function openGurujiPopup() {
+            const popup = document.getElementById("guruji-popup");
+            popup.style.display = "flex";
+            drawGurujiWheel();
+            playSound("gurujiMusic");
+        }
+
+        function closeGurujiPopup() {
+            document.getElementById("guruji-popup").style.display = "none";
+            stopSound("gurujiMusic");
+            document.getElementById('guruji-question-container').style.display = 'none';
+            clearInterval(gurujiTimerInterval);
+        }
+
+        // Shared Functions
         function showQuestionModal(question) {
             questionContent.textContent = `Question: ${question}`;
             questionModal.classList.add('active');
             answerBtn.style.display = 'block';
             congratsBtn.style.display = 'none';
-            
+
             let timeLeft = 60;
             const timerDisplay = document.getElementById('timer');
             timerDisplay.textContent = `Time Left: ${timeLeft}s`;
             timerDisplay.style.opacity = '1';
             timerDisplay.style.animation = 'pulseGlow 1s infinite';
-            
+            timerDisplay.style.color = '#ffd700';
+
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 timeLeft--;
                 timerDisplay.textContent = `Time Left: ${timeLeft}s`;
-                
+
                 if (timeLeft <= 10) {
                     timerDisplay.style.color = '#ff6f61';
                     timerDisplay.style.animation = 'pulseGlow 0.5s infinite';
                 }
-                
+
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     questionContent.textContent = "Time's up!";
@@ -792,6 +901,72 @@
                     timerDisplay.style.animation = 'none';
                 }
             }, 1000);
+
+            answerBtn.onclick = () => {
+                if (mainCurrentQuestion) {
+                    clearInterval(timerInterval);
+                    questionContent.textContent = `Answer: ${mainCurrentQuestion.answer}`;
+                    answerBtn.style.display = 'none';
+                    congratsBtn.style.display = 'block';
+                    timerDisplay.style.opacity = '0';
+                    timerDisplay.style.animation = 'none';
+                }
+            };
+        }
+
+        function showGurujiQuestionInPopup(question) {
+            const container = document.getElementById('guruji-question-container');
+            const content = document.getElementById('guruji-question-content');
+            const timerDisplay = document.getElementById('guruji-timer');
+            const answerBtn = document.getElementById('guruji-answerBtn');
+            const congratsBtn = document.getElementById('guruji-congratsBtn');
+            const closeBtn = document.getElementById('closeGurujiQuestion');
+
+            content.textContent = `Question: ${question}`;
+            container.style.display = 'block';
+            answerBtn.style.display = 'block';
+            congratsBtn.style.display = 'none';
+
+            let timeLeft = 60;
+            timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+            timerDisplay.style.opacity = '1';
+            timerDisplay.style.color = '#ffd700';
+
+            clearInterval(gurujiTimerInterval);
+            gurujiTimerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+
+                if (timeLeft <= 10) {
+                    timerDisplay.style.color = '#ff6f61';
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(gurujiTimerInterval);
+                    content.textContent = "Time's up!";
+                    answerBtn.style.display = 'none';
+                    timerDisplay.style.opacity = '0';
+                }
+            }, 1000);
+
+            answerBtn.onclick = () => {
+                if (gurujiCurrentQuestion) {
+                    clearInterval(gurujiTimerInterval);
+                    content.textContent = `Answer: ${gurujiCurrentQuestion.answer}`;
+                    answerBtn.style.display = 'none';
+                    congratsBtn.style.display = 'block';
+                    timerDisplay.style.opacity = '0';
+                }
+            };
+
+            congratsBtn.onclick = () => {
+                triggerCelebration();
+            };
+
+            closeBtn.onclick = () => {
+                container.style.display = 'none';
+                clearInterval(gurujiTimerInterval);
+            };
         }
 
         function hideQuestionModal() {
@@ -806,13 +981,33 @@
             document.body.style.background = 'linear-gradient(135deg, #0a1a3d 0%, #1e3c72 50%, #000000 100%)';
             congratsMessage.style.opacity = '0';
             congratsMessage.style.display = 'none';
-            document.querySelectorAll('.confetti, .balloon').forEach(el => el.remove());
+            document.querySelectorAll('.confetti, .balloon, .glitter, .ripple, .snowflake, .leaf, .bubble, .confetti-trail').forEach(el => el.remove());
             fireworksDiv.style.opacity = '0';
+        }
+
+        function createFireworks() {
+            fireworksDiv.innerHTML = '';
+            const particleCount = 30;
+            const particleColors = ['#ffd700', '#ffaa00', '#ff6f61', '#6b5b95', '#88b04b'];
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const angle = Math.random() * 2 * Math.PI;
+                const distance = Math.random() * 120 + 60;
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+                particle.style.background = particleColors[Math.floor(Math.random() * particleColors.length)];
+                particle.style.setProperty('--x', `${x}px`);
+                particle.style.setProperty('--y', `${y}px`);
+                fireworksDiv.appendChild(particle);
+            }
+            fireworksDiv.style.opacity = '1';
+            setTimeout(() => fireworksDiv.style.opacity = '0', 1200);
         }
 
         function triggerCelebration() {
             const effects = [
-                () => { // Confetti
+                () => {
                     for (let i = 0; i < 50; i++) {
                         const confetti = document.createElement('div');
                         confetti.className = 'confetti';
@@ -829,24 +1024,43 @@
                         }, 10);
                     }
                 },
-                () => { // Fireworks
+                () => {
                     createFireworks();
                 },
-                () => { // Pop-up message
-                    congratsMessage.textContent = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
-                    congratsMessage.style.display = 'block';
+                () => {
+                    document.addEventListener('mousemove', createGlitterTrail);
                     setTimeout(() => {
-                        congratsMessage.style.opacity = '1';
-                        setTimeout(() => {
-                            congratsMessage.style.opacity = '0';
-                            setTimeout(() => congratsMessage.style.display = 'none', 500);
-                        }, 2500);
-                    }, 10);
+                        document.removeEventListener('mousemove', createGlitterTrail);
+                    }, 3000);
                 },
-                () => { // Balloons
+                () => {
+                    document.addEventListener('click', createRipple);
+                    setTimeout(() => {
+                        document.removeEventListener('click', createRipple);
+                    }, 3000);
+                },
+                () => {
+                    for (let i = 0; i < 30; i++) {
+                        const isSnow = Math.random() > 0.5;
+                        const element = document.createElement('div');
+                        element.className = isSnow ? 'snowflake' : 'leaf';
+                        element.textContent = isSnow ? '❄️' : '🍂';
+                        element.style.left = `${Math.random() * 100}vw`;
+                        element.style.animationDelay = `${Math.random() * 2}s`;
+                        document.body.appendChild(element);
+                        setTimeout(() => element.remove(), 5000);
+                    }
+                },
+                () => {
+                    document.body.style.background = 'linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet)';
+                    setTimeout(() => {
+                        document.body.style.background = 'linear-gradient(135deg, #0a1a3d 0%, #1e3c72 50%, #000000 100%)';
+                    }, 2000);
+                },
+                () => {
                     for (let i = 0; i < 10; i++) {
                         const balloon = document.createElement('div');
-                        balloon.className = 'balloon';
+                        balloon.className = 'balloon bouncing-balloon';
                         balloon.style.left = `${Math.random() * 100}vw`;
                         balloon.style.background = `hsl(${Math.random() * 360}, 80%, 60%)`;
                         balloon.style.animationDelay = `${Math.random() * 0.5}s`;
@@ -860,36 +1074,113 @@
                         }, 10);
                     }
                 },
-                () => { // Glowing border
-                    questionModal.classList.add('glow');
-                    congratsMessage.textContent = "Well Done!";
-                    congratsMessage.style.display = 'block';
-                    setTimeout(() => {
-                        congratsMessage.style.opacity = '1';
-                        setTimeout(() => {
-                            questionModal.classList.remove('glow');
-                            congratsMessage.style.opacity = '0';
-                            setTimeout(() => congratsMessage.style.display = 'none', 500);
-                        }, 2500);
-                    }, 10);
+                () => {
+                    for (let i = 0; i < 20; i++) {
+                        const bubble = document.createElement('div');
+                        bubble.className = 'bubble';
+                        bubble.style.left = `${Math.random() * 100}vw`;
+                        bubble.style.animationDelay = `${Math.random() * 1}s`;
+                        document.body.appendChild(bubble);
+                        setTimeout(() => bubble.remove(), 2000);
+                    }
                 },
-                () => { // Background flash
-                    document.body.style.background = 'linear-gradient(135deg, #ffd700, #ffaa00)';
-                    celebrationMusic.play().catch(error => console.log("Celebration music failed:", error));
+                () => {
+                    const emojis = ['😂', '🔥', '🎉', '🎊', '💥'];
+                    for (let i = 0; i < 20; i++) {
+                        const emoji = document.createElement('div');
+                        emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                        emoji.style.position = 'fixed';
+                        emoji.style.left = `${Math.random() * 100}vw`;
+                        emoji.style.top = `${Math.random() * 100}vh`;
+                        emoji.style.fontSize = '2em';
+                        emoji.style.opacity = '1';
+                        emoji.style.transition = 'opacity 1s';
+                        document.body.appendChild(emoji);
+                        setTimeout(() => {
+                            emoji.style.opacity = '0';
+                            setTimeout(() => emoji.remove(), 1000);
+                        }, 1000);
+                    }
+                },
+                () => {
+                    document.addEventListener('mousemove', createConfettiTrail);
                     setTimeout(() => {
+                        document.removeEventListener('mousemove', createConfettiTrail);
+                    }, 3000);
+                },
+                () => {
+                    const isLightMode = Math.random() > 0.5;
+                    document.body.style.background = isLightMode ? '#ffffff' : '#000000';
+                    fireworksDiv.innerHTML = '';
+                    const particleCount = 30;
+                    const particleColors = isLightMode ? ['#ff0000', '#00ff00', '#0000ff'] : ['#ffd700', '#ffaa00', '#ff6f61'];
+                    for (let i = 0; i < particleCount; i++) {
+                        const particle = document.createElement('div');
+                        particle.className = 'particle';
+                        const angle = Math.random() * 2 * Math.PI;
+                        const distance = Math.random() * 120 + 60;
+                        const x = Math.cos(angle) * distance;
+                        const y = Math.sin(angle) * distance;
+                        particle.style.background = particleColors[Math.floor(Math.random() * particleColors.length)];
+                        particle.style.setProperty('--x', `${x}px`);
+                        particle.style.setProperty('--y', `${y}px`);
+                        fireworksDiv.appendChild(particle);
+                    }
+                    fireworksDiv.style.opacity = '1';
+                    setTimeout(() => {
+                        fireworksDiv.style.opacity = '0';
                         document.body.style.background = 'linear-gradient(135deg, #0a1a3d 0%, #1e3c72 50%, #000000 100%)';
-                        celebrationMusic.pause();
-                        celebrationMusic.currentTime = 0;
-                    }, 2000);
+                    }, 1500);
                 }
             ];
 
             const randomEffect = effects[Math.floor(Math.random() * effects.length)];
             randomEffect();
+            celebrationMusic.play().catch(error => console.log("Celebration music failed:", error));
+            setTimeout(() => {
+                celebrationMusic.pause();
+                celebrationMusic.currentTime = 0;
+            }, 3000);
+        }
+
+        function createGlitterTrail(e) {
+            const glitter = document.createElement('div');
+            glitter.className = 'glitter';
+            glitter.style.left = `${e.pageX}px`;
+            glitter.style.top = `${e.pageY}px`;
+            document.body.appendChild(glitter);
+            setTimeout(() => glitter.remove(), 1000);
+        }
+
+        function createRipple(e) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = `${e.pageX - 50}px`;
+            ripple.style.top = `${e.pageY - 50}px`;
+            ripple.style.width = '100px';
+            ripple.style.height = '100px';
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 1000);
+        }
+
+        function createConfettiTrail(e) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti-trail';
+            confetti.style.left = `${e.pageX}px`;
+            confetti.style.top = `${e.pageY}px`;
+            confetti.style.setProperty('--hue', Math.random() * 360);
+            const angle = Math.random() * 2 * Math.PI;
+            const distance = Math.random() * 50 + 20;
+            const x = Math.cos(angle) * distance;
+            const y = Math.sin(angle) * distance;
+            confetti.style.setProperty('--x', `${x}px`);
+            confetti.style.setProperty('--y', `${y}px`);
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 1000);
         }
 
         function playSound(id) {
-            document.getElementById(id).play();
+            document.getElementById(id).play().catch(error => console.log(`Sound ${id} play failed:`, error));
         }
 
         function stopSound(id) {
@@ -898,54 +1189,20 @@
             sound.currentTime = 0;
         }
 
-        function openGurujiPopup() {
-            const popup = document.getElementById("guruji-popup");
-            popup.style.display = "flex";
-            const questionElem = document.getElementById("guruji-question");
-            const answerElem = document.getElementById("guruji-answer");
-            const revealBtn = document.getElementById("reveal-answer");
-
-            playSound("gurujiMusic");
-            answerElem.style.display = "none";
-            revealBtn.style.display = "block";
-
-            const randomIndex = Math.floor(Math.random() * gurujiQuestions.length);
-            const selectedQuestion = gurujiQuestions[randomIndex];
-
-            questionElem.textContent = selectedQuestion.question;
-            answerElem.textContent = selectedQuestion.answer;
-
-            revealBtn.onclick = () => {
-                answerElem.style.display = "block";
-                revealBtn.style.display = "none";
-            };
-        }
-
-        function closeGurujiPopup() {
-            document.getElementById("guruji-popup").style.display = "none";
-            stopSound("gurujiMusic");
-        }
-
+        // Event Listeners
+        canvas.addEventListener('click', handleWheelClick);
+        spinBtn.addEventListener('click', spinWheel);
         closeModal.addEventListener('click', hideQuestionModal);
-        answerBtn.addEventListener('click', () => {
-            if (currentQuestion) {
-                clearInterval(timerInterval);
-                questionContent.textContent = `Answer: ${currentQuestion.answer}`;
-                answerBtn.style.display = 'none';
-                congratsBtn.style.display = 'block';
-                const timerDisplay = document.getElementById('timer');
-                timerDisplay.style.opacity = '0';
-                timerDisplay.style.animation = 'none';
-            }
-        });
-
         congratsBtn.addEventListener('click', () => {
             triggerCelebration();
         });
 
-        canvas.addEventListener('click', handleWheelClick);
+        // Guruji Event Listeners
+        document.getElementById('guruji-spinBtn').addEventListener('click', spinGurujiWheel);
+        gurujiCanvas.addEventListener('click', handleGurujiWheelClick);
+
+        // Initialize
         drawWheel();
-        spinBtn.addEventListener('click', spinWheel);
     </script>
 </body>
 </html>

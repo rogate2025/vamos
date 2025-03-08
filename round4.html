@@ -23,15 +23,13 @@
         }
         .category-buttons {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 3x4 grid achieved with 4 columns */
+            grid-template-columns: repeat(3, 1fr); /* 3 columns for 6 categories */
             gap: 15px;
             max-width: 800px;
             margin: 0 auto;
         }
         .category-item {
-            position: relative;
             width: 150px;
-            height: 150px;
         }
         .gift-box {
             position: relative;
@@ -59,6 +57,19 @@
             font-size: 36px;
             color: #ffffff;
             z-index: 2;
+        }
+        .category-name {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: #ffd700;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            z-index: 3;
         }
         .question-container {
             display: none;
@@ -95,6 +106,7 @@
         <div id="timer">Time Left: 60s ⏳</div>
         <div class="category-buttons" id="categories"></div>
         <div class="question-container" id="quiz">
+            <h2 id="category-text"></h2>
             <h2 id="question-text"></h2>
             <h3 id="answer-text" style="display: none; color: lightgreen;"></h3>
             <div class="button-container">
@@ -108,71 +120,94 @@
 
     <script>
         const categories = {
-            "1": [
-                { question: "What is the chemical symbol for water? 💧", answer: "H2O" },
-                { question: "What planet is closest to the sun? ☀️", answer: "Mercury" }
-            ],
-            "2": [
-                { question: "Who was the first president of the United States? 🇺🇸", answer: "George Washington" },
-                { question: "In which year did World War II end? ⏰", answer: "1945" }
-            ],
-            "3": [
-                { question: "What is the largest mammal? 🐋", answer: "Blue Whale" },
-                { question: "What is the fastest land animal? 🐆", answer: "Cheetah" }
-            ],
-            "4": [
-                { question: "What is the capital of France? 🗼", answer: "Paris" },
-                { question: "What is the longest river in the world? 🌊", answer: "Nile" }
-            ],
-            "5": [
-                { question: "What gas do plants use for photosynthesis? 🌱", answer: "Carbon Dioxide" },
-                { question: "What is the hardest natural substance? 💎", answer: "Diamond" }
-            ],
-            "6": [
-                { question: "What is the largest desert in the world? 🏜️", answer: "Sahara" },
-                { question: "What ocean is the largest? 🌊", answer: "Pacific" }
-            ],
-            "7": [
-                { question: "Who painted the Mona Lisa? 🎨", answer: "Leonardo da Vinci" },
-                { question: "What is the smallest country by land area? 🌍", answer: "Vatican City" }
-            ],
-            "8": [
-                { question: "What is 2 + 2? ➕", answer: "4" },
-                { question: "What shape has 8 sides? ⭕", answer: "Octagon" }
-            ],
-            "9": [
-                { question: "What is the main ingredient in guacamole? 🥑", answer: "Avocado" },
-                { question: "What fruit is known as 'pomum aureum' in Latin? 🍎", answer: "Apple" }
-            ],
-            "10": [
-                { question: "What sport uses a shuttlecock? 🏸", answer: "Badminton" },
-                { question: "What is the national game of Japan? 🤼", answer: "Sumo Wrestling" }
-            ],
-            "11": [
-                { question: "What element has the atomic number 1? ⚛️", answer: "Hydrogen" },
-                { question: "What metal is liquid at room temperature? 🌡️", answer: "Mercury" }
-            ],
-            "12": [
-                { question: "What is the currency of Japan? 💴", answer: "Yen" },
-                { question: "What year did humans first land on the moon? 🌕", answer: "1969" }
-            ]
+            "1": { // General Knowledge
+                set1: [
+                    { question: "What is the capital of France? 🗼", answer: "Paris" },
+                    { question: "What is the largest planet in our solar system? 🪐", answer: "Jupiter" }
+                ],
+                set2: [
+                    { question: "Who wrote 'Romeo and Juliet'? 📖", answer: "William Shakespeare" },
+                    { question: "What is the chemical symbol for gold? 🏅", answer: "Au" }
+                ]
+            },
+            "2": { // Bible
+                set1: [
+                    { question: "Who built the ark? 🚢", answer: "Noah" },
+                    { question: "What is the first book of the Bible? 📖", answer: "Genesis" }
+                ],
+                set2: [
+                    { question: "Who was swallowed by a big fish? 🐟", answer: "Jonah" },
+                    { question: "What is the last book of the Bible? 📖", answer: "Revelation" }
+                ]
+            },
+            "3": { // He Never Said No
+                set1: [
+                    { question: "What might 'He Never Said No' imply? 🤔", answer: "A story of always agreeing" },
+                    { question: "What could be a theme of 'He Never Said No'? 💭", answer: "Openness" }
+                ],
+                set2: [
+                    { question: "Who might inspire 'He Never Said No'? 👤", answer: "A generous figure" },
+                    { question: "What lesson comes from 'He Never Said No'? 💡", answer: "Saying yes to life" }
+                ]
+            },
+            "4": { // SPES NON CONFUNDIT
+                set1: [
+                    { question: "What does 'SPES NON CONFUNDIT' mean? 🌟", answer: "Hope does not disappoint" },
+                    { question: "Where might 'SPES NON CONFUNDIT' appear? 🏛️", answer: "A papal document" }
+                ],
+                set2: [
+                    { question: "Who might have used 'SPES NON CONFUNDIT'? 👑", answer: "A religious leader" },
+                    { question: "What’s the vibe of 'SPES NON CONFUNDIT'? 😊", answer: "Uplifting hope" }
+                ]
+            },
+            "5": { // Sports
+                set1: [
+                    { question: "What sport is played at Wimbledon? 🎾", answer: "Tennis" },
+                    { question: "How many players are on a soccer team? ⚽", answer: "11" }
+                ],
+                set2: [
+                    { question: "What’s Canada’s national sport? 🏒", answer: "Ice Hockey" },
+                    { question: "Where do you slam dunk? 🏀", answer: "Basketball" }
+                ]
+            },
+            "6": { // Politics
+                set1: [
+                    { question: "Who’s the current U.S. president (2023)? 🇺🇸", answer: "Joe Biden" },
+                    { question: "What’s Germany’s capital? 🏛️", answer: "Berlin" }
+                ],
+                set2: [
+                    { question: "What does NATO stand for? 🌐", answer: "North Atlantic Treaty Organization" },
+                    { question: "Who was the UK’s first female PM? 👩‍💼", answer: "Margaret Thatcher" }
+                ]
+            }
+        };
+
+        const categoryNames = {
+            "1": "General Knowledge",
+            "2": "Bible",
+            "3": "He Never Said No",
+            "4": "SPES NON CONFUNDIT",
+            "5": "Sports",
+            "6": "Politics"
         };
 
         const categoryContainer = document.getElementById("categories");
         const quizContainer = document.getElementById("quiz");
+        const categoryText = document.getElementById("category-text");
         const questionText = document.getElementById("question-text");
         const answerText = document.getElementById("answer-text");
         const showAnswerButton = document.getElementById("show-answer");
         const passButton = document.getElementById("pass-question");
-        const stopQuizButton = document.getElementById("stop-quiz");
         const homeButton = document.getElementById("home-button");
+        const stopButton = document.getElementById("stop-quiz");
         const timerDisplay = document.getElementById("timer");
+
         let currentQuestions = [];
         let currentQuestionIndex = 0;
         let timeLeft = 60;
-        let timer;
+        let timerInterval;
         let transitionTimeout;
-        const selectedCategories = new Set();
+        let categoryClicks = { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0 };
 
         window.onload = function() {
             loadCategories();
@@ -191,18 +226,27 @@
                 
                 let emojiSpan = document.createElement("span");
                 emojiSpan.className = "emoji";
-                emojiSpan.innerText = selectedCategories.has(category) ? "🔒" : "🎁";
+                if (categoryClicks[category] >= 2) {
+                    emojiSpan.innerText = "🔒";
+                    giftBox.style.cursor = "default";
+                } else {
+                    emojiSpan.innerText = "🎁";
+                }
                 
                 let numSpan = document.createElement("span");
                 numSpan.className = "number";
                 numSpan.innerText = number;
                 
+                let nameSpan = document.createElement("span");
+                nameSpan.className = "category-name";
+                nameSpan.innerText = categoryNames[category];
+                
                 giftBox.appendChild(emojiSpan);
                 giftBox.appendChild(numSpan);
-                if (!selectedCategories.has(category)) {
+                giftBox.appendChild(nameSpan);
+                
+                if (categoryClicks[category] < 2) {
                     giftBox.addEventListener('click', handleGiftBoxClick);
-                } else {
-                    giftBox.style.cursor = "default";
                 }
                 
                 div.appendChild(giftBox);
@@ -214,21 +258,20 @@
         function handleGiftBoxClick(event) {
             const giftBox = event.currentTarget;
             const category = giftBox.dataset.category;
-            if (selectedCategories.has(category)) {
-                alert("This category has already been selected!");
+            if (categoryClicks[category] >= 2) {
+                alert("This category is fully used! 🔒");
                 return;
             }
-            startQuiz(category, giftBox);
+            categoryClicks[category]++;
+            const clickCount = categoryClicks[category];
+            const set = clickCount === 1 ? "set1" : "set2";
+            startQuiz(category, set);
         }
 
-        function startQuiz(category, giftBox) {
-            currentQuestions = categories[category];
+        function startQuiz(category, set) {
+            currentQuestions = categories[category][set];
             currentQuestionIndex = 0;
-            selectedCategories.add(category);
-            const emojiSpan = giftBox.querySelector('.emoji');
-            emojiSpan.innerText = "🔒";
-            giftBox.style.cursor = "default";
-            giftBox.removeEventListener('click', handleGiftBoxClick);
+            categoryText.innerText = categoryNames[category];
             categoryContainer.style.display = "none";
             quizContainer.style.display = "block";
             loadQuestion();
@@ -248,8 +291,8 @@
         }
 
         function startTimer() {
-            clearInterval(timer);
-            timer = setInterval(() => {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
                 timeLeft--;
                 timerDisplay.innerText = `Time Left: ${timeLeft}s ⏳`;
                 if (timeLeft <= 0) {
@@ -259,13 +302,11 @@
         }
 
         function returnToCategories(message) {
-            clearInterval(timer);
+            clearInterval(timerInterval);
             if (message) alert(message);
             quizContainer.style.display = "none";
-            categoryContainer.style.display = "grid"; // Ensure 3x4 grid
-            timeLeft = 60;
-            timerDisplay.innerText = `Time Left: ${timeLeft}s ⏳`;
-            loadCategories(); // Refresh categories to maintain state
+            categoryContainer.style.display = "grid";
+            loadCategories();
         }
 
         showAnswerButton.onclick = () => {
@@ -273,24 +314,23 @@
             transitionTimeout = setTimeout(() => {
                 currentQuestionIndex++;
                 loadQuestion();
-            }, 2000);
+            }, 5000);
         };
 
         passButton.onclick = () => {
             clearTimeout(transitionTimeout);
+            answerText.style.display = "none";
             currentQuestionIndex++;
             loadQuestion();
-        };
-
-        stopQuizButton.onclick = () => {
-            returnToCategories("Quiz session stopped! 🛑");
         };
 
         homeButton.onclick = () => {
             returnToCategories();
         };
 
-        loadCategories();
+        stopButton.onclick = () => {
+            returnToCategories("Quiz stopped! 🛑");
+        };
     </script>
 </body>
 </html>
