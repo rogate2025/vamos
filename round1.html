@@ -412,71 +412,126 @@
     <script>
         // All Questions Combined
         const allQuestions = [
-            // General Knowledge
-            { question: "What is the capital of France?", options: ["A: Paris", "B: London", "C: Berlin", "D: Madrid"], answer: "A: Paris" },
-            { question: "What is the largest planet?", options: ["A: Jupiter", "B: Saturn", "C: Earth", "D: Mars"], answer: "A: Jupiter" },
-            { question: "Who invented the telephone?", options: ["A: Bell", "B: Edison", "C: Tesla", "D: Marconi"], answer: "A: Bell" },
-            { question: "What is the capital of Australia?", options: ["A: Sydney", "B: Melbourne", "C: Canberra", "D: Brisbane"], answer: "C: Canberra" },
-            { question: "Who wrote the play 'Romeo and Juliet'?", options: ["A: Shakespeare", "B: Dickens", "C: Twain", "D: Austen"], answer: "A: Shakespeare" },
-            { question: "What is the chemical symbol for gold?", options: ["A: Au", "B: Ag", "C: Fe", "D: Hg"], answer: "A: Au" },
-            { question: "Which planet is known as the Red Planet?", options: ["A: Mars", "B: Venus", "C: Jupiter", "D: Saturn"], answer: "A: Mars" },
-            { question: "Who painted the Mona Lisa?", options: ["A: Da Vinci", "B: Michelangelo", "C: Raphael", "D: Caravaggio"], answer: "A: Da Vinci" },
-            { question: "What is the largest ocean on Earth?", options: ["A: Pacific", "B: Atlantic", "C: Indian", "D: Arctic"], answer: "A: Pacific" },
-            { question: "What is the smallest country in the world?", options: ["A: Vatican City", "B: Monaco", "C: San Marino", "D: Liechtenstein"], answer: "A: Vatican City" },
-            { question: "Who discovered penicillin?", options: ["A: Fleming", "B: Pasteur", "C: Jenner", "D: Koch"], answer: "A: Fleming" },
-            { question: "What is the hardest natural substance on Earth?", options: ["A: Diamond", "B: Quartz", "C: Topaz", "D: Corundum"], answer: "A: Diamond" },
-            // Bible
-            { question: "Who built the ark?", options: ["A: Noah", "B: Moses", "C: Abraham", "D: David"], answer: "A: Noah" },
-            { question: "What is the first book of the Bible?", options: ["A: Genesis", "B: Exodus", "C: Leviticus", "D: Numbers"], answer: "A: Genesis" },
-            { question: "Who was swallowed by a big fish?", options: ["A: Jonah", "B: Daniel", "C: Elijah", "D: Isaiah"], answer: "A: Jonah" },
-            { question: "What is the last book of the Bible?", options: ["A: Revelation", "B: Jude", "C: 3 John", "D: Malachi"], answer: "A: Revelation" },
-            { question: "Who led the Israelites out of Egypt?", options: ["A: Moses", "B: Aaron", "C: Joshua", "D: Caleb"], answer: "A: Moses" },
-            { question: "What is the shortest verse in the Bible?", options: ["A: Jesus wept", "B: God is love", "C: Pray continually", "D: Rejoice always"], answer: "A: Jesus wept" },
-            { question: "Who denied Jesus three times?", options: ["A: Peter", "B: Judas", "C: Thomas", "D: John"], answer: "A: Peter" },
-            { question: "What is the first miracle Jesus performed?", options: ["A: Turning water into wine", "B: Feeding 5000", "C: Walking on water", "D: Healing the blind"], answer: "A: Turning water into wine" },
-            { question: "Who wrote most of the New Testament?", options: ["A: Paul", "B: Peter", "C: John", "D: Luke"], answer: "A: Paul" },
-            { question: "What is the Golden Rule?", options: ["A: Do unto others as you would have them do unto you", "B: Love your neighbor as yourself", "C: Turn the other cheek", "D: Give to the poor"], answer: "A: Do unto others as you would have them do unto you" },
-            { question: "Who was the first king of Israel?", options: ["A: Saul", "B: David", "C: Solomon", "D: Samuel"], answer: "A: Saul" },
-            { question: "What are the Beatitudes?", options: ["A: Blessings from the Sermon on the Mount", "B: The Ten Commandments", "C: The Lord's Prayer", "D: The Fruits of the Spirit"], answer: "A: Blessings from the Sermon on the Mount" },
-            // He Never Said No
-            { question: "Who is known for never saying no?", options: ["A: Jesus", "B: Moses", "C: Abraham", "D: David"], answer: "A: Jesus" },
-            { question: "What miracle did Jesus perform at Cana?", options: ["A: Turning water into wine", "B: Feeding 5000", "C: Walking on water", "D: Healing the blind"], answer: "A: Turning water into wine" },
-            { question: "What did Jesus say to the paralytic man?", options: ["A: Your sins are forgiven", "B: Take up your bed and walk", "C: Both A and B", "D: Neither"], answer: "C: Both A and B" },
-            { question: "How did Jesus respond to the woman caught in adultery?", options: ["A: Neither do I condemn you", "B: Go and sin no more", "C: Both A and B", "D: Stone her"], answer: "C: Both A and B" },
-            { question: "What did Jesus say to the thief on the cross?", options: ["A: Today you will be with me in paradise", "B: You are forgiven", "C: Remember me", "D: It is finished"], answer: "A: Today you will be with me in paradise" },
-            { question: "How did Jesus respond to Peter's denial?", options: ["A: Forgave him", "B: Rebuked him", "C: Ignored him", "D: Banished him"], answer: "A: Forgave him" },
-            { question: "What did Jesus say about paying taxes?", options: ["A: Render to Caesar what is Caesar's", "B: Do not pay taxes", "C: Taxes are unlawful", "D: Give to God what is God's"], answer: "A: Render to Caesar what is Caesar's" },
-            { question: "How did Jesus respond to the Canaanite woman's request?", options: ["A: Granted her request", "B: Ignored her", "C: Rebuked her", "D: Sent her away"], answer: "A: Granted her request" },
-            { question: "What did Jesus say to the rich young ruler?", options: ["A: Sell all you have and follow me", "B: Keep the commandments", "C: You lack one thing", "D: All of the above"], answer: "D: All of the above" },
-            { question: "How did Jesus respond to the lepers who asked for healing?", options: ["A: Healed them", "B: Sent them to the priests", "C: Both A and B", "D: Ignored them"], answer: "C: Both A and B" },
-            { question: "What did Jesus say to Lazarus?", options: ["A: Lazarus, come forth", "B: Your faith has healed you", "C: Go in peace", "D: Rise and walk"], answer: "A: Lazarus, come forth" },
-            { question: "How did Jesus respond to the blind man?", options: ["A: Healed him", "B: Gave him sight", "C: Both A and B", "D: Sent him away"], answer: "C: Both A and B" },
-            // SPES NON CONFUNDIT
-            { question: "What does 'Spes Non Confundit' mean?", options: ["A: Hope does not disappoint", "B: Faith moves mountains", "C: Love conquers all", "D: Charity begins at home"], answer: "A: Hope does not disappoint" },
-            { question: "In which language is it?", options: ["A: Latin", "B: Greek", "C: Hebrew", "D: Aramaic"], answer: "A: Latin" },
-            { question: "What is the source of this phrase?", options: ["A: Romans 5:5", "B: 1 Corinthians 13:13", "C: Hebrews 11:1", "D: Psalm 23:1"], answer: "A: Romans 5:5" },
-            { question: "Who wrote the book of Romans?", options: ["A: Paul", "B: Peter", "C: John", "D: James"], answer: "A: Paul" },
-            { question: "What is the context of this phrase?", options: ["A: Hope in God's love", "B: Faith in God", "C: Love for others", "D: Charity for the poor"], answer: "A: Hope in God's love" },
-            { question: "How does hope not disappoint?", options: ["A: Because of God's love poured into our hearts", "B: Because of our faith", "C: Because of our works", "D: Because of our prayers"], answer: "A: Because of God's love poured into our hearts" },
-            { question: "What is the role of the Holy Spirit in this?", options: ["A: Pours God's love into our hearts", "B: Guides us", "C: Comforts us", "D: Convicts us"], answer: "A: Pours God's love into our hearts" },
-            { question: "What precedes this verse?", options: ["A: Suffering produces perseverance", "B: Faith without works is dead", "C: Love is patient", "D: The Lord is my shepherd"], answer: "A: Suffering produces perseverance" },
-            { question: "What follows this verse?", options: ["A: God's love has been poured out", "B: Now faith, hope, and love remain", "C: The just shall live by faith", "D: I will fear no evil"], answer: "A: God's love has been poured out" },
-            { question: "How does this relate to Christian faith?", options: ["A: Assurance of God's love", "B: Importance of works", "C: Necessity of prayer", "D: Value of scripture"], answer: "A: Assurance of God's love" },
-            { question: "What is the significance of hope in Christianity?", options: ["A: Central to faith", "B: Secondary to love", "C: Less important than faith", "D: Only for the future"], answer: "A: Central to faith" },
-            { question: "How can one apply this in daily life?", options: ["A: Trust in God's promises", "B: Work harder", "C: Pray more", "D: Read the Bible daily"], answer: "A: Trust in God's promises" },
-            // Sports
-            { question: "Which sport is 'the beautiful game'?", options: ["A: Soccer", "B: Basketball", "C: Tennis", "D: Cricket"], answer: "A: Soccer" },
-            { question: "How many players on a basketball team?", options: ["A: 5", "B: 6", "C: 7", "D: 8"], answer: "A: 5" },
-            { question: "Who holds the record for the most home runs in MLB?", options: ["A: Barry Bonds", "B: Hank Aaron", "C: Babe Ruth", "D: Alex Rodriguez"], answer: "A: Barry Bonds" },
-            { question: "Which country has won the most FIFA World Cups?", options: ["A: Brazil", "B: Germany", "C: Italy", "D: Argentina"], answer: "A: Brazil" },
-            { question: "Who is considered the greatest basketball player of all time?", options: ["A: Michael Jordan", "B: LeBron James", "C: Kobe Bryant", "D: Magic Johnson"], answer: "A: Michael Jordan" },
-            { question: "What is the oldest tennis tournament?", options: ["A: Wimbledon", "B: US Open", "C: French Open", "D: Australian Open"], answer: "A: Wimbledon" },
-            { question: "Who has the most Olympic gold medals?", options: ["A: Michael Phelps", "B: Usain Bolt", "C: Carl Lewis", "D: Mark Spitz"], answer: "A: Michael Phelps" },
-            { question: "What is the national sport of Japan?", options: ["A: Sumo wrestling", "B: Baseball", "C: Soccer", "D: Judo"], answer: "A: Sumo wrestling" },
-            { question: "Who is the fastest man in the world?", options: ["A: Usain Bolt", "B: Tyson Gay", "C: Yohan Blake", "D: Justin Gatlin"], answer: "A: Usain Bolt" },
-            { question: "What sport is known as the 'king of sports'?", options: ["A: Soccer", "B: Basketball", "C: American Football", "D: Cricket"], answer: "A: Soccer" },
-            { question: "Who won the first Super Bowl?", options: ["A: Green Bay Packers", "B: Kansas City Chiefs", "C: New York Jets", "D: Baltimore Colts"], answer: "A: Green Bay Packers" },
-            { question: "What is the most watched sporting event?", options: ["A: FIFA World Cup", "B: Olympics", "C: Super Bowl", "D: UEFA Champions League"], answer: "A: FIFA World Cup" }
+            {
+                "question": "What was the first name given for the orphanage for girls?",
+                "options": [
+                    "A: Small shelter of the Heart of Jesus",
+                    "B: Little girls of the Heart of Jesus",
+                    "C: A shelter of the Love of Jesus",
+                    "D: Anthonial orphanage"
+                ],
+                "answer": "A: Small shelter of the Heart of Jesus"
+            },
+            {
+                "question": "Who were the saints that influenced Father to the prayer to obtain priests for the Church?",
+                "options": [
+                    "A: St. Francis of Assis & St. Anthony",
+                    "B: St. Alphonsus & St. Francis de Sales",
+                    "C: St. Don Bosco & St. Antony",
+                    "D: St. Joseph & Holy Mary"
+                ],
+                "answer": "B: St. Alphonsus & St. Francis de Sales"
+            },
+            {
+                "question": "Which Pope officially declared the World Day of Prayer for Vocations?",
+                "options": [
+                    "A: Pius XI",
+                    "B: Paul VI",
+                    "C: John XXIII",
+                    "D: Leo XIII"
+                ],
+                "answer": "B: Paul VI"
+            },
+            {
+                "question": "What was the name the people of Messina gave to Father Hannibal seeing his works of charity?",
+                "options": [
+                    "A: Our Father",
+                    "B: Our St. Vincent de Paul",
+                    "C: Padre",
+                    "D: The Father"
+                ],
+                "answer": "B: Our St. Vincent de Paul"
+            },
+            {
+                "question": "പരീക്ഷകളെ അതിജീവിക്കുന്നവർക്ക് ദൈവം വാഗ്‌ദാനം ചെയ്തിരിക്കുന്നതെന്താണ് (യാക്കോബ് 1:12)?",
+                "options": [
+                    "A: ജീവന്റെ കിരീടം",
+                    "B: നിത്യരക്ഷ",
+                    "C: നിത്യ ജീവൻ",
+                    "D: ജ്ഞാനം"
+                ],
+                "answer": "A: ജീവന്റെ കിരീടം"
+            },
+            {
+                "question": "എന്ത് മൂലമാണ് ലോകത്തിൽ വിനാശം ഉണ്ടാകുന്നത് (2 Pet 1:4)?",
+                "options": [
+                    "A: പാപം മൂലം",
+                    "B: ദൈവനിന്ദ മൂലം",
+                    "C: ദുരാശ മൂലം",
+                    "D: വെറുപ്പു മൂലം"
+                ],
+                "answer": "C: ദുരാശ മൂലം"
+            },
+            {
+                "question": "ആത്മസംയമനത്തെ എന്തുകൊണ്ടാണ് സമ്പൂര്ണമാക്കാൻ ഉത്സാഹിക്കേണ്ടത് (2 Pet 1:7)?",
+                "options": [
+                    "A: ജ്ഞാനം കൊണ്ട്",
+                    "B: ക്ഷമകൊണ്ട്",
+                    "C: സുകൃതം കൊണ്ട്",
+                    "D: ഭക്തികൊണ്ട്"
+                ],
+                "answer": "B: ക്ഷമകൊണ്ട്"
+            },
+            {
+                "question": "യോഹന്നാൻ ശ്ലീഹായുടെ രണ്ടാം ലേഖനം എഴുതപ്പെട്ടതാർക്കു?",
+                "options": [
+                    "A: വിജാതിയരുടെ ഇടയിൽ ചിതറിപ്പാർക്കുന്നവർക്ക്",
+                    "B: വിശ്വാസം സ്വീകരിച്ചവർക്ക്",
+                    "C: തെരഞ്ഞെടുക്കപ്പെട്ട മഹതിക്കും അവളുടെ മക്കൾക്കും",
+                    "D: ഗായൂസിന്"
+                ],
+                "answer": "C: തെരഞ്ഞെടുക്കപ്പെട്ട മഹതിക്കും അവളുടെ മക്കൾക്കും"
+            },
+            {
+                "question": "What is identified as the source of Christian hope?",
+                "options": [
+                    "A: Hope is born of love",
+                    "B: Hope does not disappoint us",
+                    "C: Hope ensures our faith",
+                    "D: Hope is from Christ"
+                ],
+                "answer": "A: Hope is born of love"
+            },
+            {
+                "question": "Which scriptural passage is cited in paragraph 3 to illustrate reconciliation through Christ’s death?",
+                "options": [
+                    "A: Romans 6:19",
+                    "B: Gal 6:19",
+                    "C: Gal 5:19",
+                    "D: Romans 5:19"
+                ],
+                "answer": "D: Romans 5:19"
+            },
+            {
+                "question": "Which virtue closely linked to hope is particularly emphasized?",
+                "options": [
+                    "A: Love",
+                    "B: Perseverance",
+                    "C: Patience",
+                    "D: Fortitude"
+                ],
+                "answer": "C: Patience"
+            },
+            {
+                "question": "Which date is set for the opening of the Holy Door at Saint John Lateran?",
+                "options": [
+                    "A: December 29, 2024",
+                    "B: December 25, 2024",
+                    "C: December 29, 2025",
+                    "D: December 25, 2025"
+                ],
+                "answer": "A: December 29, 2024"
+            }
         ];
 
         // Guruji Questions
