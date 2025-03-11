@@ -23,7 +23,7 @@
         }
         .category-buttons {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 columns for 6 categories */
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             max-width: 800px;
             margin: 0 auto;
@@ -121,63 +121,132 @@
     <script>
         const categories = {
             "1": { // General Knowledge
-                set1: [
-                    { question: "What is the capital of France? 🗼", answer: "Paris" },
-                    { question: "What is the largest planet in our solar system? 🪐", answer: "Jupiter" }
-                ],
-                set2: [
-                    { question: "Who wrote 'Romeo and Juliet'? 📖", answer: "William Shakespeare" },
-                    { question: "What is the chemical symbol for gold? 🏅", answer: "Au" }
+                questions: [
+                    { question: "Which company became the first commercial entity to successfully land on the Moon without technical issues on March 2, 2025? 🚀", answer: "Firefly Aerospace" },
+                    { question: "Who became the leader of the Liberal Party of Canada on March 9, 2025, subsequently becoming the new Prime Minister? 🇨🇦", answer: "Mark Carney" },
+                    { question: "Which country's president visited the UK on March 1, 2025, for talks at 10 Downing Street? 🇬🇧", answer: "Ukraine (President Volodymyr Zelensky)" },
+                    { question: "What significant genetic engineering milestone did Colossal Biosciences achieve on March 4, 2025? 🧬", answer: "Created 'woolly mice' as part of de-extinction efforts for the woolly mammoth" },
+                    { question: "Which major sporting event is being held from March 8 to 17, 2025, in Turin, Italy? 🏅", answer: "The 2025 Special Olympics World Winter Games" },
+                    { question: "Which UK political party suspended MP Rupert Lowe on March 7, 2025, alleging threats of physical violence against the party chairman? 🏛️", answer: "Reform UK" },
+                    { question: "What action did the Trump administration take regarding military aid to Ukraine on March 3, 2025? 🇺🇸", answer: "Paused military aid following an Oval Office meeting with President Zelensky" },
+                    { question: "Which film won Best Picture at the 2025 Academy Awards? 🎬", answer: "Anora" },
+                    { question: "Who won the Best Director award at the 2025 Academy Awards? 🎥", answer: "Sean Baker for 'Anora'" },
+                    { question: "Who won the Best Actor award at the 2025 Academy Awards? 🎭", answer: "Adrien Brody" },
+                    { question: "Who won the Best Actress award at the 2025 Academy Awards? 🎭", answer: "Mikey Madison" },
+                    { question: "Who won the Best Supporting Actress award at the 2025 Academy Awards? 🎭", answer: "Zoe Saldaña" },
+                    { question: "Which film won the Best Animated Feature at the 2025 Academy Awards? 🎨", answer: "Flow" },
+                    { question: "Who won the Nobel Prize in Literature in 2024? 📖", answer: "Jon Fosse" },
+                    { question: "Which writer won the Booker Prize 2024 for their novel? 📚", answer: "Paul Lynch" },
+                    { question: "Who won the Nobel Peace Prize in 2024? ☮️", answer: "Narges Mohammadi" },
+                    { question: "Which musician won Album of the Year at the 2025 Grammy Awards? 🎵", answer: "Taylor Swift for 'Midnights'" },
+                    { question: "Which song won Record of the Year at the 2025 Grammy Awards? 🎶", answer: "Miley Cyrus - 'Flowers'" },
+                    { question: "Who was awarded the 2024 Nobel Prize in Physics? ⚛️", answer: "Pierre Agostini, Ferenc Krausz, and Anne L’Huillier" },
+                    { question: "Which scientist won the 2024 Nobel Prize in Chemistry? 🧪", answer: "Moungi G. Bawendi, Louis E. Brus, and Alexei I. Ekimov" },
+                    { question: "Who won the 2024 Nobel Prize in Medicine? 🏥", answer: "Katalin Karikó and Drew Weissman" }
                 ]
             },
             "2": { // Bible
-                set1: [
-                    { question: "Who built the ark? 🚢", answer: "Noah" },
-                    { question: "What is the first book of the Bible? 📖", answer: "Genesis" }
-                ],
-                set2: [
-                    { question: "Who was swallowed by a big fish? 🐟", answer: "Jonah" },
-                    { question: "What is the last book of the Bible? 📖", answer: "Revelation" }
+                questions: [
+                    { question: "വിശ്വാസം പരീക്ഷിക്കപ്പെടുമ്പോൾ എന്ത് ലഭിക്കും എന്നാണ് യാക്കോബ് ശ്ലീഹ പറഞ്ഞ വയ്ക്കുന്നത്?", answer: "വിശ്വാസത്തിൽ സ്ഥിരത ലഭിക്കുന്നു" },
+                    { question: "ദൈവത്തോട് ജ്ഞാനം ചോദിക്കുന്നവൻ എപ്രകാരം ചോദിക്കണം എന്നാണ് യാക്കോബ് ശ്ലീഹായുടെ ലേഖനം ഓർമ്മപ്പെടുത്തുന്നത് (1:6)?", answer: "സംശയിക്കാതെ വിശ്വാസത്തോടെ" },
+                    { question: "വിശ്വാസത്തിന്റെ കാര്യത്തിൽ സംശയിക്കുന്നവൻ എന്തിന് തുല്യമാണെന്നാണ് ശ്ലീഹ ഓർമ്മപ്പെടുത്തുന്നത് (1:6)?", answer: "കാറ്റിൽ ഇളകി മറിയുന്ന കടൽ തിരയ്ക്ക് തുല്യം" },
+                    { question: "അവർ സ്വന്തം മുഖം കണ്ണാടിയിൽ കാണുന്ന മനുഷ്യന് സദൃശ്യനാണ്. ആരെക്കുറിച്ചാണ് യാക്കോബ് ശ്ലീഹ ഇപ്രകാരം പ്രതിപാദിക്കുന്നത് (1:23)?", answer: "വചനം കേൾക്കുകയും അത് അനുവർത്തിക്കാതിരിക്കുകയും ചെയ്യുന്നവർ" },
+                    { question: "യാക്കോബ് 2:17 ഉദ്ധരിക്കുക.", answer: "പ്രവർത്തികൾ കൂടാതെയുള്ള വിശ്വാസം അതിൽ തന്നെ നിർജീവമാണ്" },
+                    { question: "ആർക്കുവേണ്ടിയാണ് യാക്കോബ് ശ്ലീഹ ഈ ഉപദേശം നൽകുന്നത് (3:13)?", answer: "സഭയിൽ ജ്ഞാനിയും വിവേകിയുമായവന് വേണ്ടി" },
+                    { question: "ദൈവത്തോട് ചോദിക്കുന്നവ ലഭിക്കാതെ പോകുന്നെങ്കിൽ അതിന് കാരണം എന്താണെന്നാണ് യാക്കോബ് ശ്ലീഹ പറയുന്നത് (4:3)?", answer: "ദുരാശയെ തൃപ്തിപ്പെടുത്താൻ തിന്മ ആയിട്ടുള്ളവ ചോദിക്കുന്നതുകൊണ്ട്" },
+                    { question: "അന്യായമായ പീഡനങ്ങളെ എപ്രകാരം അനുഗ്രഹ കാരണമാക്കാം എന്നാണ് പത്രോസ് ശ്ലീഹാ പഠിപ്പിക്കുന്നത് (1 Pet 2:19)?", answer: "ദൈവ ചിന്തയോടെ വേദനകൾ ക്ഷമാപൂർവം സഹിച്ചാൽ" },
+                    { question: "കർത്താവിന്റെ കണ്ണുകൾ ആർക്കും നേരെ തിരിഞ്ഞിരിക്കുന്നു എന്നാണ് പത്രോസ് ശ്ലീഹാ പറയുന്നത് (3:12)?", answer: "നീതിമാന്മാർക്ക് നേരെ" },
+                    { question: "പിശാചിനെ എപ്രകാരം എതിർത്തു നിൽക്കാൻ സാധിക്കും എന്നാണ് ശ്ലീഹ പഠിപ്പിക്കുന്നത് (5:9)?", answer: "വിശ്വാസത്തിൽ ഉറച്ചു നിന്നുകൊണ്ട്" },
+                    { question: "എന്താണ് സ്ലീഹായുടെ അഭിപ്രായത്തിൽ ലോകത്തിന് മേലുള്ള വിജയം (5:4)?", answer: "നമ്മുടെ വിശ്വാസം" }
                 ]
             },
             "3": { // He Never Said No
-                set1: [
-                    { question: "What might 'He Never Said No' imply? 🤔", answer: "A story of always agreeing" },
-                    { question: "What could be a theme of 'He Never Said No'? 💭", answer: "Openness" }
-                ],
-                set2: [
-                    { question: "Who might inspire 'He Never Said No'? 👤", answer: "A generous figure" },
-                    { question: "What lesson comes from 'He Never Said No'? 💡", answer: "Saying yes to life" }
+                questions: [
+                    { question: "Who started the devotion to St. Antony's Bread?", answer: "Theresa Bouffier" },
+                    { question: "Where did the devotion to St. Anthony's Bread develop?", answer: "Paulon" },
+                    { question: "What is the name of the monthly magazine Father Hannibal started in the year 1908?", answer: "God and Neighbour" },
+                    { question: "What was the name of the publications started from the orphanages after World War II?", answer: "Herald of St. Anthony" },
+                    { question: "Which was the book printed from the male orphanage of Oria with a collection of poems of Fr. Hannibal?", answer: "Faith And Poetry" },
+                    { question: "Who was the lady to whom Mother Mary appeared at the Mountain of La Salette?", answer: "Melanie Calvat" },
+                    { question: "Which was the epidemic that saw the outbreak in the year 1918 in Italy?", answer: "Spanish Flu" },
+                    { question: "To whom did Father Hannibal speak the words 'Fall in love with Jesus'?", answer: "Fr. Francesco Vitale" },
+                    { question: "'That man wants to become a saint by force'—who exclaimed these words to Fr. Hannibal?", answer: "Mons. Antonio Di Tommaso (Bishop of Oria)" },
+                    { question: "Which month did Father dedicate to the Holy Face of Jesus?", answer: "April" },
+                    { question: "Which year did the two religious congregations of Father Hannibal receive canonical approval?", answer: "1926" },
+                    { question: "When did Father Hannibal celebrate his last Holy Mass?", answer: "February 20, 1927" },
+                    { question: "What was the title given by 'L'Osservatore Romano' at the death of Father Hannibal?", answer: "Messina cried as she has never done before" },
+                    { question: "Which Pope declared St. Hannibal a saint?", answer: "Pope John Paul II" },
+                    { question: "In what year was Fr. Hannibal ordained a priest?", answer: "1878" },
+                    { question: "What is the original Italian title of the book?", answer: "Non disse mai no" },
+                    { question: "How did Fr. Hannibal describe the ideal love for Jesus?", answer: "With the love of all the angels, saints, and the most Holy Virgin Mary" },
+                    { question: "What was the title of Hannibal’s first article defending the Church?", answer: "Justice for the Innocent" },
+                    { question: "With which newspaper did Hannibal first collaborate?", answer: "The Catholic Word" },
+                    { question: "What significant event in Rome influenced Hannibal’s vocational discernment?", answer: "The opening of the First Vatican Council" }
                 ]
             },
             "4": { // SPES NON CONFUNDIT
-                set1: [
-                    { question: "What does 'SPES NON CONFUNDIT' mean? 🌟", answer: "Hope does not disappoint" },
-                    { question: "Where might 'SPES NON CONFUNDIT' appear? 🏛️", answer: "A papal document" }
-                ],
-                set2: [
-                    { question: "Who might have used 'SPES NON CONFUNDIT'? 👑", answer: "A religious leader" },
-                    { question: "What’s the vibe of 'SPES NON CONFUNDIT'? 😊", answer: "Uplifting hope" }
+                questions: [
+                    { question: "Which work is mentioned as an example of appreciating creation and patience?", answer: "Saint Francis' 'Canticle of the Creatures'" },
+                    { question: "Which historical act of forgiveness is recalled as a precursor to the Jubilee?", answer: "The 'Pardon' granted by Saint Celestine V" },
+                    { question: "What significant celebration is scheduled for January 1, 2025?", answer: "The opening of the Holy Door of the Papal Basilica of Saint Mary Major" },
+                    { question: "When does the Jubilee conclude with the closing of the Holy Door at Saint Peter?", answer: "On January 6, 2026" },
+                    { question: "What is identified as the first sign of hope?", answer: "The desire for peace" },
+                    { question: "Which biblical passage affirms the status of peacemakers as children of God?", answer: "Matthew 5:9" },
+                    { question: "What social issue is highlighted as a sign of lost hope?", answer: "The alarming decline in the birthrate" },
+                    { question: "Which group is identified as needing tangible signs of hope?", answer: "Prisoners" },
+                    { question: "What act of mercy is highlighted to help alleviate the suffering of the sick?", answer: "Visiting the sick—whether at home or in hospitals" },
+                    { question: "What significant anniversary coincides with the coming Jubilee Year?", answer: "The 1700th anniversary of the Council of Nicaea" },
+                    { question: "What key doctrinal outcome of the Council of Nicaea is highlighted?", answer: "The formulation of the Nicene Creed" },
+                    { question: "Which three theological virtues are highlighted?", answer: "Faith, hope, and charity" },
+                    { question: "What foundational belief underpins Christian hope?", answer: "The belief in eternal life as professed in the Apostles’ Creed" }
                 ]
             },
             "5": { // Sports
-                set1: [
-                    { question: "What sport is played at Wimbledon? 🎾", answer: "Tennis" },
-                    { question: "How many players are on a soccer team? ⚽", answer: "11" }
-                ],
-                set2: [
-                    { question: "What’s Canada’s national sport? 🏒", answer: "Ice Hockey" },
-                    { question: "Where do you slam dunk? 🏀", answer: "Basketball" }
+                questions: [
+                    { question: "Which Chess player was awarded the Major Dhyan Chand Khel Ratna Award in 2024?", answer: "Gukesh Dommaraju" },
+                    { question: "Which Hockey player was awarded the Major Dhyan Chand Khel Ratna Award in 2024?", answer: "Harmanpreet Singh" },
+                    { question: "Which shooter was awarded the Major Dhyan Chand Khel Ratna Award in 2024?", answer: "Manu Bhaker" },
+                    { question: "Which Para-Athletics athlete was awarded the Major Dhyan Chand Khel Ratna Award in 2024?", answer: "Praveen Kumar" },
+                    { question: "What is India's highest sporting honor?", answer: "Major Dhyan Chand Khel Ratna Award" },
+                    { question: "What is the name of the award given to outstanding sports coaches in India?", answer: "Dronacharya Award" },
+                    { question: "Which award recognizes consistent outstanding performance in sports over four years?", answer: "Arjuna Award" },
+                    { question: "Which trophy is given to the top-performing university in the Khelo India University Games?", answer: "Maulana Abul Kalam Azad (MAKA) Trophy" },
+                    { question: "What is the cash prize that accompanies the Major Dhyan Chand Khel Ratna Award?", answer: "Rs 25 lakh" },
+                    { question: "Who was named the 2024 Laureus World Sportsman of the Year?", answer: "Novak Djokovic" },
+                    { question: "Who was the first male cricketer to score a double century in a One Day International (ODI) match?", answer: "Sachin Tendulkar" },
+                    { question: "Which male cricketer has scored the most double centuries in One Day International (ODI) matches?", answer: "Rohit Sharma" },
+                    { question: "Which team won the 2023 ICC Cricket World Cup?", answer: "Australia" },
+                    { question: "Who won the Ballon d'Or in 2023?", answer: "Lionel Messi" },
+                    { question: "Which country hosted the 2024 Summer Olympics?", answer: "France (Paris 2024)" },
+                    { question: "Who is the most decorated Olympian of all time?", answer: "Michael Phelps" },
+                    { question: "Which Indian badminton player won the BWF World Championship in 2019?", answer: "P. V. Sindhu" },
+                    { question: "Which Indian athlete won a gold medal in the javelin throw at the 2020 Tokyo Olympics?", answer: "Neeraj Chopra" },
+                    { question: "What is the name of the highest civilian award for sports in India?", answer: "Major Dhyan Chand Khel Ratna Award" },
+                    { question: "Which Indian state is home to the Khelo India Youth Games 2024?", answer: "Tamil Nadu" }
                 ]
             },
             "6": { // Politics
-                set1: [
-                    { question: "Who’s the current U.S. president (2023)? 🇺🇸", answer: "Joe Biden" },
-                    { question: "What’s Germany’s capital? 🏛️", answer: "Berlin" }
-                ],
-                set2: [
-                    { question: "What does NATO stand for? 🌐", answer: "North Atlantic Treaty Organization" },
-                    { question: "Who was the UK’s first female PM? 👩‍💼", answer: "Margaret Thatcher" }
+                questions: [
+                    { question: "Who is the current Prime Minister of India?", answer: "Narendra Modi" },
+                    { question: "Who is the President of the United States as of March 2025?", answer: "Donald Trump" },
+                    { question: "Who serves as the Chancellor of Germany?", answer: "Olaf Scholz" },
+                    { question: "Who is the Prime Minister of the United Kingdom?", answer: "Keir Starmer" },
+                    { question: "Who holds the position of Prime Minister in Canada?", answer: "Justin Trudeau" },
+                    { question: "Who is the President of France?", answer: "Emmanuel Macron" },
+                    { question: "Who serves as the Prime Minister of Japan?", answer: "Fumio Kishida" },
+                    { question: "Who is the current President of Russia?", answer: "Vladimir Putin" },
+                    { question: "Who is the Chief Minister of Kerala?", answer: "Pinarayi Vijayan" },
+                    { question: "Who is the Minister of Finance in the Indian central government?", answer: "Nirmala Sitharaman" },
+                    { question: "Who serves as the Minister of Home Affairs in India?", answer: "Amit Shah" },
+                    { question: "Who is the Minister of External Affairs for India?", answer: "S. Jaishankar" },
+                    { question: "Who holds the position of Minister of Defence in India?", answer: "Rajnath Singh" },
+                    { question: "Who is the Minister of Health and Family Welfare in Kerala?", answer: "Veena George" },
+                    { question: "Who serves as the Minister of Education in Kerala?", answer: "V. Sivankutty" },
+                    { question: "Who is the Minister of Agriculture in Kerala?", answer: "P. Prasad" },
+                    { question: "Who holds the position of Minister of Finance in Kerala?", answer: "K. N. Balagopal" },
+                    { question: "Who is the Minister of Tourism in Kerala?", answer: "P. A. Mohamed Riyas" },
+                    { question: "Who serves as the Minister of Law in Kerala?", answer: "P. Rajeeve" },
+                    { question: "Who is the Minister of Fisheries in Kerala?", answer: "J. Chinchurani" }
                 ]
             }
         };
@@ -226,7 +295,7 @@
                 
                 let emojiSpan = document.createElement("span");
                 emojiSpan.className = "emoji";
-                if (categoryClicks[category] >= 2) {
+                if (categoryClicks[category] >= 1) {
                     emojiSpan.innerText = "🔒";
                     giftBox.style.cursor = "default";
                 } else {
@@ -245,7 +314,7 @@
                 giftBox.appendChild(numSpan);
                 giftBox.appendChild(nameSpan);
                 
-                if (categoryClicks[category] < 2) {
+                if (categoryClicks[category] < 1) {
                     giftBox.addEventListener('click', handleGiftBoxClick);
                 }
                 
@@ -258,18 +327,16 @@
         function handleGiftBoxClick(event) {
             const giftBox = event.currentTarget;
             const category = giftBox.dataset.category;
-            if (categoryClicks[category] >= 2) {
-                alert("This category is fully used! 🔒");
+            if (categoryClicks[category] >= 1) {
+                alert("This category is already used! 🔒");
                 return;
             }
             categoryClicks[category]++;
-            const clickCount = categoryClicks[category];
-            const set = clickCount === 1 ? "set1" : "set2";
-            startQuiz(category, set);
+            startQuiz(category);
         }
 
-        function startQuiz(category, set) {
-            currentQuestions = categories[category][set];
+        function startQuiz(category) {
+            currentQuestions = categories[category].questions;
             currentQuestionIndex = 0;
             categoryText.innerText = categoryNames[category];
             categoryContainer.style.display = "none";
