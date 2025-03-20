@@ -295,7 +295,7 @@
         Your browser does not support the audio element.
     </audio>
     <audio id="gurujiMusic" src="guruji.mp3"></audio>
-    <button id="questionButton">Start Game</button>
+    <button id="questionButton">Who is First</button>
     <img src="guruji.png" class="guruji" onclick="openGurujiPopup()" id="gurujiInitial">
     <div id="questionContainer">
         <div id="question"></div>
@@ -321,6 +321,10 @@
     </div>
 
     <script>
+        window.onload = function() {
+            window.open("video/round2.mp4", "_blank");
+        };
+
         document.addEventListener('click', function() {
             const audio = document.getElementById('backgroundMusic');
             if (audio.paused) {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Who Wants to Be a Millionaire - Group Game</title>
+    <title>Kodeeswaran💰</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -355,9 +355,9 @@
     <audio id="countdownSound" src="countdown.mp3" loop></audio>
     <audio id="nextTeamSound" src="next_team.mp3"></audio>
 
-    <!-- Intro Page -->
+    <!-- Intro Page (Watch Video button removed) -->
     <div id="intro-page" class="intro-page">
-        <h1>Welcome to Who Wants to Be a Millionaire - Group Game 🎉</h1>
+        <h1>KODEESWARAN 💰 🎉</h1>
         <button id="start-game">Start Game 🚀</button>
         <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
     </div>
@@ -410,6 +410,11 @@
     <div id="time-up-message">The Time is Up! ⏰</div>
 
     <script>
+        // Automatically open the video in a new tab when the page loads
+        window.onload = function() {
+            window.open('video/round1.mp4', '_blank');
+        };
+
         // All Questions Combined
         const allQuestions = [
             {

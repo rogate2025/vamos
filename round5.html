@@ -489,6 +489,10 @@
     </div>
 
     <script>
+        window.onload = function() {
+            window.open('video/round5.mp4', '_blank');
+        };
+
         // Autoplay background music on first click
         document.addEventListener('click', function() {
             const audio = document.getElementById('bgm');
@@ -521,39 +525,94 @@
 
         const questionSets = {
             "50": [
-                { question: "What is the capital of France?", answer: "Paris" },
-                { question: "Who wrote 'Romeo and Juliet'?", answer: "William Shakespeare" },
-                { question: "What is the largest planet in our solar system?", answer: "Jupiter" }
+                { question: "Which city is hosting the 2025 Special Olympics World Winter Games from March 8 to 15, 2025?", answer: "Turin, Italy" },
+                { question: "Which company became the first commercial entity to successfully land on the Moon on March 2, 2025?", answer: "Firefly Aerospace" },
+                { question: "Who was elected leader of the Liberal Party of Canada on March 9, 2025, becoming the new Prime Minister?", answer: "Mark Carney" },
+                { question: "Which former Philippine president was arrested on March 11, 2025, following an International Criminal Court warrant?", answer: "Rodrigo Duterte" },
+                { question: "Which militant group seized control of Goma in the Democratic Republic of the Congo on January 26, 2025?", answer: "The March 23 Movement (M23)" },
+                { question: "In what year did Fr. Hannibal pass away?", answer: "1927" },
+                { question: "When is the feast day of Fr. Hannibal commemorated?", answer: "June 1" },
+                { question: "At what age did Hannibal lose his father?", answer: "Before reaching 2 years old" },
+                { question: "Besides his apostolic work, what artistic talent did Hannibal display?", answer: "He was a gifted poet" },
+                { question: "What central event in Christianity is cited in paragraph 20 as the basis for hope?", answer: "The death and resurrection of Jesus Christ." },
+                { question: "What metaphor does paragraph 20 use to describe the impact of Christ’s resurrection on the concept of death?", answer: "That death is not an end but a passage to eternal life." },
+                { question: "What key question about human destiny does paragraph 21 raise?", answer: "What, then, will become of us after death?" },
+                { question: "Which famous artistic work is referenced in paragraph 22 as portraying God’s judgement?", answer: "Michelangelo’s magnum opus in the Sistine Chapel." },
+                { question: "വിശുദ്ധ യോഹന്നാൻ ശ്ലീഹായുടെ ഒന്നാം ലേഖനം 5:7 ൽ ശ്ലീഹ പരിചയപ്പെടുത്തുന്ന ക്രിസ്തുവിന്റെ മൂന്ന് സാക്ഷികൾ ഏവ?", answer: "ആത്മാവ്, ജലം, രക്തം" },
+                { question: "ഞാന്‍ ഇവയെല്ലാം എഴുതിയത് ദൈവപുത്രന്റെ നാമത്തില്‍ വിശ്വസിക്കുന്ന നിങ്ങൾക്ക് നിത്യജീവൻ ഉണ്ട് എന്ന് നിങ്ങൾ അറിയേണ്ടതിനാണ്. ഏത് ലേഖനത്തെ കുറിച്ചാണ് ഇവിടെ പരാമർശിക്കപ്പെടുന്നത്?", answer: "1 യോഹന്നാൻ (5:13)" },
+                { question: "എന്തുപദേശം നൽകി കൊണ്ടാണ് യോഹന്നാൻ ശ്ലീഹാ തന്റെ ഒന്നാം ലേഖനം അവസാനിപ്പിക്കുന്നത് (5:21)?", answer: "കുഞ്ഞുമക്കളെ വിഗ്രഹങ്ങളിൽ നിന്ന് അകന്നിരിക്കുവിൻ" }
             ],
             "100": [
-                { question: "What is the smallest prime number?", answer: "2" },
-                { question: "What is the square root of 64?", answer: "8" },
-                { question: "What is the longest river in the world?", answer: "The Nile" }
+                { question: "What was the primary purpose of Hannibal’s newspaper articles?", answer: "To defend the Church and advocate for social justice" },
+                { question: "Fr. Hannibal became known as the ‘Apostle of Rogate’ due to his emphasis on what?", answer: "Vocations through prayer (the Rogate)" },
+                { question: "Which early talent of Hannibal later influenced his apostolic work?", answer: "His gift for poetry." },
+                { question: "Which scriptural reference is used in paragraph 22 to illustrate the expectation of mercy at judgement?", answer: "A passage from Wisdom (Wisdom 12:19-22)." },
+                { question: "How does paragraph 23 explain the consequences of sin?", answer: "It states that every sin, even venial, leaves a mark and requires purification." },
+                { question: "What does the indulgence represent in the Jubilee context according to paragraph 23?", answer: "It is a way of discovering and experiencing the unlimited nature of God’s mercy." },
+                { question: "What role does Confession play in the life of a believer as described in paragraph 23?", answer: "It reconciles the believer with God, heals the heart, and enables them to experience forgiveness." },
+                { question: "യോഹന്നാൻ ശ്ലീഹായുടെ മൂന്നാം ലേഖനം എഴുതപ്പെട്ടത് ആര്‍ക്ക്", answer: "സഭാ ശ്രേഷ്ഠനായ ഗായുസിന്" },
+                { question: "യോഹന്നാൻ ശ്ലീഹാ തന്റെ രണ്ടാം ലേഖനത്തിൽ സ്നേഹത്തെ നിർവചിക്കുന്നത് എങ്ങനെ (1:6)", answer: "അവിടുത്തെ കൽപ്പനകൾ അനുസരിച്ച് നടക്കുക" },
+                { question: "യൂദാശ്ലീഹാ തന്റെ ലേഖനത്തിൽ തന്നെ തന്നെ പരിചയപ്പെടുത്തുന്നത് എങ്ങനെ (1:1)", answer: "യേശുക്രിസ്തുവിന്റെ ദാസനും യാക്കോബിന്റെ സഹോദരനുമായ യൂദാസ്" }
             ],
             "150": [
-                { question: "What is the capital of Japan?", answer: "Tokyo" },
-                { question: "What is the largest ocean on Earth?", answer: "Pacific Ocean" },
-                { question: "What is the chemical symbol for gold?", answer: "Au" }
+                { question: "What does the inscription ‘Rogate Dominum Messis’ signify?", answer: "Prayer for Good workers" },
+                { question: "Which significant event in Rome in 1869 influenced Hannibal’s vocational discernment?", answer: "The opening of the First Vatican Council" },
+                { question: "Which practice did Hannibal regard as essential for nurturing his community’s spiritual life?", answer: "Daily personal prayer and reflection" },
+                { question: "How is the Blessed Virgin Mary portrayed in paragraph 24?", answer: "As the Mother of Hope, who sustains and never abandons her children." },
+                { question: "Which Marian title mentioned in paragraph 24 reflects Mary’s role as a beacon of hope?", answer: "Stella Maris." },
+                { question: "What significant Marian celebration is noted in paragraph 24?", answer: "The fifth centenary of Our Lady of Guadalupe’s first apparition in 2031." },
+                { question: "What metaphor does paragraph 25 use to describe the stability provided by hope?", answer: "The image of an anchor." },
+                { question: "അവർ പിറുപിറുക്കുന്നവരും അസംതൃപ്തരും തങ്ങളുടെ ദുരാശകൾ കൊത്ത് വീതം നടക്കുന്നവരും വമ്പു പറയുന്നവരും കാര്യസാധ്യത്തിന് വേണ്ടി മുഖസ്തുതി പറയുന്നവരുമാണ്. ആരെക്കുറിച്ചാണ് ഇത് പരാമർശിക്കപ്പെടുന്നത് (16)", answer: "ആദത്തിൽ നിന്ന് ഏഴാം തലമുറക്കാരനായ ഹെനോക്ക് പ്രവചിച്ചവരെ കുറിച്ച്" },
+                { question: "ഈ മനുഷ്യർ ശരീരത്തെ അശുദ്ധമാക്കുകയും അധികാരത്തെ തള്ളിപ്പറയുകയും മഹിമ അണിഞ്ഞ വരെ നിന്ദിക്കുകയും ചെയ്യുന്നു. എങ്ങനെയുള്ള മനുഷ്യരെയാണ് ശ്ലീഹ ഇവിടെ കുറ്റപ്പെടുത്തുന്നത് (8)", answer: "സ്വപ്നങ്ങളിൽ നിമഗ്നരായിരിക്കുന്ന മനുഷ്യർ" },
+                { question: "കണ്ടാലും എത്ര വലിയ സ്നേഹമാണ് പിതാവ് നമ്മോട് കാണിച്ചത് ദൈവം മക്കൾ എന്ന് നാം വിളിക്കപ്പെടുന്നു നാം അങ്ങനെയാണ് താനും. അദ്ധ്യായവും വാക്യവും ഉദ്ധരിക്കുക", answer: "1 യോഹന്നാൻ 3:1" }
             ],
             "200": [
-                { question: "What is the capital of Australia?", answer: "Canberra" },
-                { question: "What is the largest mammal on Earth?", answer: "Blue Whale" },
-                { question: "What is the smallest country in the world?", answer: "Vatican City" }
+                { question: "What final message did Hannibal leave regarding his apostolic work?", answer: "To trust in God’s providence" },
+                { question: "What hymn did Fr. Hannibal compose in honor of the Sacred Heart?", answer: "For the Greater Consolation of Jesus’ Heart!" },
+                { question: "What was Hannibal’s reaction when he witnessed the poor man being ridiculed in the boarding house?", answer: "He immediately collected food and gave it to the poor man." },
+                { question: "What overall message about the Jubilee is conveyed in paragraph 25?", answer: "That the Jubilee is a time to be drawn to hope and to spread that hope throughout the world." },
+                { question: "According to paragraph 25, what does the anchor symbolize?", answer: "It symbolizes stability and security amid life’s turbulent storms." },
+                { question: "How does paragraph 24 relate Mary’s experience at the cross to the theme of hope?", answer: "Despite witnessing the suffering and death of her Son, Mary never abandons her hope and trust in God." },
+                { question: "What attitude should believers have toward the moment of judgement, as explained in paragraph 22?", answer: "They should prepare consciously and soberly while maintaining hope." },
+                { question: "ഈ വിഷയത്തെക്കുറിച്ച് പറയുമ്പോൾ എല്ലാം ഇങ്ങനെ തന്നെയാണ് എല്ലാ ലേഖനങ്ങളിലും അവൻ എഴുതിയിരിക്കുന്നത്. ആരുടെ ലേഖനത്തെ കുറിച്ചാണ് ഇവിടെ പരാമർശിക്കുന്നത്. എന്താണ് ഇവിടെ പ്രതിപാദിച്ചിരിക്കുന്ന വിഷയം.(2 pet 2:16)", answer: "വിശുദ്ധ പൗലോസ് ശ്ലീഹായുടെ ലേഖനം,കർത്താവിന്റെ പ്രത്യാഗമനത്തെക്കുറിച്ച്" },
+                { question: "ഒരു ഊമക്കഴുത മനുഷ്യസരത്തിൽ സംസാരിച്ചുകൊണ്ട് ആ പ്രവാചകന്റെ ഭ്രാന്തിന് അറുതി വരുത്തി. ഏത് പ്രവാചകനെയാണ് പത്രോസ് ശ്ലീഹ ഉദ്ദേശിക്കുന്നത്. (2 pet 2:16)", answer: "ബേവോറിന്റെ പുത്രനായ ബാലാം" },
+                { question: "പ്രിയപ്പെട്ടവരെ കർത്താവിന്റെ മുൻപിൽ ഒരു ദിവസം ആയിരം വർഷങ്ങൾ പോലെയും ആയിരം വർഷങ്ങൾ ഒരു ദിവസം പോലെയുമാണ് എന്ന കാര്യം നിങ്ങൾ വിസ്മരിക്കരുത്. അദ്ധ്യായവും വാക്യവും ഉദ്ധരിക്കുക", answer: "2 പത്രോസ് 3:8" }
             ],
             "250": [
-                { question: "What is the capital of Brazil?", answer: "Brasília" },
-                { question: "What is the largest desert in the world?", answer: "Sahara Desert" },
-                { question: "What is the chemical symbol for oxygen?", answer: "O" }
+                { question: "Which historical event did Hannibal comment on in his articles?", answer: "The 1860 revolution in Italy" },
+                { question: "How did Hannibal’s time at the boarding house shape his view on charity?", answer: "It instilled in him a lifelong commitment to serving the poor." },
+                { question: "What characteristics did Hannibal see as essential to a priest’s life?", answer: "Spiritual leadership and active social service." },
+                { question: "Which type of educational program did Hannibal introduce for the orphans in his care?", answer: "Evening schools teaching basic literacy and vocational skills." },
+                { question: "What were his last words?", answer: "Let God handle things. God knows what He is doing. God knows what He is doing! I bless you." },
+                { question: "What assurance about God’s love is given in paragraph 21?", answer: "That nothing in all creation can separate believers from the love of God." },
+                { question: "നിയതിമാന്റെ പ്രാർത്ഥന വളരെ ശക്തിയുള്ളതും ഫലദായകവും ആണ് എന്ന് തെളിയിക്കാൻ യാക്കോബ് ശ്ലീഹ പരാമർശിക്കുന്ന പഴയ നിയമത്തിലെ പ്രവാചകൻ ആര് (5:17)", answer: "ഏലിയാ പ്രവാചകന്‍" },
+                { question: "എല്ലാത്തരം വന്യമൃഗങ്ങളെയും പക്ഷികളെയും ഇഴജന്തുക്കളെയും സമുദ്രജീവികളെയും മനുഷ്യൻ ഇണക്കുന്നുണ്ട് ഇണക്കിയിട്ടുമുണ്ട് എന്നാൽ ഒരു മനുഷ്യനും നിയന്ത്രിക്കാൻ സാധിക്കാത്തത് എന്ത് ആണ് യാക്കോബ് ശ്ലീഹ പറയുന്നത് (3:8)", answer: "നാവിനെ" },
+                { question: "വിശ്വാസം പ്രവർത്തികളാൽ പൂർണ്ണമാക്കപ്പെടുന്നു എന്ന് തെളിയിക്കാൻ യാക്കോബ് ശ്ലീഹ പരാമർശിക്കുന്ന വ്യക്തികൾ ആരൊക്കെ (2:23)", answer: "അബ്രഹാം, റാഹാബ്" },
+                { question: "Which sacrament did Hannibal emphasize as a daily practice early in his clerical life?", answer: "Daily Holy Communion" },
+                { question: "What central prayer did Hannibal promote among his followers?", answer: "The Rogate Prayer" },
+                { question: "How did Hannibal interpret suffering within a spiritual context?", answer: "As divine instruction and a means of purification" },
+                { question: "Which virtue did Hannibal consider most crucial in his spiritual life?", answer: "Charity" }
             ],
             "300": [
-                { question: "What is the capital of Canada?", answer: "Ottawa" },
-                { question: "What is the largest island in the world?", answer: "Greenland" },
-                { question: "What is the chemical symbol for carbon?", answer: "C" }
+                { question: "What nickname did Hannibal sometimes use for the poor he served?", answer: "The true masters of the kingdom" },
+                { question: "What did witnesses say about Hannibal’s life and work?", answer: "That he was a man of divine inspiration and boundless love" },
+                { question: "What common theme appears in Hannibal’s early poetic works?", answer: "Devotion to the Virgin Mary and passion for Christ." },
+                { question: "What method did Hannibal primarily use to support his charitable institutions in Avignone?", answer: "Organizing charity walks and public appeals for alms" },
+                { question: "What did Hannibal believe was necessary to overcome personal weakness?", answer: "Relying on God’s strength and mercy" },
+                { question: "How does paragraph 22 describe the nature of God’s judgement?", answer: "It is based on love and mercy rather than on human-like, earthly tribunals." },
+                { question: "How does baptism relate to hope in the explanation given in paragraph 20?", answer: "Baptism signifies being buried with Christ and receiving a new life that transforms death into a passage to eternal life." },
+                { question: "ആർക്കുവേണ്ടിയാണ് യാക്കോബ് ശ്ലീഹ തന്റെ ലേഖനം എഴുതിയത് 1:1", answer: "വിജാതീയരുടെ ഇടയിൽ ചിതറി പാർക്കുന്ന 12 ഗോത്രങ്ങൾക്ക്" },
+                { question: "ദൈവത്തിന്റെ അജഗണത്തെ പരിപാലിക്കുമ്പോൾ എന്തെല്ലാം ശ്രദ്ധിക്കണം എന്ന് ആണ് ശ്രേഷ്ഠന്മാർക്ക് പത്രോസ് ശ്ലീഹ നൽകുന്ന ഉപദേശം (5:3)", answer: "ദൈവത്തെ പ്രതി സന്മനസ്സോടെ ആയിരിക്കണം, തീക്ഷ്ണതിയോടെ ആയിരിക്കണം, സൻന്മാതൃക നൽകി കൊണ്ടായിരിക്കണം" }
             ],
             "350": [
-                { question: "What is the capital of Russia?", answer: "Moscow" },
-                { question: "What is the largest continent on Earth?", answer: "Asia" },
-                { question: "What is the chemical symbol for silver?", answer: "Ag" }
+                { question: "How did Hannibal perceive personal suffering?", answer: "As a means to grow closer to Christ" },
+                { question: "How did Hannibal view the act of giving?", answer: "As an expression of love and self-sacrifice" },
+                { question: "How did Hannibal view the trials and hardships he faced?", answer: "As necessary sacrifices for the salvation of souls" },
+                { question: "What significance did the train journey hold in Hannibal’s early spiritual life?", answer: "It sparked his desire to love Jesus beyond measure." },
+                { question: "How does paragraph 22 describe the nature of God’s judgement?", answer: "It is based on love and mercy rather than on human-like, earthly tribunals." },
+                { question: "പിതാവിന്റെ മുൻപിൽ പരിശുദ്ധവും നിഷ്കളങ്കവുമായ ഭക്തി എന്താണ്(1:27)", answer: "അനാഥരുടെയും വിധവകളുടെയും ഞെരുക്കങ്ങളിൽ അവരുടെ സഹായത്തിന് എത്തുക. ലോകത്തിന്റെ കളങ്കം ഏൽക്കാതെ തന്നെ തന്നെ കാത്തുസൂക്ഷിക്കുക." },
+                { question: "ആരുടെ ഭക്തിയാണ് വ്യർത്ഥമായതു എന്ന് യാക്കോബ് ശ്ലീഹ പറയുന്നത്(1:26)?", answer: "താൻ ദൈവഭക്തനാണെന്ന് ഒരുവൻ വിചാരിക്കുകയും തന്റെ നാവിനെ നിയന്ത്രിക്കാതെ ഹൃദയത്തെ വഞ്ചിക്കുകയും ചെയ്താൽ" },
+                { question: "ഉന്നതത്തിൽ നിന്നുള്ള ജ്ഞാനത്തിന്റെ പ്രത്യേകതകൾ ഏവ (3:17)?", answer: "ഉന്നതത്തിൽ നിന്നുള്ള ജ്ഞാനം ഒന്നാമത് ശുദ്ധവും, പിന്നെ സമാധാനപൂർണ്ണവും, വിനീതവും, വിധേയത്വമുള്ളതും, കാരുണ്യവും, സത്ഫലങ്ങളും നിറഞ്ഞതുമാണ്" }
             ],
             "400": [
                 { question: "What is the capital of China?", answer: "Beijing" },

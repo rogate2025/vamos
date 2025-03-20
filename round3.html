@@ -1,526 +1,555 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Round 3 - Who Am I?</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #1a1a3d 0%, #3b5998 100%);
-            color: #ffffff;
-            min-height: 100vh;
-            overflow-y: auto;
-            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
-            background-blend-mode: overlay;
-        }
-        h1 {
-            font-size: 48px;
-            margin: 40px 0;
-            color: #1a1a3d;
-            text-shadow: 0 0 15px #ffd700, 0 0 30px #ffeb3b;
-            animation: glow 2s infinite alternate;
-        }
-        #clues-container {
-            font-size: 22px;
-            margin: 30px auto;
-            padding: 25px;
-            width: 80%;
-            max-width: 700px;
-            background: rgba(30, 58, 138, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.2);
-            border: 3px solid #ffd700;
-            position: relative;
-            overflow: hidden;
-        }
-        #clues-container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.1), transparent);
-            animation: pulse 6s infinite;
-        }
-        #clues-container div {
-            color: #ffeb3b;
-            margin: 15px 0;
-            padding: 15px;
-            background: rgba(255, 235, 59, 0.15);
-            border-radius: 10px;
-            text-shadow: 0 0 8px rgba(255, 235, 59, 0.8);
-            animation: fadeIn 0.6s ease-in;
-            position: relative;
-            z-index: 1;
-        }
-        .button {
-            padding: 15px 50px;
-            font-size: 20px;
-            font-weight: bold;
-            background: linear-gradient(90deg, #ff6f61, #ffeb3b);
-            color: #1a1a3d;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            margin: 20px;
-            box-shadow: 0 8px 20px rgba(255, 107, 97, 0.6);
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .button:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 12px 30px rgba(255, 107, 97, 0.8);
-            background: linear-gradient(90deg, #ffeb3b, #ff6f61);
-        }
-        .button:active {
-            transform: translateY(2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 97, 0.4);
-        }
-        #popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-        #popup-content {
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.95), rgba(255, 215, 0, 0.2));
-            padding: 30px;
-            border-radius: 25px;
-            border: 4px solid #ff6f61;
-            text-align: center;
-            animation: reveal 0.8s ease-out;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
-            max-width: 500px;
-            width: 90%;
-        }
-        #person-name {
-            font-size: 32px;
-            color: #ffeb3b;
-            text-shadow: 0 0 10px #ff6f61;
-            margin-bottom: 20px;
-        }
-        #person-image {
-            max-width: 300px;
-            margin: 20px auto;
-            border: 5px solid #ffeb3b;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(255, 235, 59, 0.7);
-            transition: transform 0.3s ease;
-        }
-        #person-image:hover {
-            transform: scale(1.05);
-        }
-        .guruji {
-            width: 120px;
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            z-index: 999; /* Below popup but above other content */
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
-        }
-        .guruji:hover {
-            transform: scale(1.1);
-        }
-        /* Enhanced Guruji Popup Styles */
-        .guruji-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            animation: fadeInOverlay 0.5s ease-in-out;
-        }
-        .guruji-content {
-            background: linear-gradient(135deg, #ffeb3b, #ff9800, #ff5722);
-            padding: 40px;
-            border-radius: 25px;
-            text-align: center;
-            position: relative;
-            width: 85%;
-            max-width: 700px;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 87, 34, 0.9), 
-                        inset 0 0 20px rgba(255, 255, 255, 0.3);
-            border: 5px solid #ffd700;
-            animation: bounceInPopup 0.7s ease-out;
-            overflow: hidden;
-        }
-        .guruji-content::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.2), transparent);
-            animation: rotateGlow 10s linear infinite;
-        }
-        .guruji-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin-bottom: 25px;
-            border: 6px solid #ffd700;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.9), 0 0 30px rgba(255, 87, 34, 0.7);
-            animation: spinImage 8s linear infinite;
-        }
-        .guruji-dialogue {
-            font-size: 1.4em;
-            color: #333;
-            position: relative;
-            z-index: 1;
-        }
-        #guruji-intro {
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #d81b60;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6), 0 0 10px #fff;
-            animation: slideIn 0.5s ease-in;
-            font-size: 1.6em;
-        }
-        #guruji-question {
-            margin-bottom: 25px;
-            font-size: 2.2em;
-            font-weight: bold;
-            font-style: italic;
-            color: #fff;
-            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8), 0 0 15px #ffd700, 0 0 25px #ff5722;
-            background: linear-gradient(45deg, rgba(255, 215, 0, 0.3), rgba(255, 87, 34, 0.3));
-            padding: 15px 25px;
-            border-radius: 15px;
-            animation: pulseGlow 1.5s infinite;
-        }
-        #reveal-answer {
-            background: linear-gradient(45deg, #ffd700, #ff5722, #ffaa00);
-            border: none;
-            padding: 15px 30px;
-            cursor: pointer;
-            font-size: 1.3em;
-            border-radius: 10px;
-            color: #fff;
-            text-shadow: 2px 2px 4px #000;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 0 15px rgba(255, 87, 34, 0.8);
-            margin-bottom: 20px;
-        }
-        #reveal-answer:hover {
-            transform: scale(1.1) rotate(2deg);
-            box-shadow: 0 0 25px rgba(255, 87, 34, 1), 0 0 35px rgba(255, 215, 0, 0.9);
-        }
-        #guruji-answer {
-            font-weight: bold;
-            color: #00e676;
-            font-size: 1.8em;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6), 0 0 15px #fff;
-            animation: fadeInAnswer 1s ease-in;
-        }
-        .guruji-close {
-            padding: 10px 20px;
-            font-size: 1.2em;
-            background: linear-gradient(45deg, #ff5722, #ff9800);
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            text-shadow: 1px 1px 2px #000;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-        }
-        .guruji-close:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(255, 87, 34, 0.8);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes reveal {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-        @keyframes glow {
-            from { text-shadow: 0 0 10px #ffd700, 0 0 20px #ffeb3b; }
-            to { text-shadow: 0 0 20px #ffd700, 0 0 30px #ffeb3b; }
-        }
-        @keyframes fadeInOverlay {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes bounceInPopup {
-            0% { transform: scale(0.7) rotate(-5deg); opacity: 0; }
-            60% { transform: scale(1.05) rotate(2deg); opacity: 1; }
-            100% { transform: scale(1) rotate(0deg); }
-        }
-        @keyframes rotateGlow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes spinImage {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes pulseGlow {
-            0% { transform: scale(1); box-shadow: 0 0 10px #ffd700; }
-            50% { transform: scale(1.03); box-shadow: 0 0 20px #ff5722; }
-            100% { transform: scale(1); box-shadow: 0 0 10px #ffd700; }
-        }
-        @keyframes fadeInAnswer {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideIn {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        audio {
-            display: none;
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dubsmash</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1a1a3d 0%, #3b5998 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      overflow-y: auto;
+      background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+      background-blend-mode: overlay;
+    }
+    h1 {
+      font-size: 48px;
+      margin: 40px 0;
+      color: #1a1a3d;
+      text-shadow: 0 0 15px #ffd700, 0 0 30px #ffeb3b;
+      animation: glow 2s infinite alternate;
+    }
+    #clues-container, #guruji-clues {
+      font-size: 22px;
+      margin: 30px auto;
+      padding: 25px;
+      width: 80%;
+      max-width: 700px;
+      background: rgba(30, 58, 138, 0.9);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.2);
+      border: 3px solid #ffd700;
+      position: relative;
+      overflow: hidden;
+    }
+    #clues-container::before, #guruji-clues::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.1), transparent);
+      animation: pulse 6s infinite;
+    }
+    #clues-container div, #guruji-clues div {
+      color: #ffeb3b;
+      margin: 15px 0;
+      padding: 15px;
+      background: rgba(255, 235, 59, 0.15);
+      border-radius: 10px;
+      text-shadow: 0 0 8px rgba(255, 235, 59, 0.8);
+      animation: fadeIn 0.6s ease-in;
+      position: relative;
+      z-index: 1;
+    }
+    .button {
+      padding: 15px 50px;
+      font-size: 20px;
+      font-weight: bold;
+      background: linear-gradient(90deg, #ff6f61, #ffeb3b);
+      color: #1a1a3d;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      margin: 20px;
+      box-shadow: 0 8px 20px rgba(255, 107, 97, 0.6);
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .button:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 12px 30px rgba(255, 107, 97, 0.8);
+      background: linear-gradient(90deg, #ffeb3b, #ff6f61);
+    }
+    .button:active {
+      transform: translateY(2px);
+      box-shadow: 0 5px 15px rgba(255, 107, 97, 0.4);
+    }
+    #popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+    #popup-content {
+      background: linear-gradient(135deg, rgba(30, 58, 138, 0.95), rgba(255, 215, 0, 0.2));
+      padding: 30px;
+      border-radius: 25px;
+      border: 4px solid #ff6f61;
+      text-align: center;
+      animation: reveal 0.8s ease-out;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+      max-width: 500px;
+      width: 90%;
+    }
+    #person-name {
+      font-size: 32px;
+      color: #ffeb3b;
+      text-shadow: 0 0 10px #ff6f61;
+      margin-bottom: 20px;
+    }
+    #person-image {
+      max-width: 300px;
+      margin: 20px auto;
+      border: 5px solid #ffeb3b;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(255, 235, 59, 0.7);
+      transition: transform 0.3s ease;
+    }
+    #person-image:hover {
+      transform: scale(1.05);
+    }
+    .guruji {
+      width: 120px;
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      z-index: 999;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+    }
+    .guruji:hover {
+      transform: scale(1.1);
+    }
+    .guruji-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      animation: fadeInOverlay 0.5s ease-in-out;
+    }
+    .guruji-content {
+      background: linear-gradient(135deg, #ffeb3b, #ff9800, #ff5722);
+      padding: 40px;
+      border-radius: 25px;
+      text-align: center;
+      position: relative;
+      width: 85%;
+      max-width: 700px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 87, 34, 0.9),
+                  inset 0 0 20px rgba(255, 255, 255, 0.3);
+      border: 5px solid #ffd700;
+      animation: bounceInPopup 0.7s ease-out;
+    }
+    .guruji-close {
+      width: 120px;
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      z-index: 999;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+    }
+    .guruji-close:hover {
+      transform: scale(1.1);
+    }
+    .guruji-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin-bottom: 25px;
+      border: 6px solid #ffd700;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.9), 0 0 30px rgba(255, 87, 34, 0.7);
+      animation: spinImage 8s linear infinite;
+    }
+    .guruji-dialogue {
+      font-size: 1.4em;
+      color: #333;
+      position: relative;
+      z-index: 1;
+    }
+    #guruji-intro {
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #d81b60;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6), 0 0 10px #fff;
+      animation: slideIn 0.5s ease-in;
+      font-size: 1.6em;
+    }
+    #guruji-answer {
+      margin-top: 20px;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(30, 58, 138, 0.95), rgba(255, 215, 0, 0.2));
+      border-radius: 15px;
+      border: 3px solid #ff6f61;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    }
+    #guruji-person-name {
+      font-size: 28px;
+      color: #ffeb3b;
+      text-shadow: 0 0 8px #ff6f61;
+      margin-bottom: 15px;
+    }
+    #guruji-person-image {
+      max-width: 250px;
+      border: 4px solid #ffeb3b;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(255, 235, 0, 0.7);
+      transition: transform 0.3s ease;
+    }
+    #guruji-person-image:hover {
+      transform: scale(1.05);
+    }
+    #guruji-action-btn {
+      background: linear-gradient(45deg, #ffd700, #ff5722, #ffaa00);
+      border: none;
+      padding: 15px 30px;
+      cursor: pointer;
+      font-size: 1.3em;
+      border-radius: 10px;
+      color: #fff;
+      text-shadow: 2px 2px 4px #000;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 15px rgba(255, 87, 34, 0.8);
+      margin-bottom: 20px;
+    }
+    #guruji-action-btn:hover {
+      transform: scale(1.1) rotate(2deg);
+      box-shadow: 0 0 25px rgba(255, 87, 34, 1), 0 0 35px rgba(255, 215, 0, 0.9);
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes spinImage {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes bounceInPopup {
+      0% { transform: scale(0.7) rotate(-5deg); opacity: 0; }
+      60% { transform: scale(1.05) rotate(2deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+    @keyframes fadeInOverlay {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ffd700, 0 0 20px #ffeb3b; }
+      to { text-shadow: 0 0 20px #ffd700, 0 0 30px #ffeb3b; }
+    }
+    audio {
+      display: none;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Round 3: Who Am I?</h1>
-    <div id="clues-container"></div>
+  <h1>Dubsmash</h1>
+  <div id="clues-container"></div>
+  
+  <button id="action-btn" class="button" onclick="handleAction()">Clue</button>
+  
+  <div id="popup">
+    <div id="popup-content">
+      <strong id="person-name"></strong> 🎉<br>
+      <img id="person-image" src="" alt="">
+      <button class="button" onclick="closePopup()">Close</button>
+    </div>
+  </div>
+  
+  <!-- Background Music with autoplay -->
+  <audio id="bgm" loop autoplay>
+    <source src="bgm.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  
+  <!-- Guruji Music -->
+  <audio id="gurujiMusic" src="guruji.mp3"></audio>
+  
+  <!-- Guruji Image -->
+  <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
+  
+  <!-- Guruji Popup -->
+  <div class="guruji-popup" id="guruji-popup">
+    <div class="guruji-content">
+      <img src="guruji.png" alt="Guruji" class="guruji-image">
+      <div class="guruji-dialogue">
+        <p id="guruji-intro">Greetings, knowledge seekers! I am Guruji, your Quiz Master. Behold my challenge:</p>
+        <div id="guruji-clues"></div>
+        <div id="guruji-answer" style="display: none;">
+          <strong id="guruji-person-name"></strong> 🎉<br>
+          <img id="guruji-person-image" src="" alt="">
+        </div>
+        <button id="guruji-action-btn" class="button">Next Clue</button>
+      </div>
+      <button class="guruji-close" onclick="closeGurujiPopup()">Close</button>
+    </div>
+  </div>
+  
+  <script>
+    // Open video in new tab when page loads
+    window.onload = function() {
+      window.open('video/round3.mp4', '_blank');
+    };
     
-    <button id="action-btn" class="button" onclick="handleAction()">Clue</button>
-
-    <div id="popup">
-        <div id="popup-content">
-            <strong id="person-name"></strong> 🎉<br>
-            <img id="person-image" src="" alt="">
-            <button class="button" onclick="closePopup()">Close</button>
-        </div>
-    </div>
-
-    <!-- Background Music with autoplay -->
-    <audio id="bgm" loop autoplay>
-        <source src="bgm.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-
-    <!-- Guruji Music -->
-    <audio id="gurujiMusic" src="guruji.mp3"></audio>
-
-    <!-- Guruji Image -->
-    <img src="guruji.png" class="guruji" onclick="openGurujiPopup()">
-
-    <!-- Enhanced Guruji Popup -->
-    <div class="guruji-popup" id="guruji-popup">
-        <div class="guruji-content">
-            <img src="guruji.png" alt="Guruji" class="guruji-image">
-            <div class="guruji-dialogue">
-                <p id="guruji-intro">Greetings, knowledge seekers! I am Guruji, your Quiz Master. Behold my challenge:</p>
-                <p id="guruji-question"></p>
-                <button id="reveal-answer">Reveal Answer</button>
-                <p id="guruji-answer" style="display: none;"></p>
-            </div>
-            <button class="guruji-close" onclick="closeGurujiPopup()">Close</button>
-        </div>
-    </div>
-
-    <script>
-        // Play background music on first user interaction as a fallback
-        document.addEventListener('click', function() {
-            const audio = document.getElementById('bgm');
-            if (audio.paused) {
-                audio.play().catch(function(error) {
-                    console.log("Audio play failed:", error);
-                });
-            }
-        }, { once: true });
-
-        const persons = [
-            {
-                clues: [
-                    "He was the first person to walk on the moon.",
-                    "He literally left 'footprints' on the lunar surface.",
-                    "His words, 'That's one small step for a man, one giant leap for mankind,' are iconic.",
-                    "He was a pioneer in space exploration.",
-                    "He is an icon of human achievement."
-                ],
-                name: "Neil Armstrong",
-                image: "https://upload.wikimedia.org/wikipedia/commons/0/0d/Neil_Armstrong_pose.jpg"
-            },
-            {
-                clues: [
-                    "His speeches and writings challenged racial inequality.",
-                    "His legacy continues to inspire civil rights movements.",
-                    "He lived through the turbulent 1960s.",
-                    "He is synonymous with the peaceful civil rights movement.",
-                    "He is known for non-violent resistance."
-                ],
-                name: "Martin Luther King Jr.",
-                image: "https://upload.wikimedia.org/wikipedia/commons/0/0f/Martin_Luther_King_Jr._1964.jpg"
-            },
-            {
-                clues: [
-                    "His dominance in basketball is legendary.",
-                    "His influence on sports and popular culture is immense.",
-                    "He overcame various challenges throughout his career.",
-                    "His competitive drive is well-documented.",
-                    "He is one of the most well-known athletes in the world."
-                ],
-                name: "Michael Jordan",
-                image: "https://upload.wikimedia.org/wikipedia/commons/8/88/Michael_Jordan_1997.jpg"
-            },
-            {
-                clues: [
-                    "His speed, skill, and precision in soccer are exceptional.",
-                    "His performances have been seen by millions worldwide.",
-                    "He has broken numerous records throughout his career.",
-                    "His dedication to his physical fitness is well known.",
-                    "He is a global sports icon."
-                ],
-                name: "Cristiano Ronaldo",
-                image: "https://upload.wikimedia.org/wikipedia/commons/8/8c/Cristiano_Ronaldo_2018.jpg"
-            }
-        ];
-
-        const gurujiQuestions = [
-            { question: "What is the capital of Italy?", answer: "Rome" },
-            { question: "Who wrote 'Hamlet'?", answer: "William Shakespeare" },
-            { question: "What is the largest mammal on Earth?", answer: "Blue Whale" },
-            { question: "What is the chemical symbol for water?", answer: "H2O" },
-            { question: "Who painted the Sistine Chapel ceiling?", answer: "Michelangelo" },
-            { question: "Which planet is closest to the Sun?", answer: "Mercury" },
-            { question: "What is the tallest mountain in the world?", answer: "Mount Everest" }
-        ];
-
-        let currentPersonIndex = 0;
-        let currentClueIndex = -1;
-        let showingAnswer = false;
-
-        function loadPerson(index) {
-            currentClueIndex = -1;
-            showingAnswer = false;
-            document.getElementById("clues-container").innerHTML = "";
-            const actionButton = document.getElementById("action-btn");
-            actionButton.innerText = "Clue";
+    // Play background music on first user interaction as a fallback
+    document.addEventListener('click', function() {
+      const audio = document.getElementById('bgm');
+      if (audio.paused) {
+        audio.play().catch(function(error) {
+          console.log("Audio play failed:", error);
+        });
+      }
+    }, { once: true });
+    
+    const persons = [
+      {
+        clues: [
+          "Regarded as one of the greatest racers ever.",
+          "Born in Germany.",
+          "Nicknamed the 'Red Baron' for his speed.",
+          "Holds seven World Drivers' Championship titles.",
+          "A dominant driver with Ferrari.",
+          "Suffered a severe skiing accident in 2013."
+        ],
+        name: "Michael Schumacher",
+        image: "images/schumacher.jpg"
+      },
+      {
+        clues: [
+          "Famous for witty humor on social media.",
+          "Known for aggressive stroke play as an opening batsman.",
+          "Nicknamed the 'Nawab of Najafgarh.'",
+          "Scored two triple centuries in Test cricket.",
+          "Holds the record for the fastest triple century in Test cricket."
+        ],
+        name: "Virender Sehwag",
+        image: "images/sehwag.jpg"
+      },
+      {
+        clues: [
+          "His memoir, A Promised Land, offers insights into his presidency.",
+          "Awarded the Nobel Peace Prize in 2009.",
+          "Known for the Affordable Care Act ('Obamacare').",
+          "Completed two terms from 2009 to 2017.",
+          "The first African-American to serve as the U.S. President."
+        ],
+        name: "Barack Obama",
+        image: "images/obama.jpg"
+      },
+      {
+        clues: [
+          "Known for a calm, scholarly demeanor.",
+          "Studied at the University of Cambridge and the University of Oxford.",
+          "Played a crucial role in India's economic liberalization in 1991.",
+          "The first Sikh to hold the office of Prime Minister.",
+          "Served as India's Prime Minister from 2004 to 2014."
+        ],
+        name: "Manmohan Singh",
+        image: "images/singh.jpg"
+      },
+      {
+        clues: [
+          "A strong voice for girls' education and women's rights.",
+          "Co-authored the memoir I Am Malala.",
+          "Founded a fund supporting girls' education worldwide.",
+          "Survived a Taliban assassination attempt at 15.",
+          "The youngest-ever Nobel Peace Prize laureate, receiving it at age 17."
+        ],
+        name: "Malala Yousafzai",
+        image: "images/malala.jpg"
+      },
+      {
+        clues: [
+          "Inspired research in partition functions and modular forms.",
+          "Collaborated with G.H. Hardy at Cambridge University.",
+          "Known for significant contributions to number theory.",
+          "Mathematical concepts like 'Prime' and 'Theta Function' bear his name.",
+          "Made substantial discoveries despite a lack of formal training."
+        ],
+        name: "Srinivasa Ramanujan",
+        image: "images/ramanujan.jpg"
+      },
+      {
+        clues: [
+          "At age 13, he briefly joined a Franciscan Friary but left due to poor health.",
+          "Opened his first oratory in Tortona in 1892 to help poor boys.",
+          "Known for his deep devotion to Our Lady, building shrines in her honor.",
+          "Founded the Hermits of Divine Providence and promoted unity among separated Churches.",
+          "Sent missionaries to Latin America and personally visited Argentina, Brazil, and Uruguay.",
+          "His body was found incorrupt during its first exhumation in 1965."
+        ],
+        name: "Teodoro Tusino",
+        image: "images/tusino.jpg"
+      },
+      {
+        clues: [
+          "Born in Pontecurone, Italy, in 1872, he studied under Saint John Bosco.",
+          "Founded the Little Work of Divine Providence, including the Sons of Divine Providence and the Little Missionary Sisters of Charity.",
+          "Assisted earthquake victims in Messina and Marsica and served as Vicar General of the Messina diocese.",
+          "Expanded his missionary efforts to Brazil, Argentina, Uruguay, Palestine, and other countries.",
+          "Known for establishing Little Cottolengos — centers for the suffering and abandoned in city outskirts.",
+          "Canonized by Pope John Paul II on May 16, 2004."
+        ],
+        name: "Don Orione",
+        image: "images/orione.jpg"
+      }
+    ];
+    
+    let currentPersonIndex = 0;
+    let currentClueIndex = -1;
+    let showingAnswer = false;
+    
+    function loadPerson(index) {
+      currentClueIndex = -1;
+      showingAnswer = false;
+      document.getElementById("clues-container").innerHTML = "";
+      const actionButton = document.getElementById("action-btn");
+      actionButton.innerText = "Clue";
+    }
+    
+    function handleAction() {
+      const actionButton = document.getElementById("action-btn");
+      const currentPerson = persons[currentPersonIndex];
+      
+      if (showingAnswer) {
+        nextQuestion();
+      } else if (currentClueIndex < currentPerson.clues.length - 1) {
+        showNextClue();
+      } else {
+        showPopup();
+        actionButton.innerText = "Next Question";
+        showingAnswer = true;
+      }
+    }
+    
+    function showNextClue() {
+      currentClueIndex++;
+      const cluesContainer = document.getElementById("clues-container");
+      const actionButton = document.getElementById("action-btn");
+      const currentPerson = persons[currentPersonIndex];
+      
+      cluesContainer.innerHTML += `<div>${currentPerson.clues[currentClueIndex]}</div>`;
+      if (currentClueIndex === currentPerson.clues.length - 1) {
+        actionButton.innerText = "Show Answer";
+      } else {
+        actionButton.innerText = "Next Clue";
+      }
+    }
+    
+    function showPopup() {
+      const popup = document.getElementById("popup");
+      const personNameElement = document.getElementById("person-name");
+      const personImageElement = document.getElementById("person-image");
+      const currentPerson = persons[currentPersonIndex];
+      
+      personNameElement.textContent = currentPerson.name;
+      personImageElement.src = currentPerson.image;
+      personImageElement.alt = currentPerson.name;
+      popup.style.display = "flex";
+    }
+    
+    function closePopup() {
+      const popup = document.getElementById("popup");
+      popup.style.display = "none";
+    }
+    
+    function nextQuestion() {
+      closePopup();
+      currentPersonIndex = (currentPersonIndex + 1) % persons.length;
+      if (currentPersonIndex === 0) {
+        alert("You've completed all questions! Starting over.");
+      }
+      loadPerson(currentPersonIndex);
+    }
+    
+    function playSound(id) {
+      document.getElementById(id).play();
+    }
+    
+    function stopSound(id) {
+      const sound = document.getElementById(id);
+      sound.pause();
+      sound.currentTime = 0;
+    }
+    
+    function openGurujiPopup() {
+      const popup = document.getElementById("guruji-popup");
+      popup.style.display = "flex";
+      const cluesContainer = document.getElementById("guruji-clues");
+      const answerContainer = document.getElementById("guruji-answer");
+      const personNameElement = document.getElementById("guruji-person-name");
+      const personImageElement = document.getElementById("guruji-person-image");
+      const actionBtn = document.getElementById("guruji-action-btn");
+      
+      playSound("gurujiMusic");
+      
+      // Reset the popup
+      cluesContainer.innerHTML = "";
+      answerContainer.style.display = "none";
+      actionBtn.style.display = "block";
+      actionBtn.innerText = "Next Clue";
+      
+      // Select a random person from the main quiz's persons array
+      const randomIndex = Math.floor(Math.random() * persons.length);
+      const selectedPerson = persons[randomIndex];
+      let currentClueIndex = -1;
+      
+      actionBtn.onclick = function() {
+        if (currentClueIndex < selectedPerson.clues.length - 1) {
+          currentClueIndex++;
+          cluesContainer.innerHTML += `<div class="clue">${selectedPerson.clues[currentClueIndex]}</div>`;
+          if (currentClueIndex === selectedPerson.clues.length - 1) {
+            actionBtn.innerText = "Show Answer";
+          }
+        } else {
+          personNameElement.textContent = selectedPerson.name;
+          personImageElement.src = selectedPerson.image;
+          personImageElement.alt = selectedPerson.name;
+          answerContainer.style.display = "block";
+          actionBtn.style.display = "none";
         }
-
-        function handleAction() {
-            const actionButton = document.getElementById("action-btn");
-            const currentPerson = persons[currentPersonIndex];
-
-            if (showingAnswer) {
-                nextQuestion();
-            } else if (currentClueIndex < currentPerson.clues.length - 1) {
-                showNextClue();
-            } else {
-                showPopup();
-                actionButton.innerText = "Next Question";
-                showingAnswer = true;
-            }
-        }
-
-        function showNextClue() {
-            currentClueIndex++;
-            const cluesContainer = document.getElementById("clues-container");
-            const actionButton = document.getElementById("action-btn");
-            const currentPerson = persons[currentPersonIndex];
-
-            cluesContainer.innerHTML += `<div>${currentPerson.clues[currentClueIndex]}</div>`;
-            if (currentClueIndex === currentPerson.clues.length - 1) {
-                actionButton.innerText = "Show Answer";
-            } else {
-                actionButton.innerText = "Next Clue";
-            }
-        }
-
-        function showPopup() {
-            const popup = document.getElementById("popup");
-            const personNameElement = document.getElementById("person-name");
-            const personImageElement = document.getElementById("person-image");
-            const currentPerson = persons[currentPersonIndex];
-            
-            personNameElement.textContent = currentPerson.name;
-            personImageElement.src = currentPerson.image;
-            personImageElement.alt = currentPerson.name;
-            popup.style.display = "flex";
-        }
-
-        function closePopup() {
-            const popup = document.getElementById("popup");
-            popup.style.display = "none";
-        }
-
-        function nextQuestion() {
-            closePopup();
-            currentPersonIndex = (currentPersonIndex + 1) % persons.length;
-            if (currentPersonIndex === 0) {
-                alert("You've completed all questions! Starting over.");
-            }
-            loadPerson(currentPersonIndex);
-        }
-
-        // Guruji Popup Functions
-        function playSound(id) {
-            document.getElementById(id).play();
-        }
-
-        function stopSound(id) {
-            const sound = document.getElementById(id);
-            sound.pause();
-            sound.currentTime = 0;
-        }
-
-        function openGurujiPopup() {
-            const popup = document.getElementById("guruji-popup");
-            popup.style.display = "flex";
-            const questionElem = document.getElementById("guruji-question");
-            const answerElem = document.getElementById("guruji-answer");
-            const revealBtn = document.getElementById("reveal-answer");
-
-            playSound("gurujiMusic");
-            answerElem.style.display = "none";
-            revealBtn.style.display = "block";
-
-            const randomIndex = Math.floor(Math.random() * gurujiQuestions.length);
-            const selectedQuestion = gurujiQuestions[randomIndex];
-
-            questionElem.textContent = selectedQuestion.question;
-            answerElem.textContent = selectedQuestion.answer;
-
-            revealBtn.onclick = () => {
-                answerElem.style.display = "block";
-                revealBtn.style.display = "none";
-            };
-        }
-
-        function closeGurujiPopup() {
-            document.getElementById("guruji-popup").style.display = "none";
-            stopSound("gurujiMusic");
-        }
-
-        // Initialize the first person
-        loadPerson(currentPersonIndex);
-    </script>
+      };
+    }
+    
+    function closeGurujiPopup() {
+      document.getElementById("guruji-popup").style.display = "none";
+      stopSound("gurujiMusic");
+    }
+    
+    loadPerson(currentPersonIndex);
+  </script>
 </body>
 </html>
